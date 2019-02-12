@@ -1,5 +1,7 @@
 package cn.offway.apollo.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -13,5 +15,5 @@ import cn.offway.apollo.domain.PhAuth;
  */
 public interface PhAuthRepository extends JpaRepository<PhAuth,Long>,JpaSpecificationExecutor<PhAuth> {
 
-	/** 此处写一些自定义的方法 **/
+	int countByUnionidAndStatusIn(String unionid,List<String> status);
 }

@@ -1,5 +1,7 @@
 package cn.offway.apollo.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +34,10 @@ public class PhAuthServiceImpl implements PhAuthService {
 	@Override
 	public PhAuth findOne(Long id){
 		return phAuthRepository.findOne(id);
+	}
+	
+	@Override
+	public int countByUnionidAndStatusIn(String unionid,List<String> status){
+		return phAuthRepository.countByUnionidAndStatusIn(unionid, status);
 	}
 }

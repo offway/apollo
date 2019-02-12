@@ -1,5 +1,7 @@
 package cn.offway.apollo.service;
 
+import java.util.List;
+
 import cn.offway.apollo.domain.PhAuth;
 
 /**
@@ -13,4 +15,6 @@ public interface PhAuthService{
 	PhAuth save(PhAuth phAuth);
 	
 	PhAuth findOne(Long id);
+
+	int countByUnionidAndStatusIn(String unionid, List<String> status);
 }
