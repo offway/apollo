@@ -33,4 +33,9 @@ public class PhUserInfoServiceImpl implements PhUserInfoService {
 	public PhUserInfo findOne(Long id){
 		return phUserInfoRepository.findOne(id);
 	}
+
+	@Override
+	public PhUserInfo findByUnionid(String unionid) {
+		return phUserInfoRepository.findByUnionid(unionid);
+	}
 }

@@ -13,4 +13,6 @@ public interface PhUserInfoService{
 	PhUserInfo save(PhUserInfo phUserInfo);
 	
 	PhUserInfo findOne(Long id);
+	
+	PhUserInfo findByUnionid(String unionid);
 }
