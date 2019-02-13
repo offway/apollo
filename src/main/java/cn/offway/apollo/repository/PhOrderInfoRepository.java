@@ -2,6 +2,9 @@ package cn.offway.apollo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.offway.apollo.domain.PhOrderInfo;
 
@@ -13,5 +16,18 @@ import cn.offway.apollo.domain.PhOrderInfo;
  */
 public interface PhOrderInfoRepository extends JpaRepository<PhOrderInfo,Long>,JpaSpecificationExecutor<PhOrderInfo> {
 
-	/** 此处写一些自定义的方法 **/
+	/**
+	 * 生成订单号
+	 * @return
+	 */
+	@Query(nativeQuery=true,value="select CONCAT(?1,DATE_FORMAT(NOW(),'%Y%m%d'),LPAD(nextval(CONCAT(?1,DATE_FORMAT(NOW(),'%Y%m%d'))), 5, 0))")
+	String generateOrderNo(String prefix);
+	
+	@Query(nativeQuery=true,value="select count(*) from sequence where name=CONCAT(?1,DATE_FORMAT(NOW(),'%Y%m%d'))")
+	int hasOrder(String prefix);
+	
+	@Transactional
+	@Modifying
+	@Query(nativeQuery=true,value="insert into sequence values(CONCAT(?1,DATE_FORMAT(NOW(),'%Y%m%d')),0,1)")
+	int insert(String prefix);
 }

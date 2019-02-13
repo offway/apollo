@@ -1,8 +1,18 @@
 package cn.offway.apollo.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 用户信息
@@ -12,6 +22,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "ph_user_info")
+@XmlRootElement(name="list")
 public class PhUserInfo implements Serializable {
 
     /** ID **/
@@ -78,6 +89,7 @@ public class PhUserInfo implements Serializable {
     private String remark;
 
 
+    @XmlElement(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)

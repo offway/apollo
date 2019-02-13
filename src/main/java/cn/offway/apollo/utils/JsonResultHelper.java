@@ -77,4 +77,14 @@ public class JsonResultHelper {
         jsonResult.setMsg(message);
         return jsonResult;
     }
+    
+    /**
+     * 创建Json结果对象
+     */
+    public JsonResult buildJsonResult(String code,String message) {
+        JsonResult jsonResult = new JsonResult();
+        jsonResult.setCode(code);
+        jsonResult.setMsg(message);
+        return jsonResult;
+    }
 }

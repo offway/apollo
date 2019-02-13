@@ -104,6 +104,16 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+		    <groupId>com.sf-express</groupId>
+		    <artifactId>sf-express-sdk</artifactId>
+		    <version>1.0.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.dom4j</groupId>
+		    <artifactId>dom4j</artifactId>
+		    <version>2.1.1</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>

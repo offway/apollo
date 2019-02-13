@@ -33,4 +33,15 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 	public PhOrderInfo findOne(Long id){
 		return phOrderInfoRepository.findOne(id);
 	}
+	
+	@Override
+	public String generateOrderNo(String prefix){
+		int count = phOrderInfoRepository.hasOrder(prefix);
+		if(count == 0){
+			phOrderInfoRepository.insert(prefix);
+		}
+		return phOrderInfoRepository.generateOrderNo(prefix);
+	}
+	
+	
 }
