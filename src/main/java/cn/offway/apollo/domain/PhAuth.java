@@ -61,6 +61,9 @@ public class PhAuth implements Serializable {
 
     /** 失败原因 **/
     private String approvalContent;
+    
+    /** 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id **/
+    private String formId;
 
     /** 备注 **/
     private String remark;
@@ -213,6 +216,15 @@ public class PhAuth implements Serializable {
     public void setApprovalContent(String approvalContent) {
         this.approvalContent = approvalContent;
     }
+    
+    @Column(name = "form_id", length = 200)
+	public String getFormId() {
+		return formId;
+	}
+
+	public void setFormId(String formId) {
+		this.formId = formId;
+	}
 
     @Column(name = "remark", length = 200)
     public String getRemark() {

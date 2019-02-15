@@ -16,4 +16,6 @@ import cn.offway.apollo.domain.PhAuth;
 public interface PhAuthRepository extends JpaRepository<PhAuth,Long>,JpaSpecificationExecutor<PhAuth> {
 
 	int countByUnionidAndStatusIn(String unionid,List<String> status);
+	
+	PhAuth findByUnionid(String unionid);
 }

@@ -19,8 +19,8 @@ public enum CommonResultCode implements ResultCode {
     /** 请求参数错误 */
     PARAM_ERROR("1002", "PARAM_ERROR"),
     
-    /** 不再活动时间范围 */
-    ACTIVITY_END("1003", "ACTIVITY_END"),
+    /** 邀请码无效 */
+    CODE_ERROR("1003", "CODE_ERROR"),
     
     /** 活动已参加 */
     ACTIVITY_PARTICIPATED("1004", "ACTIVITY_PARTICIPATED"),

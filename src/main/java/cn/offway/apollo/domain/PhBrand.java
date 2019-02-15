@@ -22,6 +22,9 @@ public class PhBrand implements Serializable {
 
     /** 品牌LOGO **/
     private String logo;
+    
+    /** 简介 **/
+    private String info;
 
     /** 创建时间 **/
     private Date createTime;
@@ -58,6 +61,15 @@ public class PhBrand implements Serializable {
     public void setLogo(String logo) {
         this.logo = logo;
     }
+    
+    @Column(name = "info")
+    public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_time")
