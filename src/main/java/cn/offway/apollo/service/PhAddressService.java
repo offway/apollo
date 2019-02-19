@@ -1,5 +1,7 @@
 package cn.offway.apollo.service;
 
+import java.util.List;
+
 import cn.offway.apollo.domain.PhAddress;
 
 /**
@@ -13,4 +15,10 @@ public interface PhAddressService{
 	PhAddress save(PhAddress phAddress);
 	
 	PhAddress findOne(Long id);
+
+	List<PhAddress> findByUnionid(String unionid);
+
+	void delete(Long id);
+
+	PhAddress findDefault(String unionid);
 }

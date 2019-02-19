@@ -3,6 +3,7 @@ package cn.offway.apollo.config;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -37,7 +38,12 @@ public class ErrorAttributes extends DefaultErrorAttributes {
 		addErrorDetails(errorAttributes, requestAttributes, includeStackTrace);
 		addPath(errorAttributes, requestAttributes);
 		logger.error("系统异常，错误信息：{}",errorAttributes,getError(requestAttributes));
-		return errorAttributes;
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("code", "500");
+		resultMap.put("msg", "系统忙,请稍后再试!");
+		resultMap.put("data", errorAttributes.get("message"));
+		
+		return resultMap;
 	}
 	
 	private void addStatus(Map<String, Object> errorAttributes,

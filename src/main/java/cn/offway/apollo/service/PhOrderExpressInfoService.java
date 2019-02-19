@@ -1,5 +1,7 @@
 package cn.offway.apollo.service;
 
+import java.util.List;
+
 import cn.offway.apollo.domain.PhOrderExpressInfo;
 
 /**
@@ -13,4 +15,6 @@ public interface PhOrderExpressInfoService{
 	PhOrderExpressInfo save(PhOrderExpressInfo phOrderExpressInfo);
 	
 	PhOrderExpressInfo findOne(Long id);
+
+	List<PhOrderExpressInfo> save(List<PhOrderExpressInfo> phOrderExpressInfos);
 }

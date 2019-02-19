@@ -1,5 +1,7 @@
 package cn.offway.apollo.service;
 
+import java.util.List;
+
 import cn.offway.apollo.domain.PhOrderGoods;
 
 /**
@@ -13,4 +15,6 @@ public interface PhOrderGoodsService{
 	PhOrderGoods save(PhOrderGoods phOrderGoods);
 	
 	PhOrderGoods findOne(Long id);
+
+	List<PhOrderGoods> save(List<PhOrderGoods> phOrderGoodss);
 }

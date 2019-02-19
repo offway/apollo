@@ -1,7 +1,12 @@
 package cn.offway.apollo.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.offway.apollo.domain.PhAddress;
 
@@ -13,5 +18,12 @@ import cn.offway.apollo.domain.PhAddress;
  */
 public interface PhAddressRepository extends JpaRepository<PhAddress,Long>,JpaSpecificationExecutor<PhAddress> {
 
-	/** 此处写一些自定义的方法 **/
+	List<PhAddress> findByUnionid(String unionid);
+	
+	@Transactional
+	@Modifying
+	@Query(nativeQuery=true,value="update ph_address set is_default='0' where unionid =?1")
+	int updatePhAddress(String unionid);
+	
+	List<PhAddress> findByUnionidAndIsDefault(String unionid,String isDefault);
 }

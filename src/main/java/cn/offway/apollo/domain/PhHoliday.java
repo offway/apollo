@@ -5,29 +5,20 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * 品牌库
+ * 节假日
  *
  * @author wn
  * @version $v: 1.0.0, $time:2018-02-12 11:26:00 Exp $
  */
 @Entity
-@Table(name = "ph_brand")
-public class PhBrand implements Serializable {
+@Table(name = "ph_holiday")
+public class PhHoliday implements Serializable {
 
     /** ID **/
     private Long id;
 
-    /** 品牌名称 **/
-    private String name;
-
-    /** 品牌LOGO **/
-    private String logo;
-
-    /** 简介 **/
-    private String info;
-
-    /** 地址ID **/
-    private Long addrId;
+    /** 日期 **/
+    private Date holiday;
 
     /** 创建时间 **/
     private Date createTime;
@@ -47,40 +38,14 @@ public class PhBrand implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "name", length = 100)
-    public String getName() {
-        return name;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "holiday")
+    public Date getHoliday() {
+        return holiday;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Column(name = "logo", length = 200)
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-
-    @Column(name = "info")
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    @Column(name = "addr_id", length = 11)
-    public Long getAddrId() {
-        return addrId;
-    }
-
-    public void setAddrId(Long addrId) {
-        this.addrId = addrId;
+    public void setHoliday(Date holiday) {
+        this.holiday = holiday;
     }
 
     @Temporal(TemporalType.TIMESTAMP)

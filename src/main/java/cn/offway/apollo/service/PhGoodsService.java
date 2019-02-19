@@ -1,6 +1,10 @@
 package cn.offway.apollo.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import cn.offway.apollo.domain.PhGoods;
+import cn.offway.apollo.dto.GoodsDto;
 
 /**
  * 商品表Service接口
@@ -13,4 +17,6 @@ public interface PhGoodsService{
 	PhGoods save(PhGoods phGoods);
 	
 	PhGoods findOne(Long id);
+
+	Page<PhGoods> findByPage(GoodsDto goodsDto, Pageable page);
 }

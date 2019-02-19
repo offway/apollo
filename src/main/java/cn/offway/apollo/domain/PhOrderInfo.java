@@ -22,6 +22,9 @@ public class PhOrderInfo implements Serializable {
 
     /** 使用日期 **/
     private Date useDate;
+    
+    /** 使用者 **/
+    private String users;
 
     /** 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。 **/
     private String unionid;
@@ -82,8 +85,17 @@ public class PhOrderInfo implements Serializable {
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
+    
+    @Column(name = "users", length = 50)
+    public String getUsers() {
+		return users;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
+	public void setUsers(String users) {
+		this.users = users;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "use_date")
     public Date getUseDate() {
         return useDate;

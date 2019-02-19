@@ -41,6 +41,9 @@ public class PhGoods implements Serializable {
     /** 类目[未发售,长袖,外套,短裤,长裤等] **/
     private String category;
 
+    /** 是否发售[0-否,1-是] **/
+    private String isRelease;
+
     /** 状态[0-未上架,1-已上架] **/
     private String status;
 
@@ -98,7 +101,7 @@ public class PhGoods implements Serializable {
         this.brandName = brandName;
     }
 
-    @Column(name = "brand_logo", length = 50)
+    @Column(name = "brand_logo", length = 200)
     public String getBrandLogo() {
         return brandLogo;
     }
@@ -132,6 +135,15 @@ public class PhGoods implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    @Column(name = "is_release", length = 2)
+    public String getIsRelease() {
+        return isRelease;
+    }
+
+    public void setIsRelease(String isRelease) {
+        this.isRelease = isRelease;
     }
 
     @Column(name = "status", length = 2)

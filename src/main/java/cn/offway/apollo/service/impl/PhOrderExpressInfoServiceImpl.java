@@ -1,5 +1,7 @@
 package cn.offway.apollo.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import cn.offway.apollo.service.PhOrderExpressInfoService;
 
 import cn.offway.apollo.domain.PhOrderExpressInfo;
+import cn.offway.apollo.domain.PhOrderInfo;
 import cn.offway.apollo.repository.PhOrderExpressInfoRepository;
 
 
@@ -27,6 +30,11 @@ public class PhOrderExpressInfoServiceImpl implements PhOrderExpressInfoService 
 	@Override
 	public PhOrderExpressInfo save(PhOrderExpressInfo phOrderExpressInfo){
 		return phOrderExpressInfoRepository.save(phOrderExpressInfo);
+	}
+	
+	@Override
+	public List<PhOrderExpressInfo> save(List<PhOrderExpressInfo> phOrderExpressInfos){
+		return phOrderExpressInfoRepository.save(phOrderExpressInfos);
 	}
 	
 	@Override

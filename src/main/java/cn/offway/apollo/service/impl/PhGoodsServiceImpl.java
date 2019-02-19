@@ -1,12 +1,25 @@
 package cn.offway.apollo.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import cn.offway.apollo.service.PhGoodsService;
 
 import cn.offway.apollo.domain.PhGoods;
+import cn.offway.apollo.dto.GoodsDto;
 import cn.offway.apollo.repository.PhGoodsRepository;
 
 
@@ -32,5 +45,49 @@ public class PhGoodsServiceImpl implements PhGoodsService {
 	@Override
 	public PhGoods findOne(Long id){
 		return phGoodsRepository.findOne(id);
+	}
+	
+	@Override
+	public Page<PhGoods> findByPage(final GoodsDto goodsDto,Pageable page){
+		return phGoodsRepository.findAll(new Specification<PhGoods>() {
+			
+			@Override
+			public Predicate toPredicate(Root<PhGoods> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> params = new ArrayList<Predicate>();
+				
+				if(StringUtils.isNotBlank(goodsDto.getBrandName())){
+					params.add(criteriaBuilder.like(root.get("brandName"), "%"+goodsDto.getBrandName()+"%"));
+				}
+				
+				if(StringUtils.isNotBlank(goodsDto.getName())){
+					params.add(criteriaBuilder.like(root.get("name"), "%"+goodsDto.getName()+"%"));
+				}
+				
+				if(null != goodsDto.getBrandId()){
+					params.add(criteriaBuilder.equal(root.get("brandId"), goodsDto.getBrandId()));
+				}
+				
+				if(StringUtils.isNotBlank(goodsDto.getIsOffway())){
+					params.add(criteriaBuilder.equal(root.get("isOffway"), goodsDto.getIsOffway()));
+				}
+				
+				if(StringUtils.isNotBlank(goodsDto.getIsRelease())){
+					params.add(criteriaBuilder.equal(root.get("isRelease"), goodsDto.getIsRelease()));
+				}
+				
+				
+				if(StringUtils.isNotBlank(goodsDto.getType())){
+					params.add(criteriaBuilder.equal(root.get("type"), goodsDto.getType()));
+				}
+				
+				params.add(criteriaBuilder.equal(root.get("status"),  "1"));
+
+				
+                Predicate[] predicates = new Predicate[params.size()];
+                criteriaQuery.where(params.toArray(predicates));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
+				return null;
+			}
+		}, page);
 	}
 }

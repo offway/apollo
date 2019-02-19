@@ -2,6 +2,9 @@ package cn.offway.apollo.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 /**
@@ -14,40 +17,43 @@ import java.util.Date;
 @Table(name = "ph_address")
 public class PhAddress implements Serializable {
 
-    /** ID **/
-    private Long id;
+	@ApiModelProperty(value ="ID")
+   	private Long id;
 
-    /** 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。 **/
+	@ApiModelProperty(value ="只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。")
     private String unionid;
 
-    /** 姓名 **/
+	@ApiModelProperty(value ="姓名")
     private String realName;
 
-    /** 手机号 **/
+	@ApiModelProperty(value ="手机号")
     private String phone;
 
-    /** 省份 **/
+	@ApiModelProperty(value ="省份")
     private String province;
 
-    /** 城市 **/
+	@ApiModelProperty(value ="城市")
     private String city;
 
-    /** 区/县 **/
+	@ApiModelProperty(value ="区/县")
     private String county;
 
-    /** 详细地址 **/
+	@ApiModelProperty(value ="详细地址")
     private String content;
+	
+	@ApiModelProperty(value ="是否默认[0-否,1-是]")
+	private String isDefault;
 
-    /** 创建时间 **/
+	@ApiModelProperty(value ="创建时间")
     private Date createTime;
 
-    /** 备注 **/
+	@ApiModelProperty(value ="备注")
     private String remark;
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
+ 	@Id
+ 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+ 	@Column(name = "id", unique = true, nullable = false)
     public Long getId() {
         return id;
     }
@@ -56,7 +62,7 @@ public class PhAddress implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "unionid", length = 200)
+ 	@Column(name = "unionid", length = 200)
     public String getUnionid() {
         return unionid;
     }
@@ -65,7 +71,7 @@ public class PhAddress implements Serializable {
         this.unionid = unionid;
     }
 
-    @Column(name = "real_name", length = 50)
+ 	@Column(name = "real_name", length = 50)
     public String getRealName() {
         return realName;
     }
@@ -74,7 +80,7 @@ public class PhAddress implements Serializable {
         this.realName = realName;
     }
 
-    @Column(name = "phone", length = 20)
+ 	@Column(name = "phone", length = 20)
     public String getPhone() {
         return phone;
     }
@@ -83,7 +89,7 @@ public class PhAddress implements Serializable {
         this.phone = phone;
     }
 
-    @Column(name = "province", length = 20)
+ 	@Column(name = "province", length = 20)
     public String getProvince() {
         return province;
     }
@@ -92,7 +98,7 @@ public class PhAddress implements Serializable {
         this.province = province;
     }
 
-    @Column(name = "city", length = 20)
+ 	@Column(name = "city", length = 20)
     public String getCity() {
         return city;
     }
@@ -101,7 +107,7 @@ public class PhAddress implements Serializable {
         this.city = city;
     }
 
-    @Column(name = "county", length = 20)
+ 	@Column(name = "county", length = 20)
     public String getCounty() {
         return county;
     }
@@ -110,7 +116,7 @@ public class PhAddress implements Serializable {
         this.county = county;
     }
 
-    @Column(name = "content", length = 200)
+ 	@Column(name = "content", length = 200)
     public String getContent() {
         return content;
     }
@@ -119,8 +125,8 @@ public class PhAddress implements Serializable {
         this.content = content;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_time")
+ 	@Temporal(TemporalType.TIMESTAMP)
+ 	@Column(name = "create_time")
     public Date getCreateTime() {
         return createTime;
     }
@@ -129,7 +135,7 @@ public class PhAddress implements Serializable {
         this.createTime = createTime;
     }
 
-    @Column(name = "remark", length = 200)
+ 	@Column(name = "remark", length = 200)
     public String getRemark() {
         return remark;
     }
@@ -137,5 +143,14 @@ public class PhAddress implements Serializable {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+ 	@Column(name = "is_default", length = 2)
+	public String getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(String isDefault) {
+		this.isDefault = isDefault;
+	}
 
 }

@@ -1,5 +1,7 @@
 package cn.offway.apollo.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +28,33 @@ public class PhAddressServiceImpl implements PhAddressService {
 	
 	@Override
 	public PhAddress save(PhAddress phAddress){
+		if("1".equals(phAddress.getIsDefault())){
+			phAddressRepository.updatePhAddress(phAddress.getUnionid()); 
+		}
 		return phAddressRepository.save(phAddress);
+	}
+	
+	@Override
+	public void delete(Long id){
+		phAddressRepository.delete(id);
 	}
 	
 	@Override
 	public PhAddress findOne(Long id){
 		return phAddressRepository.findOne(id);
+	}
+	
+	@Override
+	public List<PhAddress> findByUnionid(String unionid){
+		return phAddressRepository.findByUnionid(unionid);
+	}
+	
+	@Override
+	public  PhAddress findDefault(String unionid){
+		List<PhAddress> phAddresses = phAddressRepository.findByUnionidAndIsDefault(unionid, "1");
+		if(!phAddresses.isEmpty()){
+			return phAddresses.get(0);
+		}
+		return null;
 	}
 }

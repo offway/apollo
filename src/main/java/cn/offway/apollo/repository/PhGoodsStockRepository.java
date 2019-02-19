@@ -1,7 +1,12 @@
 package cn.offway.apollo.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.offway.apollo.domain.PhGoodsStock;
 
@@ -13,5 +18,10 @@ import cn.offway.apollo.domain.PhGoodsStock;
  */
 public interface PhGoodsStockRepository extends JpaRepository<PhGoodsStock,Long>,JpaSpecificationExecutor<PhGoodsStock> {
 
-	/** 此处写一些自定义的方法 **/
+	List<PhGoodsStock> findByGoodsId(Long goodsId);
+	
+	@Transactional
+	@Modifying
+	@Query(nativeQuery=true,value="update ph_goods_stock set stock = stock-1 where goods_id in (select goods_id from ph_wardrobe where id in(?1)) and stock>0")
+	int updateStock(List<Long> wrIds);
 }

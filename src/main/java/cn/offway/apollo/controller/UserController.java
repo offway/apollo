@@ -62,4 +62,6 @@ public class UserController {
 	public JsonResult auth(@RequestBody @ApiParam("认证信息") AuthDto authDto){
 		return phAuthService.auth(authDto);
 	}
+	
+	
 }

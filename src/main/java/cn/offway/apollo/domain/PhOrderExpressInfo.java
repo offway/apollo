@@ -35,16 +35,40 @@ public class PhOrderExpressInfo implements Serializable {
     /** 寄件方手机 **/
     private String fromPhone;
 
-    /** 寄件方 **/
-    private String fromAddrId;
+    /** 寄件方姓名 **/
+    private String fromRealName;
+
+    /** 寄件方省份 **/
+    private String fromProvince;
+
+    /** 寄件方城市 **/
+    private String fromCity;
+
+    /** 寄件方区/县 **/
+    private String fromCounty;
+
+    /** 寄件方详细地址 **/
+    private String fromContent;
 
     /** 收件方手机 **/
     private String toPhone;
 
-    /** 收件方 **/
-    private String toAddrId;
+    /** 收件方姓名 **/
+    private String toRealName;
 
-    /** 状态[0-已下单,1-已接单,2-运送中,3-已签收] **/
+    /** 收件方省份 **/
+    private String toProvince;
+
+    /** 收件方城市 **/
+    private String toCity;
+
+    /** 收件方区/县 **/
+    private String toCounty;
+
+    /** 收件方详细地址 **/
+    private String toContent;
+
+    /** 状态[0-新建,1-已下单,2-已接单,3-运送中,4-已签收] **/
     private String status;
 
     /** 创建时间 **/
@@ -119,13 +143,49 @@ public class PhOrderExpressInfo implements Serializable {
         this.fromPhone = fromPhone;
     }
 
-    @Column(name = "from_addr_id", length = 50)
-    public String getFromAddrId() {
-        return fromAddrId;
+    @Column(name = "from_real_name", length = 50)
+    public String getFromRealName() {
+        return fromRealName;
     }
 
-    public void setFromAddrId(String fromAddrId) {
-        this.fromAddrId = fromAddrId;
+    public void setFromRealName(String fromRealName) {
+        this.fromRealName = fromRealName;
+    }
+
+    @Column(name = "from_province", length = 20)
+    public String getFromProvince() {
+        return fromProvince;
+    }
+
+    public void setFromProvince(String fromProvince) {
+        this.fromProvince = fromProvince;
+    }
+
+    @Column(name = "from_city", length = 20)
+    public String getFromCity() {
+        return fromCity;
+    }
+
+    public void setFromCity(String fromCity) {
+        this.fromCity = fromCity;
+    }
+
+    @Column(name = "from_county", length = 20)
+    public String getFromCounty() {
+        return fromCounty;
+    }
+
+    public void setFromCounty(String fromCounty) {
+        this.fromCounty = fromCounty;
+    }
+
+    @Column(name = "from_content", length = 200)
+    public String getFromContent() {
+        return fromContent;
+    }
+
+    public void setFromContent(String fromContent) {
+        this.fromContent = fromContent;
     }
 
     @Column(name = "to_phone", length = 50)
@@ -137,13 +197,49 @@ public class PhOrderExpressInfo implements Serializable {
         this.toPhone = toPhone;
     }
 
-    @Column(name = "to_addr_id", length = 50)
-    public String getToAddrId() {
-        return toAddrId;
+    @Column(name = "to_real_name", length = 50)
+    public String getToRealName() {
+        return toRealName;
     }
 
-    public void setToAddrId(String toAddrId) {
-        this.toAddrId = toAddrId;
+    public void setToRealName(String toRealName) {
+        this.toRealName = toRealName;
+    }
+
+    @Column(name = "to_province", length = 20)
+    public String getToProvince() {
+        return toProvince;
+    }
+
+    public void setToProvince(String toProvince) {
+        this.toProvince = toProvince;
+    }
+
+    @Column(name = "to_city", length = 20)
+    public String getToCity() {
+        return toCity;
+    }
+
+    public void setToCity(String toCity) {
+        this.toCity = toCity;
+    }
+
+    @Column(name = "to_county", length = 20)
+    public String getToCounty() {
+        return toCounty;
+    }
+
+    public void setToCounty(String toCounty) {
+        this.toCounty = toCounty;
+    }
+
+    @Column(name = "to_content", length = 200)
+    public String getToContent() {
+        return toContent;
+    }
+
+    public void setToContent(String toContent) {
+        this.toContent = toContent;
     }
 
     @Column(name = "status", length = 2)

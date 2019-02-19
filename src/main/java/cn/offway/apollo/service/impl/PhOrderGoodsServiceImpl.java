@@ -1,5 +1,7 @@
 package cn.offway.apollo.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,11 @@ public class PhOrderGoodsServiceImpl implements PhOrderGoodsService {
 	@Override
 	public PhOrderGoods save(PhOrderGoods phOrderGoods){
 		return phOrderGoodsRepository.save(phOrderGoods);
+	}
+	
+	@Override
+	public List<PhOrderGoods> save(List<PhOrderGoods> phOrderGoodss){
+		return phOrderGoodsRepository.save(phOrderGoodss);
 	}
 	
 	@Override

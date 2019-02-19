@@ -1,5 +1,7 @@
 package cn.offway.apollo.service;
 
+import java.util.List;
+
 import cn.offway.apollo.domain.PhOrderInfo;
 
 /**
@@ -15,4 +17,6 @@ public interface PhOrderInfoService{
 	PhOrderInfo findOne(Long id);
 
 	String generateOrderNo(String prefix);
+
+	List<PhOrderInfo> save(List<PhOrderInfo> phOrderInfos);
 }

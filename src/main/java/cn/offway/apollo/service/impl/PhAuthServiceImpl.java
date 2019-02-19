@@ -14,6 +14,7 @@ import cn.offway.apollo.domain.PhAuth;
 import cn.offway.apollo.domain.PhCode;
 import cn.offway.apollo.domain.PhUserInfo;
 import cn.offway.apollo.dto.AuthDto;
+import cn.offway.apollo.properties.QiniuProperties;
 import cn.offway.apollo.repository.PhAuthRepository;
 import cn.offway.apollo.service.PhAuthService;
 import cn.offway.apollo.service.PhCodeService;
@@ -45,6 +46,9 @@ public class PhAuthServiceImpl implements PhAuthService {
 	
 	@Autowired
 	private PhCodeService phCodeService;
+	
+	@Autowired
+	private QiniuProperties qiniuProperties;
 	
 	@Override
 	public PhAuth save(PhAuth phAuth){
@@ -78,6 +82,10 @@ public class PhAuthServiceImpl implements PhAuthService {
 		
 		PhAuth phAuth = new PhAuth();
 		BeanUtils.copyProperties(authDto, phAuth);
+		
+		phAuth.setIdcardObverse(qiniuProperties.getUrl()+"/"+phAuth.getIdcardObverse());
+		phAuth.setIdcardPositive(qiniuProperties.getUrl()+"/"+phAuth.getIdcardPositive());
+		phAuth.setInCert(qiniuProperties.getUrl()+"/"+phAuth.getInCert());
 		
 		String unionid = phAuth.getUnionid();
 		List<String> status = new ArrayList<>();

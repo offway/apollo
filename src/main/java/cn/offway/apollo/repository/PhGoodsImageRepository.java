@@ -1,7 +1,10 @@
 package cn.offway.apollo.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import cn.offway.apollo.domain.PhGoodsImage;
 
@@ -13,5 +16,9 @@ import cn.offway.apollo.domain.PhGoodsImage;
  */
 public interface PhGoodsImageRepository extends JpaRepository<PhGoodsImage,Long>,JpaSpecificationExecutor<PhGoodsImage> {
 
-	/** 此处写一些自定义的方法 **/
+	
+	List<PhGoodsImage> findByGoodsId(Long goodsId);
+	
+	@Query(nativeQuery=true,value="select image_url from ph_goods_image where goods_id=?1 and type=?2 order by sort asc")
+	List<String> findByGoodsId(Long goodsId,String type);
 }
