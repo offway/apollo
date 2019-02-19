@@ -85,6 +85,16 @@ public class PhOrderInfo implements Serializable {
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "use_date")
+    public Date getUseDate() {
+        return useDate;
+    }
+
+    public void setUseDate(Date useDate) {
+        this.useDate = useDate;
+    }
     
     @Column(name = "users", length = 50)
     public String getUsers() {
@@ -94,16 +104,6 @@ public class PhOrderInfo implements Serializable {
 	public void setUsers(String users) {
 		this.users = users;
 	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "use_date")
-    public Date getUseDate() {
-        return useDate;
-    }
-
-    public void setUseDate(Date useDate) {
-        this.useDate = useDate;
-    }
 
     @Column(name = "unionid", length = 200)
     public String getUnionid() {

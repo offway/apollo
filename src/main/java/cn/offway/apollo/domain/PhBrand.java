@@ -26,6 +26,9 @@ public class PhBrand implements Serializable {
     /** 简介 **/
     private String info;
 
+    /** 背景图 **/
+    private String background;
+
     /** 地址ID **/
     private Long addrId;
 
@@ -72,6 +75,15 @@ public class PhBrand implements Serializable {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    @Column(name = "background", length = 200)
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
     }
 
     @Column(name = "addr_id", length = 11)

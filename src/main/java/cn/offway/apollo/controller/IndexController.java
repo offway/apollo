@@ -32,7 +32,7 @@ public class IndexController {
 		return "欢迎访问OFFWAY ShowRoom API服务";
 	}
 	
-	@ResponseBody
+	/*@ResponseBody
 	@GetMapping("/t")
 	public JsonResult t() {
 		ReqAddOrder addOrder = new ReqAddOrder();
@@ -53,5 +53,5 @@ public class IndexController {
 		addOrder.setSendstarttime("");
 		
 		return sfExpressService.addOrder(addOrder);
-	}
+	}*/
 }

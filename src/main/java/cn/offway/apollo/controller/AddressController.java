@@ -1,5 +1,7 @@
 package cn.offway.apollo.controller;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@ApiOperation("保存地址")
 	@PostMapping("/save")
 	public JsonResult save(@RequestBody @ApiParam("地址信息") PhAddress phAddress){
+		phAddress.setCreateTime(new Date());
 		return jsonResultHelper.buildSuccessJsonResult(phAddressService.save(phAddress));
 	}
 	

@@ -77,6 +77,12 @@ public class PhOrderExpressInfo implements Serializable {
     /** 备注 **/
     private String remark;
 
+    /** 取件快递员手机号 **/
+    private String exPhone;
+
+    /** 快递员最晚上门时间 **/
+    private String lastTime;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -268,6 +274,24 @@ public class PhOrderExpressInfo implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "ex_phone", length = 20)
+    public String getExPhone() {
+        return exPhone;
+    }
+
+    public void setExPhone(String exPhone) {
+        this.exPhone = exPhone;
+    }
+
+    @Column(name = "last_time", length = 50)
+    public String getLastTime() {
+        return lastTime;
+    }
+
+    public void setLastTime(String lastTime) {
+        this.lastTime = lastTime;
     }
 
 }

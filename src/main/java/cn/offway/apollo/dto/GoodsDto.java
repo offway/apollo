@@ -33,11 +33,14 @@ public class GoodsDto implements Serializable {
     @ApiModelProperty(value ="类目[未发售,长袖,外套,短裤,长裤等]")
     private String category;
     
+    @ApiModelProperty(value ="尺码")
+    private String size;
+    
     @ApiModelProperty(required = true,value ="页码,从0开始")
     private int page;
     
     @ApiModelProperty(required = true,value ="页大小")
-    private int size;
+    private int pageSize;
 
 
 
@@ -98,14 +101,6 @@ public class GoodsDto implements Serializable {
 		this.page = page;
 	}
 
-	public int getSize() {
-		return size;
-	}
-
-	public void setSize(int size) {
-		this.size = size;
-	}
-
 	public String getIsRelease() {
 		return isRelease;
 	}
@@ -113,7 +108,21 @@ public class GoodsDto implements Serializable {
 	public void setIsRelease(String isRelease) {
 		this.isRelease = isRelease;
 	}
-	
-	
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
     
 }

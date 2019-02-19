@@ -7,6 +7,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,11 +17,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import cn.offway.apollo.service.PhGoodsService;
 
 import cn.offway.apollo.domain.PhGoods;
+import cn.offway.apollo.domain.PhGoodsStock;
 import cn.offway.apollo.dto.GoodsDto;
 import cn.offway.apollo.repository.PhGoodsRepository;
+import cn.offway.apollo.service.PhGoodsService;
 
 
 /**
@@ -75,6 +77,9 @@ public class PhGoodsServiceImpl implements PhGoodsService {
 					params.add(criteriaBuilder.equal(root.get("isRelease"), goodsDto.getIsRelease()));
 				}
 				
+				if(StringUtils.isNotBlank(goodsDto.getCategory())){
+					params.add(criteriaBuilder.equal(root.get("category"), goodsDto.getCategory()));
+				}
 				
 				if(StringUtils.isNotBlank(goodsDto.getType())){
 					params.add(criteriaBuilder.equal(root.get("type"), goodsDto.getType()));
@@ -82,6 +87,16 @@ public class PhGoodsServiceImpl implements PhGoodsService {
 				
 				params.add(criteriaBuilder.equal(root.get("status"),  "1"));
 
+				if(StringUtils.isNotBlank(goodsDto.getSize())){
+					Subquery<PhGoodsStock> subquery = criteriaQuery.subquery(PhGoodsStock.class);
+					Root<PhGoodsStock> subRoot = subquery.from(PhGoodsStock.class);
+					subquery.select(subRoot);
+					subquery.where(
+							criteriaBuilder.equal(root.get("id"), subRoot.get("goodsId")),
+							criteriaBuilder.equal(subRoot.get("size"), goodsDto.getSize())
+							);
+					params.add(criteriaBuilder.exists(subquery));
+				}
 				
                 Predicate[] predicates = new Predicate[params.size()];
                 criteriaQuery.where(params.toArray(predicates));

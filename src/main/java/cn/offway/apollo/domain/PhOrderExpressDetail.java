@@ -17,8 +17,8 @@ public class PhOrderExpressDetail implements Serializable {
     /** ID **/
     private Long id;
 
-    /** 物流订单ID **/
-    private Long expressOrderId;
+    /** 路由节点产生的时间，格式：YYYY-MM-DD HH24:MM:SS，示例：2012-7-30 09:30:00 **/
+    private String acceptTime;
 
     /** 物流订单号 **/
     private String expressOrderNo;
@@ -47,16 +47,16 @@ public class PhOrderExpressDetail implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "express_order_id", length = 11)
-    public Long getExpressOrderId() {
-        return expressOrderId;
-    }
+    @Column(name = "accept_time", length = 50)
+	public String getAcceptTime() {
+		return acceptTime;
+	}
 
-    public void setExpressOrderId(Long expressOrderId) {
-        this.expressOrderId = expressOrderId;
-    }
+	public void setAcceptTime(String acceptTime) {
+		this.acceptTime = acceptTime;
+	}
 
-    @Column(name = "express_order_no", length = 50)
+	@Column(name = "express_order_no", length = 50)
     public String getExpressOrderNo() {
         return expressOrderNo;
     }

@@ -117,7 +117,7 @@ public class GoodsController {
 	public JsonResult list(@ApiParam("商品属性") @RequestBody GoodsDto goodsDto){
 		
 		int page = goodsDto.getPage();
-		int size = goodsDto.getSize();
+		int size = goodsDto.getPageSize();
 		Page<PhGoods> pages = phGoodsService.findByPage(goodsDto, new PageRequest(page*size, (page+1)*size));
 		
 		return jsonResultHelper.buildSuccessJsonResult(pages);
