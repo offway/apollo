@@ -1,13 +1,27 @@
 package cn.offway.apollo.service.impl;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import cn.offway.apollo.service.PhOrderInfoService;
-
 import cn.offway.apollo.domain.PhOrderInfo;
 import cn.offway.apollo.repository.PhOrderInfoRepository;
 
@@ -50,5 +64,46 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 		return phOrderInfoRepository.generateOrderNo(prefix);
 	}
 	
+	@Override
+	public Page<PhOrderInfo> findByPage(final String unionid,final String type,Pageable page){
+		return phOrderInfoRepository.findAll(new Specification<PhOrderInfo>() {
+			
+			@Override
+			public Predicate toPredicate(Root<PhOrderInfo> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> params = new ArrayList<Predicate>();
+				
+				Date now = new Date();
+				try {
+					//0-发货中,1-使用中,2-归还中,3-已完成
+					if("0".equals(type)){
+						//使用日期之前
+						In<String> in = criteriaBuilder.in(root.get("status"));
+						in.value("0");
+						in.value("1");
+						params.add(in);
+					}else if("1".equals(type)){
+						//使用日期当天
+						params.add(criteriaBuilder.equal(root.get("status"), "1"));
+						params.add(criteriaBuilder.equal(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
+					}else if("2".equals(type)){
+						params.add(criteriaBuilder.equal(root.get("status"), "2"));
+					}else if("3".equals(type)){
+						params.add(criteriaBuilder.equal(root.get("status"), "3"));
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				if(StringUtils.isNotBlank(unionid)){
+					params.add(criteriaBuilder.equal(root.get("unionid"), unionid));
+				}
+				
+				
+                Predicate[] predicates = new Predicate[params.size()];
+                criteriaQuery.where(params.toArray(predicates));
+				return null;
+			}
+		}, page);
+	}
 	
 }

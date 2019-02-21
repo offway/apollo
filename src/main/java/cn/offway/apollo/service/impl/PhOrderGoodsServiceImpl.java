@@ -40,4 +40,9 @@ public class PhOrderGoodsServiceImpl implements PhOrderGoodsService {
 	public PhOrderGoods findOne(Long id){
 		return phOrderGoodsRepository.findOne(id);
 	}
+	
+	@Override
+	public List<PhOrderGoods> findByOrderNo(String orderNo){
+		return phOrderGoodsRepository.findByOrderNo(orderNo);
+	}
 }

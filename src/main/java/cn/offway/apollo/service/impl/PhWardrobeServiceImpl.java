@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,6 +145,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			}
 			if(exists){
 				String key = "1".equals(wr.getIsOffway())?"OFFWAY Showroom":wr.getBrandName();
+				key = key+","+DateFormatUtils.format(wr.getUseDate(), "yyyy-MM-dd");
 				List<PhWardrobe> wardrobes = effMap.get(key);
 				if(null == wardrobes ||wardrobes.isEmpty()){
 					wardrobes = new ArrayList<>();
@@ -162,7 +164,16 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			}
 		}
 		
-		resultMap.put("effect", effMap);
+		List<Object> effs = new ArrayList<>();
+		for (String key : effMap.keySet()) {
+			Map<String, Object> map = new HashMap<>();
+			String[] keys = key.split(",");
+			map.put("brandName", keys[0]);
+			map.put("useDate", keys[1]);
+			map.put("data", effMap.get(key));
+			effs.add(map);
+		}
+		resultMap.put("effect", effs);
 		resultMap.put("invalid", invalids);
 		
 		return resultMap;

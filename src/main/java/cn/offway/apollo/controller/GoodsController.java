@@ -2,8 +2,10 @@ package cn.offway.apollo.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,18 +136,27 @@ public class GoodsController {
 
 		List<Map<String, Object>> list = new ArrayList<>();
 		List<PhGoodsStock> phGoodsStocks = phGoodsStockService.findByGoodsId(id);
+		Set<String> sizes = new HashSet<>();
+		Set<String> colors = new HashSet<>();
 		for (PhGoodsStock phGoodsStock : phGoodsStocks) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("size", phGoodsStock.getSize());
 			map.put("color", phGoodsStock.getColor());
 			map.put("stock", phGoodsStock.getStock());
 			list.add(map);
+			sizes.add(phGoodsStock.getSize());
+			colors.add(phGoodsStock.getColor());
+
 		}
-		
 		resultMap.put("goods", phGoods);
 		resultMap.put("banners", banners);
 		resultMap.put("contents", contents);
-		resultMap.put("stock", list);
+		
+		Map<String, Object> stock = new HashMap<>();
+		stock.put("sizes", sizes);
+		stock.put("colors", colors);
+		stock.put("details", list);
+		resultMap.put("stock", stock);
 		
 		return jsonResultHelper.buildSuccessJsonResult(resultMap);
 	}

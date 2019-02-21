@@ -49,6 +49,18 @@ public class PhShowImage implements Serializable {
 
     /** 图片 **/
     private String showImage;
+    
+    /** 状态[0-提交,1-通过,2-拒绝]**/
+    private String status;
+
+    /** 审核人 **/
+    private String checkName;
+
+    /** 审核时间 **/
+    private Date checkTime;
+
+    /** 拒绝原因 **/
+    private String checkContent;
 
     /** 创建时间 **/
     private Date createTime;
@@ -184,6 +196,43 @@ public class PhShowImage implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+    
+    @Column(name = "status", length = 2)
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    @Column(name = "check_name", length = 50)
+    public String getCheckName() {
+        return checkName;
+    }
+
+    public void setCheckName(String checkName) {
+        this.checkName = checkName;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "check_time")
+    public Date getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(Date checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    @Column(name = "check_content", length = 200)
+    public String getCheckContent() {
+        return checkContent;
+    }
+
+    public void setCheckContent(String checkContent) {
+        this.checkContent = checkContent;
     }
 
 }

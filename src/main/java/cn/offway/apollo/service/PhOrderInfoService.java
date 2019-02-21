@@ -2,6 +2,9 @@ package cn.offway.apollo.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import cn.offway.apollo.domain.PhOrderInfo;
 
 /**
@@ -19,4 +22,6 @@ public interface PhOrderInfoService{
 	String generateOrderNo(String prefix);
 
 	List<PhOrderInfo> save(List<PhOrderInfo> phOrderInfos);
+
+	Page<PhOrderInfo> findByPage(String unionid, String type, Pageable page);
 }
