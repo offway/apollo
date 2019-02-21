@@ -1,5 +1,7 @@
 package cn.offway.apollo.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +34,10 @@ public class PhOrderExpressDetailServiceImpl implements PhOrderExpressDetailServ
 	@Override
 	public PhOrderExpressDetail findOne(Long id){
 		return phOrderExpressDetailRepository.findOne(id);
+	}
+	
+	@Override
+	public List<PhOrderExpressDetail> findByMailNoOrderByAcceptTimeDesc(String mailno){
+		return phOrderExpressDetailRepository.findByMailNoOrderByAcceptTimeDesc(mailno);
 	}
 }

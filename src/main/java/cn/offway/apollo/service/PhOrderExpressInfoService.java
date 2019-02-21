@@ -17,4 +17,6 @@ public interface PhOrderExpressInfoService{
 	PhOrderExpressInfo findOne(Long id);
 
 	List<PhOrderExpressInfo> save(List<PhOrderExpressInfo> phOrderExpressInfos);
+
+	PhOrderExpressInfo findByOrderNoAndType(String orderNo, String type);
 }

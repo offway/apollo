@@ -20,15 +20,6 @@ public class PhShowImage implements Serializable {
     /** 订单号 **/
     private String orderNo;
 
-    /** 商品ID **/
-    private Long goodsId;
-
-    /** 商品名称 **/
-    private String goodsName;
-
-    /** 封面图片 **/
-    private String image;
-
     /** 品牌ID **/
     private Long brandId;
 
@@ -41,14 +32,14 @@ public class PhShowImage implements Serializable {
     /** 是否自营[0-否,1-是] **/
     private String isOffway;
 
-    /** 尺码 **/
-    private String size;
-
-    /** 颜色 **/
-    private String color;
-
     /** 图片 **/
     private String showImage;
+    
+    /** 内容 **/
+    private String content;
+    
+    /** 链接 **/
+    private String url;
     
     /** 状态[0-提交,1-通过,2-拒绝]**/
     private String status;
@@ -89,32 +80,6 @@ public class PhShowImage implements Serializable {
         this.orderNo = orderNo;
     }
 
-    @Column(name = "goods_id", length = 11)
-    public Long getGoodsId() {
-        return goodsId;
-    }
-
-    public void setGoodsId(Long goodsId) {
-        this.goodsId = goodsId;
-    }
-
-    @Column(name = "goods_name", length = 100)
-    public String getGoodsName() {
-        return goodsName;
-    }
-
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName;
-    }
-
-    @Column(name = "image", length = 100)
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     @Column(name = "brand_id", length = 11)
     public Long getBrandId() {
@@ -152,23 +117,6 @@ public class PhShowImage implements Serializable {
         this.isOffway = isOffway;
     }
 
-    @Column(name = "size", length = 10)
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    @Column(name = "color", length = 10)
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
 
     @Column(name = "show_image", length = 100)
     public String getShowImage() {
@@ -235,4 +183,21 @@ public class PhShowImage implements Serializable {
         this.checkContent = checkContent;
     }
 
+    @Column(name = "content", length = 500)
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+    @Column(name = "url", length = 500)
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }

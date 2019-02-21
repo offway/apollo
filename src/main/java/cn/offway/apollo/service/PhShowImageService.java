@@ -1,5 +1,8 @@
 package cn.offway.apollo.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import cn.offway.apollo.domain.PhShowImage;
 
 /**
@@ -13,4 +16,6 @@ public interface PhShowImageService{
 	PhShowImage save(PhShowImage phShowImage);
 	
 	PhShowImage findOne(Long id);
+
+	Page<PhShowImage> findByPage(String unionid, Pageable page);
 }

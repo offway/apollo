@@ -13,5 +13,5 @@ import cn.offway.apollo.domain.PhOrderExpressInfo;
  */
 public interface PhOrderExpressInfoRepository extends JpaRepository<PhOrderExpressInfo,Long>,JpaSpecificationExecutor<PhOrderExpressInfo> {
 
-	/** 此处写一些自定义的方法 **/
+	PhOrderExpressInfo findByOrderNoAndType(String orderNo,String type);
 }

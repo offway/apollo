@@ -41,4 +41,9 @@ public class PhOrderExpressInfoServiceImpl implements PhOrderExpressInfoService 
 	public PhOrderExpressInfo findOne(Long id){
 		return phOrderExpressInfoRepository.findOne(id);
 	}
+	
+	@Override
+	public PhOrderExpressInfo findByOrderNoAndType(String orderNo,String type){
+		return phOrderExpressInfoRepository.findByOrderNoAndType(orderNo, type);
+	}
 }

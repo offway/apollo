@@ -1,7 +1,10 @@
 package cn.offway.apollo.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +21,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.offway.apollo.domain.PhAuth;
+import cn.offway.apollo.domain.PhOrderExpressDetail;
+import cn.offway.apollo.domain.PhOrderExpressInfo;
 import cn.offway.apollo.domain.PhOrderGoods;
 import cn.offway.apollo.domain.PhOrderInfo;
+import cn.offway.apollo.domain.PhShowImage;
 import cn.offway.apollo.dto.AuthDto;
 import cn.offway.apollo.dto.OrderInfoDto;
 import cn.offway.apollo.service.PhAuthService;
 import cn.offway.apollo.service.PhCodeService;
+import cn.offway.apollo.service.PhOrderExpressDetailService;
+import cn.offway.apollo.service.PhOrderExpressInfoService;
 import cn.offway.apollo.service.PhOrderGoodsService;
 import cn.offway.apollo.service.PhOrderInfoService;
+import cn.offway.apollo.service.PhShowImageService;
 import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
@@ -52,6 +61,15 @@ public class UserController {
 	
 	@Autowired
 	private PhOrderGoodsService phOrderGoodsService;
+	
+	@Autowired
+	private PhOrderExpressDetailService phOrderExpressDetailService;
+	
+	@Autowired
+	private PhOrderExpressInfoService phOrderExpressInfoService;
+	
+	@Autowired
+	private PhShowImageService phShowImageService;
 	
 	
 	@ApiOperation("校验邀请码")
@@ -85,7 +103,7 @@ public class UserController {
 	@GetMapping("/order")
 	public JsonResult order(
 			@ApiParam("用户ID") @RequestParam String unionid,
-			@ApiParam("类型[0-发货中,1-使用中,2-归还中,3-已完成]") @RequestParam String type,
+			@ApiParam("类型[0-发货中,1-使用中,2-归还中,3-已完成,4-待晒图]") @RequestParam String type,
 			@ApiParam("页码,从0开始") @RequestParam int page,
 		    @ApiParam("页大小") @RequestParam int size){
 		
@@ -104,5 +122,71 @@ public class UserController {
 		return jsonResultHelper.buildSuccessJsonResult(page3);
 	}
 	
+	@ApiOperation(value="订单商品查询")
+	@GetMapping("/orderGoods")
+	public JsonResult orderGoods(@ApiParam("订单号") @RequestParam String orderNo){
+		List<PhOrderGoods> goods = phOrderGoodsService.findByOrderNo(orderNo);
+		return jsonResultHelper.buildSuccessJsonResult(goods);
+	}
+	
+	@ApiOperation(value="快递路由查询")
+	@GetMapping("/route")
+	public JsonResult route(@ApiParam("订单号") @RequestParam String orderNo,
+			@ApiParam("类型[0-寄,1-返]") @RequestParam String type){
+		
+		Map<String, Object> map = new HashMap<>();
+		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
+		map.put("orderNo", orderNo);
+		map.put("useDate", phOrderInfo.getUseDate());
+		PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
+		String mailno = phOrderExpressInfo.getMailNo();
+		map.put("toRealName", phOrderExpressInfo.getToRealName());
+		map.put("toPhone", phOrderExpressInfo.getToPhone());
+		map.put("toContent", phOrderExpressInfo.getToContent());
+		List<PhOrderExpressDetail> expressDetails = phOrderExpressDetailService.findByMailNoOrderByAcceptTimeDesc(mailno);
+		map.put("expressDetails", expressDetails);
+		return jsonResultHelper.buildSuccessJsonResult(map);
+	}
+	
+	@ApiOperation(value="快递状态查询")
+	@GetMapping("/express")
+	public JsonResult express(@ApiParam("订单号") @RequestParam String orderNo,
+			@ApiParam("类型[0-寄,1-返]") @RequestParam String type){
+		
+		PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
+		return jsonResultHelper.buildSuccessJsonResult(phOrderExpressInfo);
+	}
+	
+	@ApiOperation(value="已晒图列表")
+	@GetMapping("/showimage")
+	public JsonResult showimage(@ApiParam("用户ID") @RequestParam String unionid,
+			@ApiParam("页码,从0开始") @RequestParam int page,
+		    @ApiParam("页大小") @RequestParam int size){
+		return jsonResultHelper.buildSuccessJsonResult(phShowImageService.findByPage(unionid, new PageRequest(page*size, (page+1)*size)));
+	}
+	
+	@ApiOperation(value="晒图")
+	@PostMapping("/showimage")
+	public JsonResult showimage(@ApiParam("订单号") @RequestParam String orderNo,
+			@ApiParam("图片地址，多个用英文逗号相隔") @RequestParam String images,
+		    @ApiParam("网页链接") @RequestParam String url,
+		    @ApiParam("描述") @RequestParam String content){
+		
+		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
+
+		PhShowImage phShowImage = new PhShowImage();
+		phShowImage.setBrandId(phOrderInfo.getBrandId());
+		phShowImage.setBrandLogo(phOrderInfo.getBrandLogo());
+		phShowImage.setBrandName(phOrderInfo.getBrandName());
+		phShowImage.setCreateTime(new Date());
+		phShowImage.setUrl(url);
+		phShowImage.setIsOffway(phOrderInfo.getIsOffway());
+		phShowImage.setOrderNo(orderNo);
+		phShowImage.setShowImage(images);
+		phShowImage.setContent(content);
+		phShowImage.setStatus("0");
+		phShowImageService.save(phShowImage);
+		return jsonResultHelper.buildSuccessJsonResult(null);
+	}
 	
 }

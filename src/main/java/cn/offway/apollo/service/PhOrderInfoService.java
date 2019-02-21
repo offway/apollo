@@ -24,4 +24,6 @@ public interface PhOrderInfoService{
 	List<PhOrderInfo> save(List<PhOrderInfo> phOrderInfos);
 
 	Page<PhOrderInfo> findByPage(String unionid, String type, Pageable page);
+
+	PhOrderInfo findByOrderNo(String orderNo);
 }

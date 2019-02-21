@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.offway.apollo.domain.PhOrderInfo;
+import java.lang.String;
+import java.util.List;
 
 /**
  * 订单Repository接口
@@ -30,4 +32,6 @@ public interface PhOrderInfoRepository extends JpaRepository<PhOrderInfo,Long>,J
 	@Modifying
 	@Query(nativeQuery=true,value="insert into sequence values(CONCAT(?1,DATE_FORMAT(NOW(),'%Y%m%d')),0,1)")
 	int insert(String prefix);
+	
+	PhOrderInfo findByOrderNo(String orderNo);
 }

@@ -1,9 +1,12 @@
 package cn.offway.apollo.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import cn.offway.apollo.domain.PhOrderExpressDetail;
+import java.lang.String;
 
 /**
  * 订单物流详情Repository接口
@@ -13,5 +16,5 @@ import cn.offway.apollo.domain.PhOrderExpressDetail;
  */
 public interface PhOrderExpressDetailRepository extends JpaRepository<PhOrderExpressDetail,Long>,JpaSpecificationExecutor<PhOrderExpressDetail> {
 
-	/** 此处写一些自定义的方法 **/
+	List<PhOrderExpressDetail> findByMailNoOrderByAcceptTimeDesc(String mailno);
 }
