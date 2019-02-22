@@ -26,15 +26,18 @@ import cn.offway.apollo.domain.PhOrderExpressInfo;
 import cn.offway.apollo.domain.PhOrderGoods;
 import cn.offway.apollo.domain.PhOrderInfo;
 import cn.offway.apollo.domain.PhShowImage;
+import cn.offway.apollo.domain.PhUserInfo;
 import cn.offway.apollo.dto.AuthDto;
 import cn.offway.apollo.dto.OrderInfoDto;
 import cn.offway.apollo.service.PhAuthService;
 import cn.offway.apollo.service.PhCodeService;
+import cn.offway.apollo.service.PhCreditDetailService;
 import cn.offway.apollo.service.PhOrderExpressDetailService;
 import cn.offway.apollo.service.PhOrderExpressInfoService;
 import cn.offway.apollo.service.PhOrderGoodsService;
 import cn.offway.apollo.service.PhOrderInfoService;
 import cn.offway.apollo.service.PhShowImageService;
+import cn.offway.apollo.service.PhUserInfoService;
 import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
@@ -70,6 +73,13 @@ public class UserController {
 	
 	@Autowired
 	private PhShowImageService phShowImageService;
+	
+	@Autowired
+	private PhUserInfoService phUserInfoService;
+	
+	@Autowired
+	private PhCreditDetailService phCreditDetailService;
+	
 	
 	
 	@ApiOperation("校验邀请码")
@@ -188,5 +198,30 @@ public class UserController {
 		phShowImageService.save(phShowImage);
 		return jsonResultHelper.buildSuccessJsonResult(null);
 	}
+	
+	@ApiOperation(value="我的")
+	@GetMapping("/index")
+	public JsonResult index(@ApiParam("用户ID") @RequestParam String unionid){
+		
+		Map<String, Object> resultMap = new HashMap<>();
+		//0-发货中,1-使用中,2-归还中,3-已完成,4-待晒图
+		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
+		resultMap.put("nickname", phUserInfo.getNickname());
+		resultMap.put("headimgurl", phUserInfo.getHeadimgurl());
+		resultMap.put("sendout", phOrderInfoService.findAll(unionid, "0").size());
+		resultMap.put("use", phOrderInfoService.findAll(unionid, "1").size());
+		resultMap.put("return", phOrderInfoService.findAll(unionid, "2").size());
+		resultMap.put("show", phOrderInfoService.findAll(unionid, "4").size());
+		
+		return jsonResultHelper.buildSuccessJsonResult(resultMap); 
+	}
+	
+	@ApiOperation(value="信用记录")
+	@GetMapping("/creditDetail")
+	public JsonResult creditDetail(@ApiParam("用户ID") @RequestParam String unionid,
+			@ApiParam("页码,从0开始") @RequestParam int page,
+		    @ApiParam("页大小") @RequestParam int size){
+		return jsonResultHelper.buildSuccessJsonResult(phCreditDetailService.findByPage(unionid, new PageRequest(page*size, (page+1)*size)));
+	} 
 	
 }

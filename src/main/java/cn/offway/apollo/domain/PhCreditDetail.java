@@ -34,6 +34,9 @@ public class PhCreditDetail implements Serializable {
 
     /** 备注 **/
     private String remark;
+    
+    /** 订单号 **/
+    private String orderNo;
 
 
     @Id
@@ -100,6 +103,15 @@ public class PhCreditDetail implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+    
+    @Column(name = "order_no", length = 50)
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 
 }

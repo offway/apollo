@@ -34,4 +34,5 @@ public interface PhOrderInfoRepository extends JpaRepository<PhOrderInfo,Long>,J
 	int insert(String prefix);
 	
 	PhOrderInfo findByOrderNo(String orderNo);
+	
 }

@@ -109,9 +109,55 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 				
                 Predicate[] predicates = new Predicate[params.size()];
                 criteriaQuery.where(params.toArray(predicates));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createTime")));
 				return null;
 			}
 		}, page);
+	}
+	
+	@Override
+	public List<PhOrderInfo> findAll(final String unionid,final String type){
+		return phOrderInfoRepository.findAll(new Specification<PhOrderInfo>() {
+			
+			@Override
+			public Predicate toPredicate(Root<PhOrderInfo> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> params = new ArrayList<Predicate>();
+				
+				Date now = new Date();
+				try {
+					//0-发货中,1-使用中,2-归还中,3-已完成
+					if("0".equals(type)){
+						//使用日期之前
+						In<String> in = criteriaBuilder.in(root.get("status"));
+						in.value("0");
+						in.value("1");
+						params.add(in);
+					}else if("1".equals(type)){
+						//使用日期当天
+						params.add(criteriaBuilder.equal(root.get("status"), "1"));
+						params.add(criteriaBuilder.equal(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
+					}else if("2".equals(type)){
+						params.add(criteriaBuilder.equal(root.get("status"), "2"));
+					}else if("3".equals(type)){
+						params.add(criteriaBuilder.equal(root.get("status"), "3"));
+					}else if("4".equals(type)){
+						params.add(criteriaBuilder.notEqual(root.get("isUpload"), "1"));
+					}
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				if(StringUtils.isNotBlank(unionid)){
+					params.add(criteriaBuilder.equal(root.get("unionid"), unionid));
+				}
+				
+				
+                Predicate[] predicates = new Predicate[params.size()];
+                criteriaQuery.where(params.toArray(predicates));
+				return null;
+			}
+		});
 	}
 	
 }

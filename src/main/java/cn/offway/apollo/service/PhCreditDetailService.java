@@ -1,5 +1,8 @@
 package cn.offway.apollo.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import cn.offway.apollo.domain.PhCreditDetail;
 
 /**
@@ -13,4 +16,6 @@ public interface PhCreditDetailService{
 	PhCreditDetail save(PhCreditDetail phCreditDetail);
 	
 	PhCreditDetail findOne(Long id);
+
+	Page<PhCreditDetail> findByPage(String unionid, Pageable page);
 }
