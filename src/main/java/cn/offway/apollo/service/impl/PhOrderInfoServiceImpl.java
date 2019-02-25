@@ -1,6 +1,5 @@
 package cn.offway.apollo.service.impl;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,9 +20,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import cn.offway.apollo.service.PhOrderInfoService;
+
+import cn.offway.apollo.domain.PhOrderExpressInfo;
 import cn.offway.apollo.domain.PhOrderInfo;
+import cn.offway.apollo.dto.sf.ReqAddOrder;
 import cn.offway.apollo.repository.PhOrderInfoRepository;
+import cn.offway.apollo.service.PhOrderExpressInfoService;
+import cn.offway.apollo.service.PhOrderInfoService;
+import cn.offway.apollo.service.SfExpressService;
+import cn.offway.apollo.utils.CommonResultCode;
+import cn.offway.apollo.utils.JsonResult;
+import cn.offway.apollo.utils.JsonResultHelper;
 
 
 /**
@@ -39,6 +46,15 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 
 	@Autowired
 	private PhOrderInfoRepository phOrderInfoRepository;
+	
+	@Autowired
+	private SfExpressService sfExpressService;
+	
+	@Autowired
+	private PhOrderExpressInfoService phOrderExpressInfoService;
+	
+	@Autowired
+	private JsonResultHelper jsonResultHelper;
 	
 	@Override
 	public PhOrderInfo save(PhOrderInfo phOrderInfo){
@@ -67,6 +83,16 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 	@Override
 	public PhOrderInfo findByOrderNo(String orderNo){
 		return phOrderInfoRepository.findByOrderNo(orderNo);
+	}
+	
+	@Override
+	public int countByUnionidAndStatusIn(String unionid,List<String> status){
+		return phOrderInfoRepository.countByUnionidAndStatusIn(unionid,status);
+	}
+	
+	@Override
+	public int countByUnionidAndIsUpload(String unionid,String isUpload){
+		return phOrderInfoRepository.countByUnionidAndIsUpload(unionid, isUpload);
 	}
 	
 	@Override
@@ -159,5 +185,68 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 			}
 		});
 	}
+	
+	@Override
+	public JsonResult saveOrder(String orderNo){
+		PhOrderInfo phOrderInfo = findByOrderNo(orderNo);
+		if("2".equals(phOrderInfo.getStatus())){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.ORDER_BACK);
+		}
+		
+		phOrderInfo.setStatus("2");
+		
+		PhOrderExpressInfo expressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, "0");
+		
+		PhOrderExpressInfo phOrderExpressInfo = new PhOrderExpressInfo();
+		phOrderExpressInfo.setCreateTime(new Date());
+		phOrderExpressInfo.setExpressOrderNo(generateOrderNo("SF"));
+		phOrderExpressInfo.setFromPhone(expressInfo.getToPhone());
+		phOrderExpressInfo.setFromCity(expressInfo.getToCity());
+		phOrderExpressInfo.setFromContent(expressInfo.getToContent());
+		phOrderExpressInfo.setFromCounty(expressInfo.getToCounty());
+		phOrderExpressInfo.setFromProvince(expressInfo.getToProvince());
+		phOrderExpressInfo.setFromRealName(expressInfo.getToRealName());
+		phOrderExpressInfo.setOrderNo(phOrderInfo.getOrderNo());
+		phOrderExpressInfo.setToPhone(expressInfo.getFromPhone());
+		phOrderExpressInfo.setToCity(expressInfo.getFromCity());
+		phOrderExpressInfo.setToContent(expressInfo.getFromContent());
+		phOrderExpressInfo.setToCounty(expressInfo.getFromCounty());
+		phOrderExpressInfo.setToProvince(expressInfo.getFromProvince());
+		phOrderExpressInfo.setToRealName(expressInfo.getFromRealName());
+		phOrderExpressInfo.setType("1");
+		
+		
+		ReqAddOrder addOrder = new ReqAddOrder();
+		addOrder.setD_address(phOrderExpressInfo.getToContent());
+		addOrder.setD_contact(phOrderExpressInfo.getToRealName());
+		addOrder.setD_tel(phOrderExpressInfo.getToPhone());
+		
+		addOrder.setD_province(phOrderExpressInfo.getToProvince());
+		addOrder.setD_city(phOrderExpressInfo.getToCity());
+		addOrder.setD_county(phOrderExpressInfo.getToCounty());
+		
+		addOrder.setJ_province(phOrderExpressInfo.getFromProvince());
+		addOrder.setJ_city(phOrderExpressInfo.getFromCity());
+		addOrder.setJ_county(phOrderExpressInfo.getFromCounty());
+		addOrder.setJ_address(phOrderExpressInfo.getFromContent());
+		addOrder.setJ_contact(phOrderExpressInfo.getFromRealName());
+		addOrder.setJ_tel(phOrderExpressInfo.getFromPhone());
+		addOrder.setOrder_source("OFFWAY");
+		addOrder.setOrder_id(phOrderExpressInfo.getExpressOrderNo());
+		addOrder.setPay_method("1");//付款方式：1:寄方付2:收方付3:第三方付
+		addOrder.setRemark("");
+		addOrder.setSendstarttime("");
+		JsonResult result = sfExpressService.addOrder(addOrder);
+		if("200".equals(result.getCode())){
+			String mailNo = String.valueOf(result.getData());
+			phOrderExpressInfo.setMailNo(mailNo);
+			phOrderExpressInfo.setStatus("1");//已下单
+			phOrderExpressInfoService.save(phOrderExpressInfo);
+			save(phOrderInfo);
+		}
+		return result;
+		
+	}
+	
 	
 }

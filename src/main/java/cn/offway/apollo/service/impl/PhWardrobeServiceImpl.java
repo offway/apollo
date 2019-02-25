@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.offway.apollo.domain.PhAddress;
 import cn.offway.apollo.domain.PhBrand;
@@ -24,6 +23,7 @@ import cn.offway.apollo.domain.PhGoods;
 import cn.offway.apollo.domain.PhOrderExpressInfo;
 import cn.offway.apollo.domain.PhOrderGoods;
 import cn.offway.apollo.domain.PhOrderInfo;
+import cn.offway.apollo.domain.PhUserInfo;
 import cn.offway.apollo.domain.PhWardrobe;
 import cn.offway.apollo.repository.PhWardrobeRepository;
 import cn.offway.apollo.service.PhAddressService;
@@ -33,10 +33,11 @@ import cn.offway.apollo.service.PhGoodsStockService;
 import cn.offway.apollo.service.PhOrderExpressInfoService;
 import cn.offway.apollo.service.PhOrderGoodsService;
 import cn.offway.apollo.service.PhOrderInfoService;
+import cn.offway.apollo.service.PhUserInfoService;
 import cn.offway.apollo.service.PhWardrobeService;
+import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
-import io.swagger.annotations.ApiParam;
 
 
 /**
@@ -77,6 +78,10 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	@Autowired
 	private PhGoodsStockService phGoodsStockService;
 	
+	@Autowired
+	private PhUserInfoService phUserInfoService;
+	
+	
 	@Override
 	public PhWardrobe save(PhWardrobe phWardrobe){
 		return phWardrobeRepository.save(phWardrobe);
@@ -99,9 +104,32 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	}
 	
 	@Override
-	public void add(String unionid,Long goodsId,String color,String size,String useDate) throws Exception{
+	public JsonResult add(String unionid,Long goodsId,String color,String size,String useDate) throws Exception{
 		
-		//TODO 加入衣柜会有一些限制
+		List<PhWardrobe> phWardrobes = phWardrobeRepository.findEffectByUnionid(unionid);
+		if(null != phWardrobes && phWardrobes.size() >=8){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
+		}
+		
+		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
+		if(phUserInfo.getCreditScore().longValue() <500L){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.CREDITSCORE_LESS);
+		}
+		
+		int showCount = phOrderInfoService.countByUnionidAndIsUpload(unionid, "0");
+		if(showCount >0){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_SHOW_IMAGE);
+		}
+		
+		List<String> status = new ArrayList<>();
+		status.add("0");
+		status.add("1");
+		int countStatus = phOrderInfoService.countByUnionidAndStatusIn(unionid, status);
+		if(countStatus >0){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_RETURN_IMAGE);
+		}
+		
+		
 		PhGoods phGoods = phGoodsService.findOne(goodsId);
 		PhWardrobe phWardrobe = new PhWardrobe();
 		phWardrobe.setBrandId(phGoods.getBrandId());
@@ -120,6 +148,8 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		phWardrobe.setUseDate(DateUtils.parseDate(useDate, "yyyy-MM-dd"));
 		
 		save(phWardrobe);
+		
+		return jsonResultHelper.buildSuccessJsonResult(null);
 	}
 	
 	@Override
@@ -153,7 +183,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 				wardrobes.add(wr);
 				effMap.put(key, wardrobes);
 				
-			}else if(wr.getCreateTime().after(now)){
+			}else if(wr.getUseDate().before(now)){
 				//使用时间无效
 				wr.setRemark("1");
 				invalids.add(wr);
@@ -214,8 +244,32 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false, rollbackFor = Exception.class)
-	public JsonResult addOrder(Long[] wardrobeIds,Long addrId,String users) throws Exception{
-		//TODO 确认订单需要一些限制
+	public JsonResult addOrder(String unionid,Long[] wardrobeIds,Long addrId,String users) throws Exception{
+
+
+		List<PhWardrobe> phWardrobes = phWardrobeRepository.findEffectByUnionid(unionid);
+		if(null != phWardrobes && phWardrobes.size() >=8){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
+		}
+		
+		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
+		if(phUserInfo.getCreditScore().longValue() <500L){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.CREDITSCORE_LESS);
+		}
+		
+		int showCount = phOrderInfoService.countByUnionidAndIsUpload(unionid, "0");
+		if(showCount >0){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_SHOW_IMAGE);
+		}
+		
+		List<String> status = new ArrayList<>();
+		status.add("0");
+		status.add("1");
+		int countStatus = phOrderInfoService.countByUnionidAndStatusIn(unionid, status);
+		if(countStatus >0){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_RETURN_IMAGE);
+		}
+		
 		
 		List<Long> wrIds = Arrays.asList(wardrobeIds);
 		
@@ -230,8 +284,8 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		List<PhOrderGoods> phOrderGoodss = new ArrayList<>();
 		List<PhOrderExpressInfo> phOrderExpressInfos = new ArrayList<>();
 		Map<Long, PhOrderInfo> map = new HashMap<>();
-		List<PhWardrobe> phWardrobes = phWardrobeRepository.findByIdIn(wrIds);
-		for (PhWardrobe phWardrobe : phWardrobes) {
+		List<PhWardrobe> wardrobes = phWardrobeRepository.findByIdIn(wrIds);
+		for (PhWardrobe phWardrobe : wardrobes) {
 			
 			
 			PhOrderInfo phOrderInfo = map.get(phWardrobe.getBrandId());
@@ -258,7 +312,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 				
 				PhOrderExpressInfo phOrderExpressInfo = new PhOrderExpressInfo();
 				phOrderExpressInfo.setCreateTime(now);
-				phOrderExpressInfo.setExpressOrderNo(phOrderInfoService.generateOrderNo("SF"));
+//				phOrderExpressInfo.setExpressOrderNo(phOrderInfoService.generateOrderNo("SF"));
 				phOrderExpressInfo.setFromPhone(formAddress.getPhone());
 				phOrderExpressInfo.setFromCity(formAddress.getCity());
 				phOrderExpressInfo.setFromContent(formAddress.getContent());

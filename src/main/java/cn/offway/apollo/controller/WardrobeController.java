@@ -36,7 +36,7 @@ public class WardrobeController {
 	@Autowired
 	private PhWardrobeService phWardrobeService;
 	
-	@ApiOperation("加入衣柜")
+	@ApiOperation(value="加入衣柜",notes="返回码：200=成功； 1009=衣柜调价衣物以至8件上限；1010=您的信用分太低，不能再借衣服；1011=您有一批订单反馈图未上传，上传后即可借衣；1012=有一笔订单未归还")
 	@PostMapping("/add")
 	public JsonResult add(@ApiParam("unionid") @RequestParam String unionid,
 			@ApiParam("商品ID") @RequestParam Long goodsId,
@@ -44,8 +44,7 @@ public class WardrobeController {
 			@ApiParam("尺码") @RequestParam String size,
 			@ApiParam("使用日期,格式yyyy-MM-dd") @RequestParam String useDate) throws Exception{
 		
-		phWardrobeService.add(unionid, goodsId, color, size, useDate);
-		return jsonResultHelper.buildSuccessJsonResult(null);
+		return phWardrobeService.add(unionid, goodsId, color, size, useDate);
 	}
 	
 	@ApiOperation("衣柜列表")
@@ -83,11 +82,13 @@ public class WardrobeController {
 	
 	@ApiOperation("下订单")
 	@PostMapping("/addOrder")
-	public JsonResult addOrder(@ApiParam("衣柜ID") @RequestParam Long[] wardrobeIds,
+	public JsonResult addOrder(
+			@ApiParam("unionid") @RequestParam String unionid,
+			@ApiParam("衣柜ID") @RequestParam Long[] wardrobeIds,
 			@ApiParam("地址ID") @RequestParam Long addrId,
 			@ApiParam("使用者") @RequestParam String users) throws Exception{
 		
-		return phWardrobeService.addOrder(wardrobeIds, addrId, users);
+		return phWardrobeService.addOrder(unionid,wardrobeIds, addrId, users);
 	}
 	
 }

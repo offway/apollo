@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import cn.offway.apollo.domain.PhOrderInfo;
+import cn.offway.apollo.utils.JsonResult;
 
 /**
  * 订单Service接口
@@ -28,4 +29,10 @@ public interface PhOrderInfoService{
 	PhOrderInfo findByOrderNo(String orderNo);
 
 	List<PhOrderInfo> findAll(String unionid, String type);
+
+	JsonResult saveOrder(String orderNo);
+
+	int countByUnionidAndIsUpload(String unionid, String isUpload);
+
+	int countByUnionidAndStatusIn(String unionid, List<String> status);
 }

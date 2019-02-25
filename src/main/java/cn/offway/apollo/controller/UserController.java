@@ -225,4 +225,10 @@ public class UserController {
 		return jsonResultHelper.buildSuccessJsonResult(phCreditDetailService.findByPage(unionid, new PageRequest(page*size, (page+1)*size)));
 	} 
 	
+	@ApiOperation(value="一键下单")
+	@PostMapping("/addOrder")
+	public JsonResult addOrder(@ApiParam("订单号") @RequestParam String orderNo){
+		return phOrderInfoService.saveOrder(orderNo);
+	}
+	
 }

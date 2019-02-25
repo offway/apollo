@@ -19,6 +19,8 @@ public class ReqAddOrder implements Serializable{
 	private String sendstarttime;
 	private String order_source;
 	private String remark;
+	private String order_id;
+	private String pay_method;
 	
 	public String getJ_contact() {
 		return j_contact;
@@ -110,5 +112,18 @@ public class ReqAddOrder implements Serializable{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+	public String getOrder_id() {
+		return order_id;
+	}
+	public void setOrder_id(String order_id) {
+		this.order_id = order_id;
+	}
+	public String getPay_method() {
+		return pay_method;
+	}
+	public void setPay_method(String pay_method) {
+		this.pay_method = pay_method;
+	}
+	
 	
 }

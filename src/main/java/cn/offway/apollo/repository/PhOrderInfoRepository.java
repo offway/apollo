@@ -35,4 +35,8 @@ public interface PhOrderInfoRepository extends JpaRepository<PhOrderInfo,Long>,J
 	
 	PhOrderInfo findByOrderNo(String orderNo);
 	
+	int countByUnionidAndStatusIn(String unionid,List<String> status);
+	
+	int countByUnionidAndIsUpload(String unionid,String isUpload);
+	
 }

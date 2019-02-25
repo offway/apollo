@@ -34,6 +34,22 @@ public enum CommonResultCode implements ResultCode {
     /** 中奖信息不存在 */
     PRIZE_NOT_EXISTS("1007", "PRIZE_NOT_EXISTS"),
     
+    /** 该订单已寄回  */
+    ORDER_BACK("1008", "ORDER_BACK"),
+    
+    /** 衣柜调价衣物以至8件上限  */
+    WARDROBE_LIMIT("1009", "ORDER_BACK"),
+   
+    /** 您的信用分太低，不能再借衣服  */
+    CREDITSCORE_LESS("1010", "CREDITSCORE_LESS"),
+    
+    /** 您有一批订单反馈图未上传，上传后即可借衣  */
+    NO_SHOW_IMAGE("1011", "NO_SHOW_IMAGE"),
+    
+    /** 有一笔订单未归还  */
+    NO_RETURN_IMAGE("1012", "NO_RETURN_IMAGE"),
+    
+    
     ;
 	
 	

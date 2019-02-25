@@ -20,14 +20,13 @@ public interface PhWardrobeService{
 
 	Map<String, Object> list(String unionid);
 
-	void add(String unionid, Long goodsId, String color, String size, String useDate) throws Exception;
+	JsonResult add(String unionid, Long goodsId, String color, String size, String useDate) throws Exception;
 
 	void delete(Long id);
 
 	void delInvalid(String unionid);
 
-
-	JsonResult addOrder(Long[] wardrobeIds, Long addrId, String users) throws Exception;
-
 	Map<String, Object> list(List<Long> wrids);
+
+	JsonResult addOrder(String unionid, Long[] wardrobeIds, Long addrId, String users) throws Exception;
 }
