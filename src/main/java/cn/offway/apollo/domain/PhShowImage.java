@@ -14,176 +14,176 @@ import java.util.Date;
 @Table(name = "ph_show_image")
 public class PhShowImage implements Serializable {
 
-    /** ID **/
-    private Long id;
+	/** ID **/
+	private Long id;
 
-    /** 订单号 **/
-    private String orderNo;
+	/** 订单号 **/
+	private String orderNo;
 
-    /** 品牌ID **/
-    private Long brandId;
+	/** 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。 **/
+	private String unionid;
 
-    /** 品牌名称 **/
-    private String brandName;
+	/** 品牌ID **/
+	private Long brandId;
 
-    /** 品牌LOGO **/
-    private String brandLogo;
+	/** 品牌名称 **/
+	private String brandName;
 
-    /** 是否自营[0-否,1-是] **/
-    private String isOffway;
+	/** 品牌LOGO **/
+	private String brandLogo;
 
-    /** 图片 **/
-    private String showImage;
-    
-    /** 内容 **/
-    private String content;
-    
-    /** 链接 **/
-    private String url;
-    
-    /** 状态[0-提交,1-通过,2-拒绝]**/
-    private String status;
+	/** 是否自营[0-否,1-是] **/
+	private String isOffway;
 
-    /** 审核人 **/
-    private String checkName;
+	/** 图片 **/
+	private String showImage;
 
-    /** 审核时间 **/
-    private Date checkTime;
+	/** 内容 **/
+	private String content;
 
-    /** 拒绝原因 **/
-    private String checkContent;
+	/** 链接 **/
+	private String url;
 
-    /** 创建时间 **/
-    private Date createTime;
+	/** 状态[0-提交,1-通过,2-拒绝] **/
+	private String status;
 
-    /** 备注 **/
-    private String remark;
+	/** 审核人 **/
+	private String checkName;
 
+	/** 审核时间 **/
+	private Date checkTime;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public Long getId() {
-        return id;
-    }
+	/** 拒绝原因 **/
+	private String checkContent;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	/** 创建时间 **/
+	private Date createTime;
 
-    @Column(name = "order_no", length = 50)
-    public String getOrderNo() {
-        return orderNo;
-    }
+	/** 备注 **/
+	private String remark;
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	public Long getId() {
+		return id;
+	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    @Column(name = "brand_id", length = 11)
-    public Long getBrandId() {
-        return brandId;
-    }
+	@Column(name = "order_no", length = 50)
+	public String getOrderNo() {
+		return orderNo;
+	}
 
-    public void setBrandId(Long brandId) {
-        this.brandId = brandId;
-    }
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
 
-    @Column(name = "brand_name", length = 50)
-    public String getBrandName() {
-        return brandName;
-    }
+	@Column(name = "brand_id", length = 11)
+	public Long getBrandId() {
+		return brandId;
+	}
 
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
-    }
+	public void setBrandId(Long brandId) {
+		this.brandId = brandId;
+	}
 
-    @Column(name = "brand_logo", length = 50)
-    public String getBrandLogo() {
-        return brandLogo;
-    }
+	@Column(name = "brand_name", length = 50)
+	public String getBrandName() {
+		return brandName;
+	}
 
-    public void setBrandLogo(String brandLogo) {
-        this.brandLogo = brandLogo;
-    }
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
 
-    @Column(name = "is_offway", length = 2)
-    public String getIsOffway() {
-        return isOffway;
-    }
+	@Column(name = "brand_logo", length = 50)
+	public String getBrandLogo() {
+		return brandLogo;
+	}
 
-    public void setIsOffway(String isOffway) {
-        this.isOffway = isOffway;
-    }
+	public void setBrandLogo(String brandLogo) {
+		this.brandLogo = brandLogo;
+	}
 
+	@Column(name = "is_offway", length = 2)
+	public String getIsOffway() {
+		return isOffway;
+	}
 
-    @Column(name = "show_image", length = 100)
-    public String getShowImage() {
-        return showImage;
-    }
+	public void setIsOffway(String isOffway) {
+		this.isOffway = isOffway;
+	}
 
-    public void setShowImage(String showImage) {
-        this.showImage = showImage;
-    }
+	@Column(name = "show_image", length = 100)
+	public String getShowImage() {
+		return showImage;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_time")
-    public Date getCreateTime() {
-        return createTime;
-    }
+	public void setShowImage(String showImage) {
+		this.showImage = showImage;
+	}
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "create_time")
+	public Date getCreateTime() {
+		return createTime;
+	}
 
-    @Column(name = "remark", length = 200)
-    public String getRemark() {
-        return remark;
-    }
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-    
-    @Column(name = "status", length = 2)
-    public String getStatus() {
-        return status;
-    }
+	@Column(name = "remark", length = 200)
+	public String getRemark() {
+		return remark;
+	}
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    
-    @Column(name = "check_name", length = 50)
-    public String getCheckName() {
-        return checkName;
-    }
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
-    public void setCheckName(String checkName) {
-        this.checkName = checkName;
-    }
+	@Column(name = "status", length = 2)
+	public String getStatus() {
+		return status;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "check_time")
-    public Date getCheckTime() {
-        return checkTime;
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-    public void setCheckTime(Date checkTime) {
-        this.checkTime = checkTime;
-    }
+	@Column(name = "check_name", length = 50)
+	public String getCheckName() {
+		return checkName;
+	}
 
-    @Column(name = "check_content", length = 200)
-    public String getCheckContent() {
-        return checkContent;
-    }
+	public void setCheckName(String checkName) {
+		this.checkName = checkName;
+	}
 
-    public void setCheckContent(String checkContent) {
-        this.checkContent = checkContent;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "check_time")
+	public Date getCheckTime() {
+		return checkTime;
+	}
 
-    @Column(name = "content", length = 500)
+	public void setCheckTime(Date checkTime) {
+		this.checkTime = checkTime;
+	}
+
+	@Column(name = "check_content", length = 200)
+	public String getCheckContent() {
+		return checkContent;
+	}
+
+	public void setCheckContent(String checkContent) {
+		this.checkContent = checkContent;
+	}
+
+	@Column(name = "content", length = 500)
 	public String getContent() {
 		return content;
 	}
@@ -192,12 +192,21 @@ public class PhShowImage implements Serializable {
 		this.content = content;
 	}
 
-    @Column(name = "url", length = 500)
+	@Column(name = "url", length = 500)
 	public String getUrl() {
 		return url;
 	}
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	@Column(name = "unionid", length = 200)
+	public String getUnionid() {
+		return unionid;
+	}
+
+	public void setUnionid(String unionid) {
+		this.unionid = unionid;
 	}
 }

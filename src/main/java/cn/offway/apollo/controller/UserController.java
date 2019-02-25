@@ -188,6 +188,7 @@ public class UserController {
 		phShowImage.setBrandId(phOrderInfo.getBrandId());
 		phShowImage.setBrandLogo(phOrderInfo.getBrandLogo());
 		phShowImage.setBrandName(phOrderInfo.getBrandName());
+		phShowImage.setUnionid(phOrderInfo.getUnionid());
 		phShowImage.setCreateTime(new Date());
 		phShowImage.setUrl(url);
 		phShowImage.setIsOffway(phOrderInfo.getIsOffway());
