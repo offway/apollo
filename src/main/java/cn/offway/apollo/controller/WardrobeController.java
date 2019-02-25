@@ -1,5 +1,9 @@
 package cn.offway.apollo.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +53,18 @@ public class WardrobeController {
 	public JsonResult list(@ApiParam("unionid") @RequestParam String unionid){
 		
 		return jsonResultHelper.buildSuccessJsonResult(phWardrobeService.list(unionid));
+	}
+	
+	@ApiOperation("确认订单-查询衣柜")
+	@GetMapping("/listByIds")
+	public JsonResult wardrobelist(@ApiParam("衣柜ID,多个用逗号隔开") @RequestParam String wardrobeIds){
+		
+		List<String> a =  Arrays.asList(wardrobeIds.split(","));
+		List<Long> b = new ArrayList<>();
+		for (String s : a) {
+			b.add(Long.parseLong(s));
+		}
+		return jsonResultHelper.buildSuccessJsonResult(phWardrobeService.list(b));
 	}
 	
 	@ApiOperation("删除")

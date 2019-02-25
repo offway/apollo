@@ -1,5 +1,6 @@
 package cn.offway.apollo.service;
 
+import java.util.List;
 import java.util.Map;
 
 import cn.offway.apollo.domain.PhWardrobe;
@@ -27,4 +28,6 @@ public interface PhWardrobeService{
 
 
 	JsonResult addOrder(Long[] wardrobeIds, Long addrId, String users) throws Exception;
+
+	Map<String, Object> list(List<Long> wrids);
 }

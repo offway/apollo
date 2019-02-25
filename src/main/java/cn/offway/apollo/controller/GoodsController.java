@@ -1,12 +1,16 @@
 package cn.offway.apollo.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,7 @@ import cn.offway.apollo.dto.GoodsDto;
 import cn.offway.apollo.service.PhGoodsImageService;
 import cn.offway.apollo.service.PhGoodsService;
 import cn.offway.apollo.service.PhGoodsStockService;
+import cn.offway.apollo.service.PhHolidayService;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
 import io.swagger.annotations.ApiOperation;
@@ -51,6 +56,9 @@ public class GoodsController {
 	
 	@Autowired
 	private PhGoodsStockService phGoodsStockService;
+	
+	@Autowired
+	private PhHolidayService phHolidayService;
 	
 	
 	@ApiOperation("商品分类")
@@ -127,7 +135,7 @@ public class GoodsController {
 	
 	@ApiOperation("商品详情")
 	@PostMapping("/info")
-	public JsonResult info(@ApiParam("商品ID") @RequestParam Long id){
+	public JsonResult info(@ApiParam("商品ID") @RequestParam Long id) throws Exception{
 		
 		Map<String, Object> resultMap = new HashMap<>();
 		PhGoods phGoods = phGoodsService.findOne(id);
@@ -157,6 +165,18 @@ public class GoodsController {
 		stock.put("colors", colors);
 		stock.put("details", list);
 		resultMap.put("stock", stock);
+		
+		Date now = DateUtils.parseDate(DateFormatUtils.format(new Date(), "yyyy-MM-dd"), "yyyy-MM-dd");
+		Date begin = null;
+		if("1".equals(phGoods.getIsOffway())){
+			begin = DateUtils.addDays(now, 3);
+		}else{
+			begin = phHolidayService.getNextWorkDay(now);
+			begin = DateUtils.addDays(begin, 2);
+		}
+		Date end = DateUtils.addDays(begin, 4);
+		resultMap.put("beginDate", begin);
+		resultMap.put("endDate", end);
 		
 		return jsonResultHelper.buildSuccessJsonResult(resultMap);
 	}

@@ -180,6 +180,39 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	}
 	
 	@Override
+	public Map<String, Object> list(List<Long> wrids){
+		
+		List<PhWardrobe> eff = phWardrobeRepository.findByIdIn(wrids);
+		Map<String, Object> resultMap = new HashMap<>();
+		
+		Map<String, List<PhWardrobe>> effMap = new HashMap<>();
+
+		for (PhWardrobe wr : eff) {
+			String key = "1".equals(wr.getIsOffway())?"OFFWAY Showroom":wr.getBrandName();
+			key = key+","+DateFormatUtils.format(wr.getUseDate(), "yyyy-MM-dd");
+			List<PhWardrobe> wardrobes = effMap.get(key);
+			if(null == wardrobes ||wardrobes.isEmpty()){
+				wardrobes = new ArrayList<>();
+			}
+			wardrobes.add(wr);
+			effMap.put(key, wardrobes);
+		}
+		
+		List<Object> effs = new ArrayList<>();
+		for (String key : effMap.keySet()) {
+			Map<String, Object> map = new HashMap<>();
+			String[] keys = key.split(",");
+			map.put("brandName", keys[0]);
+			map.put("useDate", keys[1]);
+			map.put("data", effMap.get(key));
+			effs.add(map);
+		}
+		resultMap.put("effect", effs);
+		
+		return resultMap;
+	}
+	
+	@Override
 	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false, rollbackFor = Exception.class)
 	public JsonResult addOrder(Long[] wardrobeIds,Long addrId,String users) throws Exception{
 		//TODO 确认订单需要一些限制

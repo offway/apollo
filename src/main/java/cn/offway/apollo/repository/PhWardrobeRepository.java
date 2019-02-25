@@ -31,7 +31,7 @@ public interface PhWardrobeRepository extends JpaRepository<PhWardrobe,Long>,Jpa
 	
 	@Modifying
 	@Transactional
-	@Query(nativeQuery=true,value="delete from ph_wardrobe w where w.unionid=?1 and EXISTS(select 1 from ph_goods_stock gs where gs.goods_id = w.goods_id and gs.size = w.size and gs.color=w.color and gs.stock<=0)")
+	@Query(nativeQuery=true,value="delete from ph_wardrobe  where ph_wardrobe.unionid=?1 and EXISTS(select 1 from ph_goods_stock gs where gs.goods_id = ph_wardrobe.goods_id and gs.size = ph_wardrobe.size and gs.color=ph_wardrobe.color and gs.stock<=0)")
 	int delLess(String unionid);
 	
 	List<PhWardrobe> findByIdIn(List<Long> ids);
