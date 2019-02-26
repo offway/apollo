@@ -42,9 +42,6 @@ public class SfExpressService {
 	@Autowired
 	private JsonResultHelper jsonResultHelper;
 	
-	@Autowired
-	private PhOrderInfoService phOrderInfoService;
-	
 	/**
 	 * 在线下单
 	 * @return
@@ -55,7 +52,7 @@ public class SfExpressService {
 		try {
 			String req = REQ_ADD_ORDER;
 			req = req.replaceAll("CLIENTCODE", clientCode);
-			req = req.replaceAll("ORDERID", phOrderInfoService.generateOrderNo("SF"));
+			req = req.replaceAll("ORDERID", addOrder.getOrder_id());
 			req = req.replaceAll("J_CONTACT", addOrder.getJ_contact());
 			req = req.replaceAll("J_TEL", addOrder.getJ_tel());
 			req = req.replaceAll("J_PROVINCE", null==addOrder.getJ_province()?"":addOrder.getJ_province());
@@ -68,7 +65,7 @@ public class SfExpressService {
 			req = req.replaceAll("D_CITY", null==addOrder.getD_city()?"":addOrder.getD_city());
 			req = req.replaceAll("D_COUNTY", null==addOrder.getD_county()?"":addOrder.getD_county());
 			req = req.replaceAll("D_ADDRESS", addOrder.getD_address());
-			req = req.replaceAll("PAY_METHOD", "2");//付款方式：1:寄方付2:收方付3:第三方付
+			req = req.replaceAll("PAY_METHOD", addOrder.getPay_method());//付款方式：1:寄方付2:收方付3:第三方付
 			req = req.replaceAll("SENDSTARTTIME", addOrder.getSendstarttime());
 			req = req.replaceAll("ORDER_SOURCE", addOrder.getOrder_source());
 			req = req.replaceAll("REMARK", addOrder.getRemark());

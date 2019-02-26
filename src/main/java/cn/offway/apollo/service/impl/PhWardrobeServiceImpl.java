@@ -273,10 +273,12 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		
 		List<Long> wrIds = Arrays.asList(wardrobeIds);
 		
-		//减库存
-		int count= phGoodsStockService.updateStock(wrIds);
-		if(count !=wrIds.size()){
-			throw new Exception("减库存失败");
+		for (Long wrId : wrIds) {
+			//减库存
+			int count= phGoodsStockService.updateStock(wrId);
+			if(count != 1){
+				throw new Exception("减库存失败");
+			}
 		}
 		
 		Date now = new Date();
@@ -351,6 +353,8 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		phOrderInfoService.save(phOrderInfos);
 		phOrderExpressInfoService.save(phOrderExpressInfos);
 		phOrderGoodsService.save(phOrderGoodss);
+		//清除衣柜
+		phWardrobeRepository.delete(wrIds);
 		
 		
 		return jsonResultHelper.buildSuccessJsonResult(null);

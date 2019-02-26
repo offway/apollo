@@ -35,4 +35,9 @@ public interface PhWardrobeRepository extends JpaRepository<PhWardrobe,Long>,Jpa
 	int delLess(String unionid);
 	
 	List<PhWardrobe> findByIdIn(List<Long> ids);
+	
+	@Modifying
+	@Transactional
+	@Query(nativeQuery=true,value="delete from ph_wardrobe where id in(?1)")
+	int delete(List<Long> ids);
 }

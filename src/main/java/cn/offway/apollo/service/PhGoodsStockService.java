@@ -18,5 +18,5 @@ public interface PhGoodsStockService{
 
 	List<PhGoodsStock> findByGoodsId(Long goodsId);
 
-	int updateStock(List<Long> goodsIds);
+	int updateStock(Long wrId);
 }
