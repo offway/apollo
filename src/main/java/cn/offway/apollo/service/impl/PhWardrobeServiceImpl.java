@@ -304,6 +304,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 				phOrderInfo.setUnionid(phWardrobe.getUnionid());
 				phOrderInfo.setUseDate(phWardrobe.getUseDate());
 				phOrderInfo.setUsers(users);
+				phOrderInfo.setIsUpload("0");
 				phOrderInfos.add(phOrderInfo);
 				map.put(phWardrobe.getBrandId(), phOrderInfo);
 				
