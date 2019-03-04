@@ -31,6 +31,12 @@ public class PhOrderExpressDetail implements Serializable {
 
     /** 创建时间 **/
     private Date createTime;
+    
+    /** 路由节点发生的城市 **/
+    private String acceptAddress;
+    
+    /** 路由信息操作码 **/
+    private String opCode;
 
     /** 备注 **/
     private String remark;
@@ -101,5 +107,25 @@ public class PhOrderExpressDetail implements Serializable {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+    @Column(name = "accept_address", length = 100)
+	public String getAcceptAddress() {
+		return acceptAddress;
+	}
+
+	public void setAcceptAddress(String acceptAddress) {
+		this.acceptAddress = acceptAddress;
+	}
+
+    @Column(name = "op_code", length = 20)
+	public String getOpCode() {
+		return opCode;
+	}
+
+	public void setOpCode(String opCode) {
+		this.opCode = opCode;
+	}
+    
+    
 
 }

@@ -158,7 +158,7 @@ public class UserController {
 		return jsonResultHelper.buildSuccessJsonResult(map);
 	}
 	
-	@ApiOperation(value="快递状态查询")
+	@ApiOperation(value="快递状态查询",notes="返回 status [1-已下单,2-已接单,3-运送中,4-已签收]")
 	@GetMapping("/express")
 	public JsonResult express(@ApiParam("订单号") @RequestParam String orderNo,
 			@ApiParam("类型[0-寄,1-返]") @RequestParam String type){
@@ -227,8 +227,11 @@ public class UserController {
 	
 	@ApiOperation(value="一键下单")
 	@PostMapping("/addOrder")
-	public JsonResult addOrder(@ApiParam("订单号") @RequestParam String orderNo){
-		return phOrderInfoService.saveOrder(orderNo);
+	public JsonResult addOrder(
+			@ApiParam("订单号") @RequestParam String orderNo,
+			@ApiParam("要求上门取件开始时间，格式：YYYY-MM-DD HH24:MM:SS，示例：2012-7-30 09:30:00。两小时内上门不传该字段") @RequestParam(required = false) String sendstarttime,
+			@ApiParam("快递单号,自行投递必传") @RequestParam(required = false) String mailNo){
+		return phOrderInfoService.saveOrder(orderNo, sendstarttime, mailNo);
 	}
 	
 }

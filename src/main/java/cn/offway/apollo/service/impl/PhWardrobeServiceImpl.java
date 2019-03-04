@@ -106,15 +106,26 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	@Override
 	public JsonResult add(String unionid,Long goodsId,String color,String size,String useDate) throws Exception{
 		
+		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
+		long creditScore = phUserInfo.getCreditScore().longValue();
+		if(creditScore <35L){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.CREDITSCORE_LESS);
+		}
+		
 		List<PhWardrobe> phWardrobes = phWardrobeRepository.findEffectByUnionid(unionid);
+		
 		if(null != phWardrobes && phWardrobes.size() >=8){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
 		}
 		
-		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
-		if(phUserInfo.getCreditScore().longValue() <500L){
-			return jsonResultHelper.buildFailJsonResult(CommonResultCode.CREDITSCORE_LESS);
+		if(creditScore <40L && null != phWardrobes && phWardrobes.size() >=3){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
 		}
+		
+		if(creditScore <45L && null != phWardrobes && phWardrobes.size() >=5){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
+		}
+		
 		
 		int showCount = phOrderInfoService.countByUnionidAndIsUpload(unionid, "0");
 		if(showCount >0){
@@ -247,14 +258,24 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	public JsonResult addOrder(String unionid,Long[] wardrobeIds,Long addrId,String users) throws Exception{
 
 
+		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
+		long creditScore = phUserInfo.getCreditScore().longValue();
+		if(creditScore <35L){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.CREDITSCORE_LESS);
+		}
+		
 		List<PhWardrobe> phWardrobes = phWardrobeRepository.findEffectByUnionid(unionid);
+		
 		if(null != phWardrobes && phWardrobes.size() >=8){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
 		}
 		
-		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
-		if(phUserInfo.getCreditScore().longValue() <500L){
-			return jsonResultHelper.buildFailJsonResult(CommonResultCode.CREDITSCORE_LESS);
+		if(creditScore <40L && null != phWardrobes && phWardrobes.size() >=3){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
+		}
+		
+		if(creditScore <45L && null != phWardrobes && phWardrobes.size() >=5){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
 		}
 		
 		int showCount = phOrderInfoService.countByUnionidAndIsUpload(unionid, "0");

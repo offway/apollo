@@ -38,7 +38,7 @@ public enum CommonResultCode implements ResultCode {
     ORDER_BACK("1008", "ORDER_BACK"),
     
     /** 衣柜调价衣物以至8件上限  */
-    WARDROBE_LIMIT("1009", "ORDER_BACK"),
+    WARDROBE_LIMIT("1009", "WARDROBE_LIMIT"),
    
     /** 您的信用分太低，不能再借衣服  */
     CREDITSCORE_LESS("1010", "CREDITSCORE_LESS"),

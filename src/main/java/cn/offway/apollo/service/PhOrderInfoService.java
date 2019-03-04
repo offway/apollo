@@ -30,9 +30,9 @@ public interface PhOrderInfoService{
 
 	List<PhOrderInfo> findAll(String unionid, String type);
 
-	JsonResult saveOrder(String orderNo);
-
 	int countByUnionidAndIsUpload(String unionid, String isUpload);
 
 	int countByUnionidAndStatusIn(String unionid, List<String> status);
+
+	JsonResult saveOrder(String orderNo, String sendstarttime, String mailNo);
 }
