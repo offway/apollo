@@ -215,7 +215,7 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 		
 		if(StringUtils.isNotBlank(mailNo)){
 			phOrderExpressInfo.setMailNo(mailNo);
-			phOrderExpressInfo.setStatus("1");//已下单
+			phOrderExpressInfo.setStatus("3");//运送中
 			phOrderExpressInfoService.save(phOrderExpressInfo);
 			phOrderInfo.setStatus("2");
 			save(phOrderInfo);

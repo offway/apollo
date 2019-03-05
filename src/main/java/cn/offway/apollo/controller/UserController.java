@@ -175,12 +175,18 @@ public class UserController {
 		return jsonResultHelper.buildSuccessJsonResult(phShowImageService.findByPage(unionid, new PageRequest(page*size, (page+1)*size)));
 	}
 	
+	@ApiOperation(value="晒图详情")
+	@GetMapping("/showimageInfo")
+	public JsonResult showimageInfo(@ApiParam("晒图ID") @RequestParam Long id){
+		return jsonResultHelper.buildSuccessJsonResult(phShowImageService.findOne(id));
+	}
+	
 	@ApiOperation(value="晒图")
 	@PostMapping("/showimage")
 	public JsonResult showimage(@ApiParam("订单号") @RequestParam String orderNo,
 			@ApiParam("图片地址，多个用英文逗号相隔") @RequestParam String images,
-		    @ApiParam("网页链接") @RequestParam String url,
-		    @ApiParam("描述") @RequestParam String content){
+		    @ApiParam("网页链接") @RequestParam(required = false) String url,
+		    @ApiParam("描述") @RequestParam(required = false) String content){
 		
 		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
 
@@ -231,7 +237,7 @@ public class UserController {
 			@ApiParam("订单号") @RequestParam String orderNo,
 			@ApiParam("要求上门取件开始时间，格式：YYYY-MM-DD HH24:MM:SS，示例：2012-7-30 09:30:00。两小时内上门不传该字段") @RequestParam(required = false) String sendstarttime,
 			@ApiParam("快递单号,自行投递必传") @RequestParam(required = false) String mailNo){
-		return phOrderInfoService.saveOrder(orderNo, sendstarttime, mailNo);
+		return phOrderInfoService.saveOrder(orderNo, null==sendstarttime?"":sendstarttime, mailNo);
 	}
 	
 }
