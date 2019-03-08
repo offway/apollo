@@ -221,6 +221,7 @@ public class UserController {
 		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
 		resultMap.put("nickname", phUserInfo.getNickname());
 		resultMap.put("headimgurl", phUserInfo.getHeadimgurl());
+		resultMap.put("creditScore", phUserInfo.getCreditScore());
 		resultMap.put("sendout", phOrderInfoService.findAll(unionid, "0").size());
 		resultMap.put("use", phOrderInfoService.findAll(unionid, "1").size());
 		resultMap.put("return", phOrderInfoService.findAll(unionid, "2").size());
