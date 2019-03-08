@@ -117,7 +117,7 @@ public class UserController {
 			@ApiParam("页码,从0开始") @RequestParam int page,
 		    @ApiParam("页大小") @RequestParam int size){
 		
-		Page<PhOrderInfo> page2 = phOrderInfoService.findByPage(unionid.trim(), type.trim(), new PageRequest(page*size, (page+1)*size));
+		Page<PhOrderInfo> page2 = phOrderInfoService.findByPage(unionid.trim(), type.trim(), new PageRequest(page,size));
 		List<PhOrderInfo> phOrderInfos = page2.getContent();
 		List<OrderInfoDto> dtos = new ArrayList<>();
 		for (PhOrderInfo phOrderInfo : phOrderInfos) {
@@ -128,7 +128,7 @@ public class UserController {
 			dtos.add(dto);
 		}
 		
-		Page<OrderInfoDto> page3 = new PageImpl<>(dtos, new PageRequest(page*size, (page+1)*size), page2.getTotalElements());
+		Page<OrderInfoDto> page3 = new PageImpl<>(dtos, new PageRequest(page,size), page2.getTotalElements());
 		return jsonResultHelper.buildSuccessJsonResult(page3);
 	}
 	
@@ -149,12 +149,14 @@ public class UserController {
 		map.put("orderNo", orderNo);
 		map.put("useDate", phOrderInfo.getUseDate());
 		PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
-		String mailno = phOrderExpressInfo.getMailNo();
-		map.put("toRealName", phOrderExpressInfo.getToRealName());
-		map.put("toPhone", phOrderExpressInfo.getToPhone());
-		map.put("toContent", phOrderExpressInfo.getToContent());
-		List<PhOrderExpressDetail> expressDetails = phOrderExpressDetailService.findByMailNoOrderByAcceptTimeDesc(mailno);
-		map.put("expressDetails", expressDetails);
+		if(null != phOrderExpressInfo){
+			String mailno = phOrderExpressInfo.getMailNo();
+			map.put("toRealName", phOrderExpressInfo.getToRealName());
+			map.put("toPhone", phOrderExpressInfo.getToPhone());
+			map.put("toContent", phOrderExpressInfo.getToContent());
+			List<PhOrderExpressDetail> expressDetails = phOrderExpressDetailService.findByMailNoOrderByAcceptTimeDesc(mailno);
+			map.put("expressDetails", expressDetails);
+		}
 		return jsonResultHelper.buildSuccessJsonResult(map);
 	}
 	
@@ -172,7 +174,7 @@ public class UserController {
 	public JsonResult showimage(@ApiParam("用户ID") @RequestParam String unionid,
 			@ApiParam("页码,从0开始") @RequestParam int page,
 		    @ApiParam("页大小") @RequestParam int size){
-		return jsonResultHelper.buildSuccessJsonResult(phShowImageService.findByPage(unionid, new PageRequest(page*size, (page+1)*size)));
+		return jsonResultHelper.buildSuccessJsonResult(phShowImageService.findByPage(unionid, new PageRequest(page,size)));
 	}
 	
 	@ApiOperation(value="晒图详情")
@@ -203,6 +205,10 @@ public class UserController {
 		phShowImage.setContent(content);
 		phShowImage.setStatus("0");
 		phShowImageService.save(phShowImage);
+		
+		phOrderInfo.setIsUpload("1");
+		phOrderInfoService.save(phOrderInfo);
+		
 		return jsonResultHelper.buildSuccessJsonResult(null);
 	}
 	
@@ -228,7 +234,7 @@ public class UserController {
 	public JsonResult creditDetail(@ApiParam("用户ID") @RequestParam String unionid,
 			@ApiParam("页码,从0开始") @RequestParam int page,
 		    @ApiParam("页大小") @RequestParam int size){
-		return jsonResultHelper.buildSuccessJsonResult(phCreditDetailService.findByPage(unionid, new PageRequest(page*size, (page+1)*size)));
+		return jsonResultHelper.buildSuccessJsonResult(phCreditDetailService.findByPage(unionid, new PageRequest(page,size)));
 	} 
 	
 	@ApiOperation(value="一键下单")

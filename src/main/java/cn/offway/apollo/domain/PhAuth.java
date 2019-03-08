@@ -67,6 +67,9 @@ public class PhAuth implements Serializable {
 
     /** 备注 **/
     private String remark;
+    
+    /** 邀请码ID**/
+    private Long codeId;
 
 
     @Id
@@ -234,5 +237,15 @@ public class PhAuth implements Serializable {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+    @Column(name = "code_id", length = 11)
+	public Long getCodeId() {
+		return codeId;
+	}
+
+	public void setCodeId(Long codeId) {
+		this.codeId = codeId;
+	}
+    
 
 }

@@ -35,4 +35,6 @@ public interface PhOrderInfoService{
 	int countByUnionidAndStatusIn(String unionid, List<String> status);
 
 	JsonResult saveOrder(String orderNo, String sendstarttime, String mailNo);
+
+	int notShowImage(String unionid);
 }

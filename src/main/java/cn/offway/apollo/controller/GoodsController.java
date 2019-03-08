@@ -128,7 +128,7 @@ public class GoodsController {
 		
 		int page = goodsDto.getPage();
 		int size = goodsDto.getPageSize();
-		Page<PhGoods> pages = phGoodsService.findByPage(goodsDto, new PageRequest(page*size, (page+1)*size));
+		Page<PhGoods> pages = phGoodsService.findByPage(goodsDto, new PageRequest(page, size));
 		
 		return jsonResultHelper.buildSuccessJsonResult(pages);
 	}

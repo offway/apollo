@@ -83,6 +83,8 @@ public class PhAuthServiceImpl implements PhAuthService {
 		PhAuth phAuth = new PhAuth();
 		BeanUtils.copyProperties(authDto, phAuth);
 		
+		
+		phAuth.setCodeId(phCode.getId());;
 		phAuth.setIdcardObverse(qiniuProperties.getUrl()+"/"+phAuth.getIdcardObverse());
 		phAuth.setIdcardPositive(qiniuProperties.getUrl()+"/"+phAuth.getIdcardPositive());
 		phAuth.setInCert(qiniuProperties.getUrl()+"/"+phAuth.getInCert());

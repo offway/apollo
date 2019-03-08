@@ -112,7 +112,7 @@ public class MiniController {
 			phWxuserInfo.setProvince(miniUserInfo.getProvince());
 			phWxuserInfo.setSex(miniUserInfo.getGender());
 			phWxuserInfo.setUnionid(unionid);
-			phWxuserInfo.setCreditScore(500L);
+//			phWxuserInfo.setCreditScore(500L);
 			phWxuserInfo =  phuserInfoService.save(phWxuserInfo);
 			
 			return jsonResultHelper.buildSuccessJsonResult(phWxuserInfo);

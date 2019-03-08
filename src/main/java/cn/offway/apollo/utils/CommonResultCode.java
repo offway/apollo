@@ -49,7 +49,8 @@ public enum CommonResultCode implements ResultCode {
     /** 有一笔订单未归还  */
     NO_RETURN_IMAGE("1012", "NO_RETURN_IMAGE"),
     
-    
+    /** 修改库存失败  */
+    UPDATE_STOCK_ERROR("1013", "UPDATE_STOCK_ERROR"),
     ;
 	
 	

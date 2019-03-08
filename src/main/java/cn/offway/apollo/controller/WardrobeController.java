@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.offway.apollo.service.PhWardrobeService;
+import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
 import io.swagger.annotations.ApiOperation;
@@ -86,9 +87,19 @@ public class WardrobeController {
 			@ApiParam("unionid") @RequestParam String unionid,
 			@ApiParam("衣柜ID") @RequestParam Long[] wardrobeIds,
 			@ApiParam("地址ID") @RequestParam Long addrId,
-			@ApiParam("使用者") @RequestParam String users) throws Exception{
+			@ApiParam("使用者") @RequestParam String users){
 		
-		return phWardrobeService.addOrder(unionid,wardrobeIds, addrId, users);
+		try {
+			return phWardrobeService.addOrder(unionid,wardrobeIds, addrId, users);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("下订单异常，unionid:{},wardrobeIds:{},addrId:{},users:{}",unionid,wardrobeIds, addrId, users,e);
+			if("减库存失败".equals(e.getMessage())){
+				return jsonResultHelper.buildFailJsonResult(CommonResultCode.UPDATE_STOCK_ERROR);
+			}else{
+				return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+			}
+		}
 	}
 	
 }

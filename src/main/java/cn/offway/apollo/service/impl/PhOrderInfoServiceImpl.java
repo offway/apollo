@@ -96,6 +96,11 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 	}
 	
 	@Override
+	public int notShowImage(String unionid){
+		return phOrderInfoRepository.notShowImage(unionid);
+	}
+	
+	@Override
 	public Page<PhOrderInfo> findByPage(final String unionid,final String type,Pageable page){
 		return phOrderInfoRepository.findAll(new Specification<PhOrderInfo>() {
 			
@@ -112,6 +117,8 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 						in.value("0");
 						in.value("1");
 						params.add(in);
+						params.add(criteriaBuilder.greaterThan(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
+
 					}else if("1".equals(type)){
 						//使用日期当天
 						params.add(criteriaBuilder.equal(root.get("status"), "1"));
@@ -158,6 +165,7 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 						in.value("0");
 						in.value("1");
 						params.add(in);
+						params.add(criteriaBuilder.greaterThan(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
 					}else if("1".equals(type)){
 						//使用日期当天
 						params.add(criteriaBuilder.equal(root.get("status"), "1"));

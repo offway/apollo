@@ -126,9 +126,9 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
 		}
 		
-		
-		int showCount = phOrderInfoService.countByUnionidAndIsUpload(unionid, "0");
-		if(showCount >0){
+		//30天没晒图
+		int notShowCount = phOrderInfoService.notShowImage(unionid);
+		if(notShowCount >0){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_SHOW_IMAGE);
 		}
 		
@@ -278,10 +278,16 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
 		}
 		
-		int showCount = phOrderInfoService.countByUnionidAndIsUpload(unionid, "0");
-		if(showCount >0){
+		//30天没晒图
+		int notShowCount = phOrderInfoService.notShowImage(unionid);
+		if(notShowCount >0){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_SHOW_IMAGE);
 		}
+		
+//		int showCount = phOrderInfoService.countByUnionidAndIsUpload(unionid, "0");
+//		if(showCount >0){
+//			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_SHOW_IMAGE);
+//		}
 		
 		List<String> status = new ArrayList<>();
 		status.add("0");
