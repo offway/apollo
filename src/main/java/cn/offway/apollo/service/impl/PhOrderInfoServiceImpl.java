@@ -21,10 +21,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import cn.offway.apollo.domain.PhAddress;
 import cn.offway.apollo.domain.PhOrderExpressInfo;
 import cn.offway.apollo.domain.PhOrderInfo;
 import cn.offway.apollo.dto.sf.ReqAddOrder;
 import cn.offway.apollo.repository.PhOrderInfoRepository;
+import cn.offway.apollo.service.PhAddressService;
 import cn.offway.apollo.service.PhOrderExpressInfoService;
 import cn.offway.apollo.service.PhOrderInfoService;
 import cn.offway.apollo.service.SfExpressService;
@@ -55,6 +57,9 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 	
 	@Autowired
 	private JsonResultHelper jsonResultHelper;
+	
+	@Autowired
+	private PhAddressService phAddressService;
 	
 	@Override
 	public PhOrderInfo save(PhOrderInfo phOrderInfo){
@@ -195,7 +200,7 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 	}
 	
 	@Override
-	public JsonResult saveOrder(String orderNo,String sendstarttime,String mailNo){
+	public JsonResult saveOrder(String orderNo,String sendstarttime,String mailNo,Long addrId){
 		PhOrderInfo phOrderInfo = findByOrderNo(orderNo);
 		if("2".equals(phOrderInfo.getStatus())){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.ORDER_BACK);
@@ -205,12 +210,23 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 		PhOrderExpressInfo phOrderExpressInfo = new PhOrderExpressInfo();
 		phOrderExpressInfo.setCreateTime(new Date());
 		phOrderExpressInfo.setExpressOrderNo(generateOrderNo("SF"));
-		phOrderExpressInfo.setFromPhone(expressInfo.getToPhone());
-		phOrderExpressInfo.setFromCity(expressInfo.getToCity());
-		phOrderExpressInfo.setFromContent(expressInfo.getToContent());
-		phOrderExpressInfo.setFromCounty(expressInfo.getToCounty());
-		phOrderExpressInfo.setFromProvince(expressInfo.getToProvince());
-		phOrderExpressInfo.setFromRealName(expressInfo.getToRealName());
+		if(null != addrId){
+			PhAddress phAddress = phAddressService.findOne(addrId);
+			phOrderExpressInfo.setFromPhone(phAddress.getPhone());
+			phOrderExpressInfo.setFromCity(phAddress.getCity());
+			phOrderExpressInfo.setFromContent(phAddress.getContent());
+			phOrderExpressInfo.setFromCounty(phAddress.getCounty());
+			phOrderExpressInfo.setFromProvince(phAddress.getProvince());
+			phOrderExpressInfo.setFromRealName(phAddress.getRealName());
+
+		}else{
+			phOrderExpressInfo.setFromPhone(expressInfo.getToPhone());
+			phOrderExpressInfo.setFromCity(expressInfo.getToCity());
+			phOrderExpressInfo.setFromContent(expressInfo.getToContent());
+			phOrderExpressInfo.setFromCounty(expressInfo.getToCounty());
+			phOrderExpressInfo.setFromProvince(expressInfo.getToProvince());
+			phOrderExpressInfo.setFromRealName(expressInfo.getToRealName());
+		}
 		phOrderExpressInfo.setOrderNo(phOrderInfo.getOrderNo());
 		phOrderExpressInfo.setToPhone(expressInfo.getFromPhone());
 		phOrderExpressInfo.setToCity(expressInfo.getFromCity());

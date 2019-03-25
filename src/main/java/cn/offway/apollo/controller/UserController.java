@@ -243,8 +243,9 @@ public class UserController {
 	public JsonResult addOrder(
 			@ApiParam("订单号") @RequestParam String orderNo,
 			@ApiParam("要求上门取件开始时间，格式：YYYY-MM-DD HH24:MM:SS，示例：2012-7-30 09:30:00。两小时内上门不传该字段") @RequestParam(required = false) String sendstarttime,
-			@ApiParam("快递单号,自行投递必传") @RequestParam(required = false) String mailNo){
-		return phOrderInfoService.saveOrder(orderNo, null==sendstarttime?"":sendstarttime, mailNo);
+			@ApiParam("快递单号,自行投递必传") @RequestParam(required = false) String mailNo,
+			@ApiParam("地址ID") @RequestParam(required = false) Long addrId){
+		return phOrderInfoService.saveOrder(orderNo, null==sendstarttime?"":sendstarttime, mailNo,addrId);
 	}
 	
 }
