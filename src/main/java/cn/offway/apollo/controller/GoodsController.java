@@ -141,16 +141,22 @@ public class GoodsController {
 		List<PhGoodsStock> phGoodsStocks = phGoodsStockService.findByGoodsId(id);
 		Set<String> sizes = new HashSet<>();
 		Set<String> colors = new HashSet<>();
+		//Map<String, String> colorImg = new HashMap<>();
 		for (PhGoodsStock phGoodsStock : phGoodsStocks) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("size", phGoodsStock.getSize());
 			map.put("color", phGoodsStock.getColor());
 			map.put("stock", phGoodsStock.getStock());
+			map.put("img", phGoodsStock.getImage());
 			list.add(map);
 			sizes.add(phGoodsStock.getSize());
 			colors.add(phGoodsStock.getColor());
+			
+			//colorImg.put(phGoodsStock.getColor(), phGoodsStock.getImage());
 
 		}
+		
+		//resultMap.put("colorImgs", colorImg);
 		resultMap.put("goods", phGoods);
 		resultMap.put("banners", banners);
 		resultMap.put("contents", contents);

@@ -114,7 +114,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		
 		List<PhWardrobe> phWardrobes = phWardrobeRepository.findEffectByUnionid(unionid);
 		
-		if(null != phWardrobes && phWardrobes.size() >=8){
+		if(null != phWardrobes && phWardrobes.size() >8){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
 		}
 		
@@ -266,7 +266,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		
 		List<PhWardrobe> phWardrobes = phWardrobeRepository.findEffectByUnionid(unionid);
 		
-		if(null != phWardrobes && phWardrobes.size() >=8){
+		if(null != phWardrobes && phWardrobes.size() >8){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.WARDROBE_LIMIT);
 		}
 		
@@ -337,18 +337,17 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 				
 				//保存订单物流
 				PhBrand phBrand = phBrandService.findOne(phWardrobe.getBrandId());
-				PhAddress formAddress = phAddressService.findOne(phBrand.getAddrId());
 				PhAddress toAddress = phAddressService.findOne(addrId);
 				
 				PhOrderExpressInfo phOrderExpressInfo = new PhOrderExpressInfo();
 				phOrderExpressInfo.setCreateTime(now);
 //				phOrderExpressInfo.setExpressOrderNo(phOrderInfoService.generateOrderNo("SF"));
-				phOrderExpressInfo.setFromPhone(formAddress.getPhone());
-				phOrderExpressInfo.setFromCity(formAddress.getCity());
-				phOrderExpressInfo.setFromContent(formAddress.getContent());
-				phOrderExpressInfo.setFromCounty(formAddress.getCounty());
-				phOrderExpressInfo.setFromProvince(formAddress.getProvince());
-				phOrderExpressInfo.setFromRealName(formAddress.getRealName());
+				phOrderExpressInfo.setFromPhone(phBrand.getPhone());
+				phOrderExpressInfo.setFromCity(phBrand.getCity());
+				phOrderExpressInfo.setFromContent(phBrand.getContent());
+				phOrderExpressInfo.setFromCounty(phBrand.getCounty());
+				phOrderExpressInfo.setFromProvince(phBrand.getProvince());
+				phOrderExpressInfo.setFromRealName(phBrand.getRealName());
 				//phOrderExpressInfo.setMailNo(mailNo);
 				//phOrderExpressInfo.setOrderId(orderId);
 				phOrderExpressInfo.setOrderNo(phOrderInfo.getOrderNo());

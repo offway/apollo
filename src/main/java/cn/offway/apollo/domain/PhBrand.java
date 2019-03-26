@@ -29,8 +29,23 @@ public class PhBrand implements Serializable {
     /** 背景图 **/
     private String background;
 
-    /** 地址ID **/
-    private Long addrId;
+    /** 姓名 **/
+    private String realName;
+
+    /** 手机号 **/
+    private String phone;
+
+    /** 省份 **/
+    private String province;
+
+    /** 城市 **/
+    private String city;
+
+    /** 区/县 **/
+    private String county;
+
+    /** 详细地址 **/
+    private String content;
 
     /** 创建时间 **/
     private Date createTime;
@@ -86,13 +101,58 @@ public class PhBrand implements Serializable {
         this.background = background;
     }
 
-    @Column(name = "addr_id", length = 11)
-    public Long getAddrId() {
-        return addrId;
+    @Column(name = "real_name", length = 50)
+    public String getRealName() {
+        return realName;
     }
 
-    public void setAddrId(Long addrId) {
-        this.addrId = addrId;
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    @Column(name = "phone", length = 20)
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    @Column(name = "province", length = 20)
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    @Column(name = "city", length = 20)
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    @Column(name = "county", length = 20)
+    public String getCounty() {
+        return county;
+    }
+
+    public void setCounty(String county) {
+        this.county = county;
+    }
+
+    @Column(name = "content", length = 200)
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Temporal(TemporalType.TIMESTAMP)

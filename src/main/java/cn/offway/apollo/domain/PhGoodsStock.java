@@ -24,6 +24,9 @@ public class PhGoodsStock implements Serializable {
     private String goodsName;
 
     /** 封面图片 **/
+    private String goodsImage;
+    
+    /** 颜色图片 **/
     private String image;
 
     /** 品牌ID **/
@@ -89,16 +92,16 @@ public class PhGoodsStock implements Serializable {
         this.goodsName = goodsName;
     }
 
-    @Column(name = "image", length = 100)
-    public String getImage() {
-        return image;
-    }
+    @Column(name = "goods_image", length = 100)
+	public String getGoodsImage() {
+		return goodsImage;
+	}
 
-    public void setImage(String image) {
-        this.image = image;
-    }
+	public void setGoodsImage(String goodsImage) {
+		this.goodsImage = goodsImage;
+	}
 
-    @Column(name = "brand_id", length = 11)
+	@Column(name = "brand_id", length = 11)
     public Long getBrandId() {
         return brandId;
     }
@@ -197,5 +200,16 @@ public class PhGoodsStock implements Serializable {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+    @Column(name = "image", length = 100)
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+    
+    
 
 }
