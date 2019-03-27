@@ -314,10 +314,61 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		List<PhOrderExpressInfo> phOrderExpressInfos = new ArrayList<>();
 		Map<Long, PhOrderInfo> map = new HashMap<>();
 		List<PhWardrobe> wardrobes = phWardrobeRepository.findByIdIn(wrIds);
+		
+		PhOrderInfo offwayOrder = null;
 		for (PhWardrobe phWardrobe : wardrobes) {
 			
+			PhOrderInfo phOrderInfo = null;
+			if("1".equals(phWardrobe.getIsOffway())){
+				//自营
+				if(null == offwayOrder){
+					offwayOrder = new PhOrderInfo();
+					offwayOrder.setBrandId(phWardrobe.getBrandId());
+					offwayOrder.setBrandLogo(phWardrobe.getBrandLogo());
+					offwayOrder.setBrandName(phWardrobe.getBrandName());
+					offwayOrder.setCreateTime(now);
+					offwayOrder.setIsOffway(phWardrobe.getIsOffway());
+					offwayOrder.setOrderNo(phOrderInfoService.generateOrderNo("PH"));
+					offwayOrder.setStatus("0");
+					offwayOrder.setUnionid(phWardrobe.getUnionid());
+					offwayOrder.setUseDate(phWardrobe.getUseDate());
+					offwayOrder.setUsers(users);
+					offwayOrder.setIsUpload("0");
+					phOrderInfos.add(offwayOrder);
+					
+					//保存订单物流
+					PhAddress toAddress = phAddressService.findOne(addrId);
+					PhAddress offwayAddress = phAddressService.findOne(1L);
+					
+					PhOrderExpressInfo phOrderExpressInfo = new PhOrderExpressInfo();
+					phOrderExpressInfo.setCreateTime(now);
+//					phOrderExpressInfo.setExpressOrderNo(phOrderInfoService.generateOrderNo("SF"));
+					phOrderExpressInfo.setFromPhone(offwayAddress.getPhone());
+					phOrderExpressInfo.setFromCity(offwayAddress.getCity());
+					phOrderExpressInfo.setFromContent(offwayAddress.getContent());
+					phOrderExpressInfo.setFromCounty(offwayAddress.getCounty());
+					phOrderExpressInfo.setFromProvince(offwayAddress.getProvince());
+					phOrderExpressInfo.setFromRealName(offwayAddress.getRealName());
+					//phOrderExpressInfo.setMailNo(mailNo);
+					//phOrderExpressInfo.setOrderId(orderId);
+					phOrderExpressInfo.setOrderNo(offwayOrder.getOrderNo());
+					phOrderExpressInfo.setStatus("0");
+					phOrderExpressInfo.setToPhone(toAddress.getPhone());
+					phOrderExpressInfo.setToCity(toAddress.getCity());
+					phOrderExpressInfo.setToContent(toAddress.getContent());
+					phOrderExpressInfo.setToCounty(toAddress.getCounty());
+					phOrderExpressInfo.setToProvince(toAddress.getProvince());
+					phOrderExpressInfo.setToRealName(toAddress.getRealName());
+					phOrderExpressInfo.setType("0");
+					phOrderExpressInfos.add(phOrderExpressInfo);
+					
+				}
+				phOrderInfo = offwayOrder;
+			}else{
+				
+				phOrderInfo = map.get(phWardrobe.getBrandId());
+			}
 			
-			PhOrderInfo phOrderInfo = map.get(phWardrobe.getBrandId());
 			if(null == phOrderInfo){
 				//保存订单信息
 				phOrderInfo = new PhOrderInfo();
