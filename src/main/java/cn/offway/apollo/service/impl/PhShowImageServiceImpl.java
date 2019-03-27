@@ -64,7 +64,7 @@ public class PhShowImageServiceImpl implements PhShowImageService {
 				
                 Predicate[] predicates = new Predicate[params.size()];
                 criteriaQuery.where(params.toArray(predicates));
-                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("status")));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("status")),criteriaBuilder.desc(root.get("createTime")));
 				return null;
 			}
 		}, page);
