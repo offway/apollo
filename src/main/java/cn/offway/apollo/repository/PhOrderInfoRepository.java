@@ -39,7 +39,7 @@ public interface PhOrderInfoRepository extends JpaRepository<PhOrderInfo,Long>,J
 	
 	int countByUnionidAndIsUpload(String unionid,String isUpload);
 	
-	@Query(nativeQuery=true,value="select count(*) from ph_order_info o where o.unionid=?1 and NOT EXISTS(select 1 from ph_show_image s where s.order_no = o.order_no and DATE_FORMAT(s.create_time,'%y-%m-%d') <= DATE_ADD(o.use_date,INTERVAL 30 DAY) )")
+	@Query(nativeQuery=true,value="select count(*) from ph_order_info o where o.unionid=?1 and DATE_FORMAT(NOW(),'%y-%m-%d') > DATE_ADD(o.use_date,INTERVAL 30 DAY)  and NOT EXISTS(select 1 from ph_show_image s where s.order_no = o.order_no )")
 	int notShowImage(String unionid);
 	
 }
