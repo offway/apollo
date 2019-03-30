@@ -127,7 +127,7 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 					}else if("1".equals(type)){
 						//使用日期当天
 						params.add(criteriaBuilder.equal(root.get("status"), "1"));
-						params.add(criteriaBuilder.equal(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
+						params.add(criteriaBuilder.lessThanOrEqualTo(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
 					}else if("2".equals(type)){
 						params.add(criteriaBuilder.equal(root.get("status"), "2"));
 					}else if("3".equals(type)){
