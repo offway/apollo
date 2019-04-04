@@ -68,62 +68,96 @@ public class GoodsController {
 
 		
 		Map<String, Object> map = new HashMap<>();
-		map.put("category", "短袖");
+		map.put("category", "T恤");
 		map.put("size", sizeF);
 		categorysF.add(map);
 		
 		Map<String, Object> map1 = new HashMap<>();
-		map1.put("category", "长袖");
+		map1.put("category", "衬衫");
 		map1.put("size", sizeF);
 		categorysF.add(map1);
 		
 		Map<String, Object> map2 = new HashMap<>();
-		map2.put("category", "外套");
+		map2.put("category", "卫衣");
 		map2.put("size", sizeF);
 		categorysF.add(map2);
 		
 		Map<String, Object> map3 = new HashMap<>();
-		map3.put("category", "短裤");
+		map3.put("category", "夹克");
 		map3.put("size", sizeF);
 		categorysF.add(map3);
 		
+		
+		
 		Map<String, Object> map4 = new HashMap<>();
-		map4.put("category", "长裤");
+		map4.put("category", "外套");
 		map4.put("size", sizeF);
 		categorysF.add(map4);
 		
+		Map<String, Object> map411 = new HashMap<>();
+		map411.put("category", "针织衫");
+		map411.put("size", sizeF);
+		categorysF.add(map411);
 		
-		Map<String, Object> map0 = new HashMap<>();
-		map0.put("category", "短袖");
-		map0.put("size", sizeM);
-		categorysM.add(map0);
+		Map<String, Object> a = new HashMap<>();
+		a.put("category", "短裤");
+		a.put("size", sizeF);
+		categorysF.add(a);
 		
-		Map<String, Object> map11 = new HashMap<>();
-		map11.put("category", "长袖");
-		map11.put("size", sizeM);
-		categorysM.add(map11);
+		Map<String, Object> b = new HashMap<>();
+		b.put("category", "长裤");
+		b.put("size", sizeF);
+		categorysF.add(b);
 		
-		Map<String, Object> map21 = new HashMap<>();
-		map21.put("category", "外套");
-		map21.put("size", sizeM);
-		categorysM.add(map21);
-		
-		Map<String, Object> map31 = new HashMap<>();
-		map31.put("category", "短裤");
-		map31.put("size", sizeM);
-		categorysM.add(map31);
-		
-		Map<String, Object> map41 = new HashMap<>();
-		map41.put("category", "长裤");
-		map41.put("size", sizeM);
-		categorysM.add(map41);
+		Map<String, Object> c = new HashMap<>();
+		c.put("category", "裙子");
+		c.put("size", sizeF);
+		categorysF.add(c);
 		
 		
-		Map<String, Object> map61 = new HashMap<>();
-		map61.put("category", "配饰");
-		map61.put("size", new String[]{"均码"});
-		categorysM.add(map61);
-		categorysF.add(map61);
+		Map<String, Object> g = new HashMap<>();
+		g.put("category", "T恤");
+		g.put("size", sizeM);
+		categorysM.add(g);
+		
+		Map<String, Object> h = new HashMap<>();
+		h.put("category", "衬衫");
+		h.put("size", sizeM);
+		categorysM.add(h);
+		
+		Map<String, Object> i = new HashMap<>();
+		i.put("category", "卫衣");
+		i.put("size", sizeM);
+		categorysM.add(i);
+		
+		Map<String, Object> j = new HashMap<>();
+		j.put("category", "夹克");
+		j.put("size", sizeM);
+		categorysM.add(j);
+		
+		
+		
+		Map<String, Object> k = new HashMap<>();
+		k.put("category", "外套");
+		k.put("size", sizeF);
+		categorysM.add(k);
+		
+		Map<String, Object> l = new HashMap<>();
+		l.put("category", "针织衫");
+		l.put("size", sizeM);
+		categorysM.add(l);
+		
+		Map<String, Object> m = new HashMap<>();
+		m.put("category", "短裤");
+		m.put("size", sizeM);
+		categorysM.add(m);
+		
+		Map<String, Object> n = new HashMap<>();
+		n.put("category", "长裤");
+		n.put("size", sizeM);
+		categorysM.add(n);
+		
+		
 		
 		Map<String, Object> map71 = new HashMap<>();
 		map71.put("category", "鞋");
@@ -131,23 +165,30 @@ public class GoodsController {
 		categorysM.add(map71);
 		categorysF.add(map71);
 		
+		Map<String, Object> map61 = new HashMap<>();
+		map61.put("category", "配饰");
+		map61.put("size", new String[]{"均码"});
+		categorysM.add(map61);
+		categorysF.add(map61);
+		
+		
 		Map<String, Object> map8 = new HashMap<>();
 		map8.put("category", "未发售");
 		map8.put("size", new String[]{});
 		categorysM.add(map8);
 		categorysF.add(map8);
 		
-		List<Object> a = new ArrayList<>();
+		List<Object> list = new ArrayList<>();
 		Map<String, Object> map9 = new HashMap<>();
 		map9.put("type", "男装");
 		map9.put("categorys", categorysM);
-		a.add(map9);
+		list.add(map9);
 		
 		Map<String, Object> map10 = new HashMap<>();
 		map10.put("type", "女装");
 		map10.put("categorys", categorysF);
-		a.add(map10);
-		return jsonResultHelper.buildSuccessJsonResult(a);
+		list.add(map10);
+		return jsonResultHelper.buildSuccessJsonResult(list);
 	}
 	
 	@ApiOperation("商品列表")
