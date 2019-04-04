@@ -60,59 +60,92 @@ public class GoodsController {
 	@GetMapping("/classification")
 	public JsonResult classification(){
 		
-		List<Object> categorys = new ArrayList<>();
+		List<Object> categorysF = new ArrayList<>();
+		List<Object> categorysM = new ArrayList<>();
 		
-		String[] size = new String[]{"XL","S","M","L","均码"};
+		String[] sizeF = new String[]{"XS","S","M","L","均码"};
+		String[] sizeM = new String[]{"XL","M","L","均码"};
+
 		
 		Map<String, Object> map = new HashMap<>();
 		map.put("category", "短袖");
-		map.put("size", size);
-		categorys.add(map);
+		map.put("size", sizeF);
+		categorysF.add(map);
 		
 		Map<String, Object> map1 = new HashMap<>();
 		map1.put("category", "长袖");
-		map1.put("size", size);
-		categorys.add(map1);
+		map1.put("size", sizeF);
+		categorysF.add(map1);
 		
 		Map<String, Object> map2 = new HashMap<>();
 		map2.put("category", "外套");
-		map2.put("size", size);
-		categorys.add(map2);
+		map2.put("size", sizeF);
+		categorysF.add(map2);
 		
 		Map<String, Object> map3 = new HashMap<>();
 		map3.put("category", "短裤");
-		map3.put("size", size);
-		categorys.add(map3);
+		map3.put("size", sizeF);
+		categorysF.add(map3);
 		
 		Map<String, Object> map4 = new HashMap<>();
 		map4.put("category", "长裤");
-		map4.put("size", size);
-		categorys.add(map4);
+		map4.put("size", sizeF);
+		categorysF.add(map4);
 		
-		Map<String, Object> map6 = new HashMap<>();
-		map6.put("category", "配饰");
-		map6.put("size", new String[]{"均码"});
-		categorys.add(map6);
 		
-		Map<String, Object> map7 = new HashMap<>();
-		map7.put("category", "鞋");
-		map7.put("size", new String[]{"36","37","38","39","40","41","42","43","44","45"});
-		categorys.add(map7);
+		Map<String, Object> map0 = new HashMap<>();
+		map0.put("category", "短袖");
+		map0.put("size", sizeM);
+		categorysM.add(map0);
+		
+		Map<String, Object> map11 = new HashMap<>();
+		map11.put("category", "长袖");
+		map11.put("size", sizeM);
+		categorysM.add(map11);
+		
+		Map<String, Object> map21 = new HashMap<>();
+		map21.put("category", "外套");
+		map21.put("size", sizeM);
+		categorysM.add(map21);
+		
+		Map<String, Object> map31 = new HashMap<>();
+		map31.put("category", "短裤");
+		map31.put("size", sizeM);
+		categorysM.add(map31);
+		
+		Map<String, Object> map41 = new HashMap<>();
+		map41.put("category", "长裤");
+		map41.put("size", sizeM);
+		categorysM.add(map41);
+		
+		
+		Map<String, Object> map61 = new HashMap<>();
+		map61.put("category", "配饰");
+		map61.put("size", new String[]{"均码"});
+		categorysM.add(map61);
+		categorysF.add(map61);
+		
+		Map<String, Object> map71 = new HashMap<>();
+		map71.put("category", "鞋");
+		map71.put("size", new String[]{"36","37","38","39","40","41","42","43","44","45"});
+		categorysM.add(map71);
+		categorysF.add(map71);
 		
 		Map<String, Object> map8 = new HashMap<>();
 		map8.put("category", "未发售");
 		map8.put("size", new String[]{});
-		categorys.add(map8); 
+		categorysM.add(map8);
+		categorysF.add(map8);
 		
 		List<Object> a = new ArrayList<>();
 		Map<String, Object> map9 = new HashMap<>();
 		map9.put("type", "男装");
-		map9.put("categorys", categorys);
+		map9.put("categorys", categorysM);
 		a.add(map9);
 		
 		Map<String, Object> map10 = new HashMap<>();
 		map10.put("type", "女装");
-		map10.put("categorys", categorys);
+		map10.put("categorys", categorysF);
 		a.add(map10);
 		return jsonResultHelper.buildSuccessJsonResult(a);
 	}

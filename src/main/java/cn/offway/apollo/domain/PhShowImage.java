@@ -55,7 +55,10 @@ public class PhShowImage implements Serializable {
 
 	/** 拒绝原因 **/
 	private String checkContent;
-
+	
+	/** 使用明星  **/
+	private String starName;
+	
 	/** 创建时间 **/
 	private Date createTime;
 
@@ -209,4 +212,15 @@ public class PhShowImage implements Serializable {
 	public void setUnionid(String unionid) {
 		this.unionid = unionid;
 	}
+
+	@Column(name = "star_name", length = 200)
+	public String getStarName() {
+		return starName;
+	}
+
+	public void setStarName(String starName) {
+		this.starName = starName;
+	}
+	
+	
 }

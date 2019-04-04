@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -82,7 +83,12 @@ public class PhGoodsServiceImpl implements PhGoodsService {
 				}
 				
 				if(StringUtils.isNotBlank(goodsDto.getType())){
-					params.add(criteriaBuilder.equal(root.get("type"), goodsDto.getType()));
+					
+					In<String> in = criteriaBuilder.in(root.get("type"));
+					in.value(goodsDto.getType());
+					in.value("男女同款");
+					params.add(in);
+//					params.add(criteriaBuilder.equal(root.get("type"), goodsDto.getType()));
 				}
 				
 				params.add(criteriaBuilder.equal(root.get("status"),  "1"));

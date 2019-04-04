@@ -188,7 +188,8 @@ public class UserController {
 	public JsonResult showimage(@ApiParam("订单号") @RequestParam String orderNo,
 			@ApiParam("图片地址，多个用英文逗号相隔") @RequestParam String images,
 		    @ApiParam("网页链接") @RequestParam(required = false) String url,
-		    @ApiParam("描述") @RequestParam(required = false) String content){
+		    @ApiParam("描述") @RequestParam(required = false) String content,
+		    @ApiParam("使用明星") @RequestParam String starName){
 		
 		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
 
@@ -204,6 +205,7 @@ public class UserController {
 		phShowImage.setShowImage(images);
 		phShowImage.setContent(content);
 		phShowImage.setStatus("0");
+		phShowImage.setStarName(starName);
 		phShowImageService.save(phShowImage);
 		
 		phOrderInfo.setIsUpload("1");
