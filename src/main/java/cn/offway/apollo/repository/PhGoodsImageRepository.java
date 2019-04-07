@@ -19,6 +19,6 @@ public interface PhGoodsImageRepository extends JpaRepository<PhGoodsImage,Long>
 	
 	List<PhGoodsImage> findByGoodsId(Long goodsId);
 	
-	@Query(nativeQuery=true,value="select image_url from ph_goods_image where goods_id=?1 and type=?2 order by id desc")
+	@Query(nativeQuery=true,value="select image_url from ph_goods_image where goods_id=?1 and type=?2 order by image_url")
 	List<String> findByGoodsId(Long goodsId,String type);
 }
