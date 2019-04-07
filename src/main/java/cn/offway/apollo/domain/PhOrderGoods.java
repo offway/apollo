@@ -22,6 +22,15 @@ public class PhOrderGoods implements Serializable {
 
     /** 订单号 **/
     private String orderNo;
+    
+    /** 品牌ID **/
+    private Long brandId;
+
+    /** 品牌名称 **/
+    private String brandName;
+
+    /** 品牌LOGO **/
+    private String brandLogo;
 
     /** 商品ID **/
     private Long goodsId;
@@ -74,6 +83,33 @@ public class PhOrderGoods implements Serializable {
         this.orderNo = orderNo;
     }
 
+    @Column(name = "brand_id", length = 11)
+    public Long getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(Long brandId) {
+        this.brandId = brandId;
+    }
+
+    @Column(name = "brand_name", length = 50)
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
+    }
+
+    @Column(name = "brand_logo", length = 50)
+    public String getBrandLogo() {
+        return brandLogo;
+    }
+
+    public void setBrandLogo(String brandLogo) {
+        this.brandLogo = brandLogo;
+    }
+    
     @Column(name = "goods_id", length = 11)
     public Long getGoodsId() {
         return goodsId;

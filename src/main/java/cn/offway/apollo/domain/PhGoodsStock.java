@@ -28,6 +28,9 @@ public class PhGoodsStock implements Serializable {
     
     /** 颜色图片 **/
     private String image;
+    
+    /** SKU **/
+    private String sku;
 
     /** 品牌ID **/
     private Long brandId;
@@ -181,8 +184,17 @@ public class PhGoodsStock implements Serializable {
     public void setStock(Long stock) {
         this.stock = stock;
     }
+    
+    @Column(name = "sku", length = 100)
+    public String getSku() {
+		return sku;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
+	public void setSku(String sku) {
+		this.sku = sku;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_time")
     public Date getCreateTime() {
         return createTime;

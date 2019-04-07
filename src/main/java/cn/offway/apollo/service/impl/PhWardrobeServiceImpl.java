@@ -423,6 +423,9 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			//phOrderGoods.setOrderId(orderId);
 			phOrderGoods.setOrderNo(phOrderInfo.getOrderNo());
 			phOrderGoods.setSize(phWardrobe.getSize());
+			phOrderGoods.setBrandId(phWardrobe.getBrandId());
+			phOrderGoods.setBrandLogo(phWardrobe.getBrandLogo());
+			phOrderGoods.setBrandName(phWardrobe.getBrandName());
 			phOrderGoodss.add(phOrderGoods);
 			
 		}

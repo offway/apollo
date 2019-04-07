@@ -64,7 +64,7 @@ public class GoodsController {
 		List<Object> categorysM = new ArrayList<>();
 		
 		String[] sizeF = new String[]{"XS","S","M","L","均码"};
-		String[] sizeM = new String[]{"XL","M","L","均码"};
+		String[] sizeM = new String[]{"M","L","XL","均码"};
 
 		
 		Map<String, Object> map = new HashMap<>();
