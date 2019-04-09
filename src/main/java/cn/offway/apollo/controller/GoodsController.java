@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -235,8 +236,33 @@ public class GoodsController {
 		resultMap.put("banners", banners);
 		resultMap.put("contents", contents);
 		
+		List<String> sizeAll = new ArrayList<>();
+		sizeAll.add("XS");
+		sizeAll.add("S");
+		sizeAll.add("M");
+		sizeAll.add("L");
+		sizeAll.add("XL");
+		sizeAll.add("36");
+		sizeAll.add("37");
+		sizeAll.add("38");
+		sizeAll.add("39");
+		sizeAll.add("40");
+		sizeAll.add("41");
+		sizeAll.add("42");
+		sizeAll.add("43");
+		sizeAll.add("44");
+		sizeAll.add("45");
+		sizeAll.add("均码");
+		
+		sizeAll.removeIf(new Predicate<String>() {
+		    @Override
+		    public boolean test(String size) {
+		        return !sizes.contains(size);
+		    }
+		});
+		
 		Map<String, Object> stock = new HashMap<>();
-		stock.put("sizes", sizes);
+		stock.put("sizes", sizeAll);
 		stock.put("colors", colors);
 		stock.put("details", list);
 		resultMap.put("stock", stock);
