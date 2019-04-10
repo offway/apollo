@@ -83,10 +83,10 @@ public class GoodsController {
 		map2.put("size", sizeF);
 		categorysF.add(map2);
 		
-		Map<String, Object> map3 = new HashMap<>();
+		/*Map<String, Object> map3 = new HashMap<>();
 		map3.put("category", "夹克");
 		map3.put("size", sizeF);
-		categorysF.add(map3);
+		categorysF.add(map3);*/
 		
 		
 		
@@ -131,10 +131,10 @@ public class GoodsController {
 		i.put("size", sizeM);
 		categorysM.add(i);
 		
-		Map<String, Object> j = new HashMap<>();
+		/*Map<String, Object> j = new HashMap<>();
 		j.put("category", "夹克");
 		j.put("size", sizeM);
-		categorysM.add(j);
+		categorysM.add(j);*/
 		
 		
 		
