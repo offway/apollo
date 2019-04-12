@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.offway.apollo.domain.PhGoods;
 import cn.offway.apollo.domain.PhGoodsStock;
 import cn.offway.apollo.dto.GoodsDto;
@@ -59,6 +61,12 @@ public class GoodsController {
 	
 	@ApiOperation("商品分类")
 	@GetMapping("/classification")
+	public Object classification(){
+		return JSON.parse(phGoodsService.goodsConfig());
+	}
+	
+	/*@ApiOperation("商品分类")
+	@GetMapping("/classification")
 	public JsonResult classification(){
 		
 		List<Object> categorysF = new ArrayList<>();
@@ -83,10 +91,10 @@ public class GoodsController {
 		map2.put("size", sizeF);
 		categorysF.add(map2);
 		
-		/*Map<String, Object> map3 = new HashMap<>();
+		Map<String, Object> map3 = new HashMap<>();
 		map3.put("category", "夹克");
 		map3.put("size", sizeF);
-		categorysF.add(map3);*/
+		categorysF.add(map3);
 		
 		
 		
@@ -131,10 +139,10 @@ public class GoodsController {
 		i.put("size", sizeM);
 		categorysM.add(i);
 		
-		/*Map<String, Object> j = new HashMap<>();
+		Map<String, Object> j = new HashMap<>();
 		j.put("category", "夹克");
 		j.put("size", sizeM);
-		categorysM.add(j);*/
+		categorysM.add(j);
 		
 		
 		
@@ -190,7 +198,7 @@ public class GoodsController {
 		map10.put("categorys", categorysF);
 		list.add(map10);
 		return jsonResultHelper.buildSuccessJsonResult(list);
-	}
+	}*/
 	
 	@ApiOperation("商品列表")
 	@PostMapping("/list")

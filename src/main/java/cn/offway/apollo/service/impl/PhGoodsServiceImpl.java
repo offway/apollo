@@ -51,6 +51,11 @@ public class PhGoodsServiceImpl implements PhGoodsService {
 	}
 	
 	@Override
+	public String goodsConfig(){
+		return phGoodsRepository.goodsConfig();
+	}
+	
+	@Override
 	public Page<PhGoods> findByPage(final GoodsDto goodsDto,Pageable page){
 		return phGoodsRepository.findAll(new Specification<PhGoods>() {
 			

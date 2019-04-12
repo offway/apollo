@@ -19,4 +19,6 @@ public interface PhGoodsService{
 	PhGoods findOne(Long id);
 
 	Page<PhGoods> findByPage(GoodsDto goodsDto, Pageable page);
+
+	String goodsConfig();
 }
