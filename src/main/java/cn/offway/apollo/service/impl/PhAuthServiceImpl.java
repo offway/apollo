@@ -73,7 +73,7 @@ public class PhAuthServiceImpl implements PhAuthService {
 	@Override
 	public JsonResult auth(AuthDto authDto){
 
-		PhCode phCode = phCodeService.findByCodeAndStatusAndPhoneAndPositionAndRealName(authDto.getCode(), "0", authDto.getPhone(), authDto.getPosition(), authDto.getRealName());
+		PhCode phCode = phCodeService.findByCodeAndStatusAndPhoneAndRealName(authDto.getCode(), "0", authDto.getPhone(), authDto.getRealName());
 		if(null == phCode){
 			//邀请码无效
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.CODE_ERROR);

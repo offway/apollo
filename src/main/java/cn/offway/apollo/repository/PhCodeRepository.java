@@ -17,5 +17,7 @@ public interface PhCodeRepository extends JpaRepository<PhCode,Long>,JpaSpecific
 
 	int countByCodeAndStatus(String code,String status);
 	
+	PhCode findByCodeAndStatusAndPhoneAndRealName(String code,String status,String phone,String realName);
+	
 	PhCode findByCodeAndStatusAndPhoneAndPositionAndRealName(String code,String status,String phone,String position,String realName);
 }

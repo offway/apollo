@@ -24,4 +24,6 @@ public interface PhCodeService{
 
 	PhCode findByCodeAndStatusAndPhoneAndPositionAndRealName(String code, String status, String phone, String position,
 			String realName);
+
+	PhCode findByCodeAndStatusAndPhoneAndRealName(String code, String status, String phone, String realName);
 }
