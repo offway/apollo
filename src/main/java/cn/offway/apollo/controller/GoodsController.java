@@ -251,12 +251,14 @@ public class GoodsController {
 		sizeAll.add("L");
 		sizeAll.add("XL");
 		sizeAll.add("36");
+		sizeAll.add("36.5");
 		sizeAll.add("37");
 		sizeAll.add("38");
 		sizeAll.add("39");
 		sizeAll.add("40");
 		sizeAll.add("41");
 		sizeAll.add("42");
+		sizeAll.add("42.5");
 		sizeAll.add("43");
 		sizeAll.add("44");
 		sizeAll.add("45");
