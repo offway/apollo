@@ -45,4 +45,9 @@ public class PhGoodsStockServiceImpl implements PhGoodsStockService {
 	public int updateStock(Long wrId){
 		return phGoodsStockRepository.updateStock(wrId);
 	}
+	
+	@Override
+	public PhGoodsStock findByGoodsIdAndSizeAndColor(Long goodsId,String size,String color){
+		return phGoodsStockRepository.findByGoodsIdAndSizeAndColor(goodsId, size, color);
+	}
 }

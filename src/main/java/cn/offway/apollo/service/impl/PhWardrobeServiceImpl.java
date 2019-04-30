@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.offway.apollo.domain.PhAddress;
 import cn.offway.apollo.domain.PhBrand;
 import cn.offway.apollo.domain.PhGoods;
+import cn.offway.apollo.domain.PhGoodsStock;
 import cn.offway.apollo.domain.PhOrderExpressInfo;
 import cn.offway.apollo.domain.PhOrderGoods;
 import cn.offway.apollo.domain.PhOrderInfo;
@@ -35,6 +37,7 @@ import cn.offway.apollo.service.PhOrderGoodsService;
 import cn.offway.apollo.service.PhOrderInfoService;
 import cn.offway.apollo.service.PhUserInfoService;
 import cn.offway.apollo.service.PhWardrobeService;
+import cn.offway.apollo.service.SmsService;
 import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
@@ -80,6 +83,9 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	
 	@Autowired
 	private PhUserInfoService phUserInfoService;
+	
+	@Autowired
+	private SmsService smsService;
 	
 	
 	@Override
@@ -419,7 +425,9 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			phOrderGoods.setCreateTime(now);
 			phOrderGoods.setGoodsId(phWardrobe.getGoodsId());
 			phOrderGoods.setGoodsName(phWardrobe.getGoodsName());
-			phOrderGoods.setImage(phWardrobe.getImage());
+			PhGoodsStock phGoodsStock = phGoodsStockService.findByGoodsIdAndSizeAndColor(phWardrobe.getGoodsId(), phWardrobe.getSize(), phWardrobe.getColor());
+			phOrderGoods.setSku(phGoodsStock.getSku());
+			phOrderGoods.setImage(phGoodsStock.getImage());
 			//phOrderGoods.setOrderId(orderId);
 			phOrderGoods.setOrderNo(phOrderInfo.getOrderNo());
 			phOrderGoods.setSize(phWardrobe.getSize());
@@ -436,6 +444,14 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		phOrderGoodsService.save(phOrderGoodss);
 		//清除衣柜
 		phWardrobeRepository.delete(wrIds);
+		
+		try {
+			//短信通知61
+			smsService.sendMsgBatch("15001775461", "【OFFWAY】提醒您：亲，您有一笔Showroom新订单来啦！请尽快发货！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("短信通知商户异常unionid="+unionid,e);
+		}
 		
 		
 		return jsonResultHelper.buildSuccessJsonResult(null);

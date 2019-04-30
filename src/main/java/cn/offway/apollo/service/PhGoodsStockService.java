@@ -19,4 +19,6 @@ public interface PhGoodsStockService{
 	List<PhGoodsStock> findByGoodsId(Long goodsId);
 
 	int updateStock(Long wrId);
+
+	PhGoodsStock findByGoodsIdAndSizeAndColor(Long goodsId, String size, String color);
 }

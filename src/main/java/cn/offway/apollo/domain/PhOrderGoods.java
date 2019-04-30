@@ -52,6 +52,9 @@ public class PhOrderGoods implements Serializable {
 
     /** 备注 **/
     private String remark;
+    
+    /** SKU **/
+    private String sku;
 
 
     @Id
@@ -173,5 +176,14 @@ public class PhOrderGoods implements Serializable {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+    
+    @Column(name = "sku", length = 100)
+    public String getSku() {
+		return sku;
+	}
+
+	public void setSku(String sku) {
+		this.sku = sku;
+	}
 
 }
