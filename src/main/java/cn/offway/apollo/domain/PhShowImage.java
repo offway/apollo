@@ -5,7 +5,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * 晒图
+ * 返图
  *
  * @author wn
  * @version $v: 1.0.0, $time:2018-02-12 11:26:00 Exp $
@@ -22,6 +22,12 @@ public class PhShowImage implements Serializable {
 
 	/** 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。 **/
 	private String unionid;
+	
+	/** 职位 **/
+    private String position;
+
+    /** 姓名 **/
+    private String realName;
 
 	/** 品牌ID **/
 	private Long brandId;
@@ -221,6 +227,24 @@ public class PhShowImage implements Serializable {
 	public void setStarName(String starName) {
 		this.starName = starName;
 	}
+	
+	@Column(name = "position", length = 20)
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    @Column(name = "real_name", length = 50)
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
 	
 	
 }
