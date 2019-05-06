@@ -157,9 +157,10 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		phWardrobe.setCreateTime(new Date());
 		phWardrobe.setGoodsId(goodsId);
 		phWardrobe.setGoodsName(phGoods.getName());
-		phWardrobe.setImage(phGoods.getImage());
-		phWardrobe.setIsOffway(phGoods.getIsOffway());
 		phWardrobe.setSize(size);
+		PhGoodsStock phGoodsStock = phGoodsStockService.findByGoodsIdAndSizeAndColor(phWardrobe.getGoodsId(), phWardrobe.getSize(), phWardrobe.getColor());
+		phWardrobe.setImage(phGoodsStock.getImage());
+		phWardrobe.setIsOffway(phGoods.getIsOffway());
 		phWardrobe.setType(phGoods.getType());
 		phWardrobe.setUnionid(unionid);
 		phWardrobe.setUseDate(DateUtils.parseDate(useDate, "yyyy-MM-dd"));
@@ -337,6 +338,8 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 					offwayOrder.setOrderNo(phOrderInfoService.generateOrderNo("PH"));
 					offwayOrder.setStatus("0");
 					offwayOrder.setUnionid(phWardrobe.getUnionid());
+					offwayOrder.setRealName(phUserInfo.getRealName());
+					offwayOrder.setPosition(phUserInfo.getPosition());
 					offwayOrder.setUseDate(phWardrobe.getUseDate());
 					offwayOrder.setUsers(users);
 					offwayOrder.setIsUpload("0");
@@ -386,6 +389,8 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 				phOrderInfo.setOrderNo(phOrderInfoService.generateOrderNo("PH"));
 				phOrderInfo.setStatus("0");
 				phOrderInfo.setUnionid(phWardrobe.getUnionid());
+				phOrderInfo.setRealName(phUserInfo.getRealName());
+				phOrderInfo.setPosition(phUserInfo.getPosition());
 				phOrderInfo.setUseDate(phWardrobe.getUseDate());
 				phOrderInfo.setUsers(users);
 				phOrderInfo.setIsUpload("0");

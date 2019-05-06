@@ -41,10 +41,10 @@ public class PhOrderInfo implements Serializable {
     /** 是否自营[0-否,1-是] **/
     private String isOffway;
 
-    /** 状态[0-已下单,1-已发货,2-已寄回,3-已收货] **/
+    /** 状态[0-已下单,1-已发货,2-已寄回,3-已收货,4-取消] **/
     private String status;
     
-    /** 是否晒图[0-否,1-是]**/
+    /** 是否返图[0-否,1-是]**/
     private String isUpload;
 
     /** 创建时间 **/
@@ -56,11 +56,17 @@ public class PhOrderInfo implements Serializable {
     /** 收货时间 **/
     private Date receiptTime;
 
-    /** 晒图时间 **/
+    /** 返图时间 **/
     private Date showTime;
     
     /** 备注 **/
     private String remark;
+    
+    /** 职位 **/
+    private String position;
+
+    /** 姓名 **/
+    private String realName;
 
 
     @Id
@@ -213,6 +219,24 @@ public class PhOrderInfo implements Serializable {
 	public void setReceiptTime(Date receiptTime) {
 		this.receiptTime = receiptTime;
 	}
+	
+	@Column(name = "position", length = 20)
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    @Column(name = "real_name", length = 50)
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
     
     
 
