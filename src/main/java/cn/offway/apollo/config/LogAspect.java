@@ -25,7 +25,7 @@ public class LogAspect {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@AfterReturning(value="execution(* cn.offway.zeus.controller..*.*(..))", returning="rvt")
+	@AfterReturning(value="execution(* cn.offway.apollo.controller..*.*(..))", returning="rvt")
 	public void after(JoinPoint joinPoint, Object rvt){
 		
 		RequestAttributes ra = RequestContextHolder.getRequestAttributes();
