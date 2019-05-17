@@ -138,13 +138,13 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_SHOW_IMAGE);
 		}
 		
-		List<String> status = new ArrayList<>();
+		/*List<String> status = new ArrayList<>();
 		status.add("0");
 		status.add("1");
 		int countStatus = phOrderInfoService.countByUnionidAndStatusIn(unionid, status);
 		if(countStatus >0){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_RETURN_IMAGE);
-		}
+		}*/
 		
 		
 		PhGoods phGoods = phGoodsService.findOne(goodsId);
@@ -296,13 +296,13 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 //			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_SHOW_IMAGE);
 //		}
 		
-		List<String> status = new ArrayList<>();
+		/*List<String> status = new ArrayList<>();
 		status.add("0");
 		status.add("1");
 		int countStatus = phOrderInfoService.countByUnionidAndStatusIn(unionid, status);
 		if(countStatus >0){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.NO_RETURN_IMAGE);
-		}
+		}*/
 		
 		
 		List<Long> wrIds = Arrays.asList(wardrobeIds);
