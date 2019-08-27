@@ -117,6 +117,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		unionids.add("o9I8Z0kvUldl6cz50pyweXfeApPA");
 		unionids.add("o9I8Z0vf3u6PzUzTrrE1cIm3a0Zs");
 		unionids.add("o9I8Z0kZhXXlhe8eZeOfKprIGu_M");
+		unionids.add("o9I8Z0hloz50wVhZ0osijEnJmemU");
 
 		if(!unionids.contains(unionid)){
 			PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
@@ -277,6 +278,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		unionids.add("o9I8Z0kvUldl6cz50pyweXfeApPA");
 		unionids.add("o9I8Z0vf3u6PzUzTrrE1cIm3a0Zs");
 		unionids.add("o9I8Z0kZhXXlhe8eZeOfKprIGu_M");
+		unionids.add("o9I8Z0hloz50wVhZ0osijEnJmemU");
 
 		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
 		if(!unionids.contains(unionid)){
