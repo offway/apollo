@@ -32,5 +32,11 @@ public class BrandController {
 	public JsonResult info(@ApiParam("品牌ID") @RequestParam Long id){
 		return jsonResultHelper.buildSuccessJsonResult(phBrandService.findOne(id));
 	}
+
+	@ApiOperation("全部品牌列表")
+	@GetMapping("/list")
+	public JsonResult list(){
+		return jsonResultHelper.buildSuccessJsonResult(phBrandService.findAll());
+	}
 	
 }

@@ -9,6 +9,8 @@ import cn.offway.apollo.service.PhBrandService;
 import cn.offway.apollo.domain.PhBrand;
 import cn.offway.apollo.repository.PhBrandRepository;
 
+import java.util.List;
+
 
 /**
  * 品牌库Service接口实现
@@ -32,5 +34,10 @@ public class PhBrandServiceImpl implements PhBrandService {
 	@Override
 	public PhBrand findOne(Long id){
 		return phBrandRepository.findOne(id);
+	}
+
+	@Override
+	public List<PhBrand> findAll(){
+		return phBrandRepository.findAll();
 	}
 }

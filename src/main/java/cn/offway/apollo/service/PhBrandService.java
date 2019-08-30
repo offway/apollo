@@ -2,6 +2,8 @@ package cn.offway.apollo.service;
 
 import cn.offway.apollo.domain.PhBrand;
 
+import java.util.List;
+
 /**
  * 品牌库Service接口
  *
@@ -13,4 +15,6 @@ public interface PhBrandService{
 	PhBrand save(PhBrand phBrand);
 	
 	PhBrand findOne(Long id);
+
+	List<PhBrand> findAll();
 }
