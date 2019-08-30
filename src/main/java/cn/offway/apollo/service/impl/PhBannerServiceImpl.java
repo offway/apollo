@@ -1,13 +1,14 @@
 package cn.offway.apollo.service.impl;
 
+import cn.offway.apollo.domain.PhBanner;
+import cn.offway.apollo.repository.PhBannerRepository;
+import cn.offway.apollo.service.PhBannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import cn.offway.apollo.service.PhBannerService;
 
-import cn.offway.apollo.domain.PhBanner;
-import cn.offway.apollo.repository.PhBannerRepository;
+import java.util.List;
 
 
 /**
@@ -19,18 +20,23 @@ import cn.offway.apollo.repository.PhBannerRepository;
 @Service
 public class PhBannerServiceImpl implements PhBannerService {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private PhBannerRepository phBannerRepository;
-	
-	@Override
-	public PhBanner save(PhBanner phBanner){
-		return phBannerRepository.save(phBanner);
-	}
-	
-	@Override
-	public PhBanner findOne(Long id){
-		return phBannerRepository.findOne(id);
-	}
+    @Autowired
+    private PhBannerRepository phBannerRepository;
+
+    @Override
+    public PhBanner save(PhBanner phBanner) {
+        return phBannerRepository.save(phBanner);
+    }
+
+    @Override
+    public PhBanner findOne(Long id) {
+        return phBannerRepository.findOne(id);
+    }
+
+    @Override
+    public List<PhBanner> findAll() {
+        return phBannerRepository.findAll();
+    }
 }

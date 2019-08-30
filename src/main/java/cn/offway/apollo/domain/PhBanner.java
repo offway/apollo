@@ -1,7 +1,7 @@
 package cn.offway.apollo.domain;
 
-import java.io.Serializable;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,32 +14,55 @@ import java.util.Date;
 @Table(name = "ph_banner")
 public class PhBanner implements Serializable {
 
-    /** ID **/
+    /**
+     * ID
+     **/
     private Long id;
 
-    /** banner **/
+    /**
+     * banner
+     **/
     private String banner;
 
-    /** 跳转链接 **/
+    /**
+     * 跳转链接
+     **/
     private String url;
 
-    /** 开始时间 **/
+    /**
+     * 开始时间
+     **/
     private Date beginTime;
 
-    /** 截止时间 **/
+    /**
+     * 截止时间
+     **/
     private Date endTime;
 
-    /** 状态[0-未上架,1-已上架] **/
+    /**
+     * 状态[0-未上架,1-已上架]
+     **/
     private String status;
 
-    /** 排序 **/
+    /**
+     * 排序
+     **/
     private Long sort;
 
-    /** 创建时间 **/
+    /**
+     * 创建时间
+     **/
     private Date createTime;
 
-    /** 备注 **/
+    /**
+     * 备注
+     **/
     private String remark;
+
+    /**
+     * 跳转id
+     **/
+    private Long redirectIdl;
 
 
     @Id
@@ -126,6 +149,15 @@ public class PhBanner implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "redirect_id", length = 11)
+    public Long getRedirectIdl() {
+        return redirectIdl;
+    }
+
+    public void setRedirectIdl(Long redirectIdl) {
+        this.redirectIdl = redirectIdl;
     }
 
 }
