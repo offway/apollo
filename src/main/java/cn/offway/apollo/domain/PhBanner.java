@@ -24,10 +24,6 @@ public class PhBanner implements Serializable {
      **/
     private String banner;
 
-    /**
-     * 跳转链接
-     **/
-    private String url;
 
     /**
      * 开始时间
@@ -62,7 +58,7 @@ public class PhBanner implements Serializable {
     /**
      * 跳转id
      **/
-    private Long redirectIdl;
+    private Long redirectId;
 
 
     @Id
@@ -83,15 +79,6 @@ public class PhBanner implements Serializable {
 
     public void setBanner(String banner) {
         this.banner = banner;
-    }
-
-    @Column(name = "url", length = 50)
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -152,12 +139,12 @@ public class PhBanner implements Serializable {
     }
 
     @Column(name = "redirect_id", length = 11)
-    public Long getRedirectIdl() {
-        return redirectIdl;
+    public Long getRedirectId() {
+        return redirectId;
     }
 
-    public void setRedirectIdl(Long redirectIdl) {
-        this.redirectIdl = redirectIdl;
+    public void setRedirectId(Long redirectIdl) {
+        this.redirectId = redirectIdl;
     }
 
 }

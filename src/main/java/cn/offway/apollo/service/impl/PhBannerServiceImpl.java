@@ -6,8 +6,15 @@ import cn.offway.apollo.service.PhBannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.Date;
 import java.util.List;
 
 
@@ -37,6 +44,17 @@ public class PhBannerServiceImpl implements PhBannerService {
 
     @Override
     public List<PhBanner> findAll() {
-        return phBannerRepository.findAll();
+
+        return phBannerRepository.findAll(new Specification<PhBanner>() {
+            @Override
+            public Predicate toPredicate(Root<PhBanner> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Predicate[] predicates = new Predicate[3];
+                predicates[0] = criteriaBuilder.equal(root.get("status"),"1");
+                predicates[1] = criteriaBuilder.lessThanOrEqualTo(root.get("beginTime"),new Date());
+                predicates[2] = criteriaBuilder.greaterThan(root.get("endTime"),new Date());
+                criteriaQuery.where(predicates);
+                return null;
+            }
+        },new Sort("sort"));
     }
 }

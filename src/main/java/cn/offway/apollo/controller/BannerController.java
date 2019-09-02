@@ -29,20 +29,20 @@ public class BannerController {
     @Autowired
     private PhBannerService phBannerService;
 
-    @ApiOperation("品牌跳转")
-    @GetMapping("/bannerid")
-    public JsonResult bannerid() {
-        List<PhBanner> banners = phBannerService.findAll();
-        Map<String, Object> bid = new HashMap<>();
-        List<Object> maps = new ArrayList<>();
-        for (PhBanner banner : banners) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("images", banner.getBanner());
-            map.put("id", banner.getRedirectIdl());
-            maps.add(map);
-        }
-        bid.put("bannerid", maps);
-        return jsonResultHelper.buildSuccessJsonResult(bid);
+    @ApiOperation("banner列表")
+    @GetMapping("/list")
+    public JsonResult list() {
+//        List<PhBanner> banners = phBannerService.findAll();
+//        Map<String, Object> bid = new HashMap<>();
+//        List<Object> maps = new ArrayList<>();
+//        for (PhBanner banner : banners) {
+//            Map<String, Object> map = new HashMap<>();
+//            map.put("images", banner.getBanner());
+//            map.put("id", banner.getRedirectIdl());
+//            maps.add(map);
+//        }
+//        bid.put("bannerid", maps);
+        return jsonResultHelper.buildSuccessJsonResult(phBannerService.findAll());
     }
 
 }
