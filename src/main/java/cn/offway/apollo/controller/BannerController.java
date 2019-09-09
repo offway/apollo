@@ -1,6 +1,5 @@
 package cn.offway.apollo.controller;
 
-import cn.offway.apollo.domain.PhBanner;
 import cn.offway.apollo.service.PhBannerService;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
@@ -11,11 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/banner")
@@ -32,17 +26,6 @@ public class BannerController {
     @ApiOperation("banner列表")
     @GetMapping("/list")
     public JsonResult list() {
-//        List<PhBanner> banners = phBannerService.findAll();
-//        Map<String, Object> bid = new HashMap<>();
-//        List<Object> maps = new ArrayList<>();
-//        for (PhBanner banner : banners) {
-//            Map<String, Object> map = new HashMap<>();
-//            map.put("images", banner.getBanner());
-//            map.put("id", banner.getRedirectIdl());
-//            maps.add(map);
-//        }
-//        bid.put("bannerid", maps);
         return jsonResultHelper.buildSuccessJsonResult(phBannerService.findAll());
     }
-
 }
