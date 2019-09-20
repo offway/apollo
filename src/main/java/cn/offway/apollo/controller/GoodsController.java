@@ -1,14 +1,12 @@
 package cn.offway.apollo.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
+import cn.offway.apollo.domain.PhGoodsCategory;
+import cn.offway.apollo.domain.PhGoodsType;
+import cn.offway.apollo.dto.GoodsTpyeDto;
+import cn.offway.apollo.service.*;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -28,10 +26,6 @@ import com.alibaba.fastjson.JSON;
 import cn.offway.apollo.domain.PhGoods;
 import cn.offway.apollo.domain.PhGoodsStock;
 import cn.offway.apollo.dto.GoodsDto;
-import cn.offway.apollo.service.PhGoodsImageService;
-import cn.offway.apollo.service.PhGoodsService;
-import cn.offway.apollo.service.PhGoodsStockService;
-import cn.offway.apollo.service.PhHolidayService;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
 import io.swagger.annotations.ApiOperation;
@@ -57,12 +51,38 @@ public class GoodsController {
 	
 	@Autowired
 	private PhHolidayService phHolidayService;
+
+	@Autowired
+	private PhGoodsTypeService phGoodsTypeService;
+
+	@Autowired
+	private PhGoodsCategoryService phGoodsCategoryService;
 	
 	
 	@ApiOperation("商品分类")
 	@GetMapping("/classification")
 	public Object classification(){
-		return JSON.parse(phGoodsService.goodsConfig());
+		List<PhGoodsType> goodsType = phGoodsTypeService.findAll();
+		List<Object> categoryList = new ArrayList<>();
+		for (PhGoodsType phGoodsType : goodsType) {
+			Map<String,Object> map = new HashMap<>();
+			List<PhGoodsCategory> phGoodsCategorys = phGoodsCategoryService.findByGoodsType(phGoodsType.getId());
+			List<GoodsTpyeDto> goodsTpyeDtos = new ArrayList<>();
+			for (PhGoodsCategory phGoodsCategory : phGoodsCategorys) {
+				GoodsTpyeDto goodsTpyeDto = new GoodsTpyeDto();
+				String size = phGoodsCategory.getRemark();
+				String[] sizes = size.split(",");
+				List<String> sizesList= Arrays.asList(sizes);
+				goodsTpyeDto.setSize(sizesList);
+				goodsTpyeDto.setCategory(phGoodsCategory.getName());
+				goodsTpyeDtos.add(goodsTpyeDto);
+			}
+			map.put("categorys",goodsTpyeDtos);
+			map.put("type",phGoodsType.getName());
+			categoryList.add(map);
+		}
+		return jsonResultHelper.buildSuccessJsonResult(categoryList);
+		//return JSON.parse(phGoodsService.goodsConfig());
 	}
 	
 	/*@ApiOperation("商品分类")
