@@ -58,7 +58,7 @@ public class PhBanner implements Serializable {
     /**
      * 跳转id
      **/
-    private Long redirectId;
+    private String redirectId;
 
 
     @Id
@@ -138,12 +138,12 @@ public class PhBanner implements Serializable {
         this.remark = remark;
     }
 
-    @Column(name = "redirect_id", length = 11)
-    public Long getRedirectId() {
+    @Column(name = "redirect_id", length = 5)
+    public String getRedirectId() {
         return redirectId;
     }
 
-    public void setRedirectId(Long redirectIdl) {
+    public void setRedirectId(String redirectIdl) {
         this.redirectId = redirectIdl;
     }
 
