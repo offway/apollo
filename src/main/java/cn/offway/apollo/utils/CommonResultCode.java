@@ -51,6 +51,10 @@ public enum CommonResultCode implements ResultCode {
     
     /** 修改库存失败  */
     UPDATE_STOCK_ERROR("1013", "UPDATE_STOCK_ERROR"),
+
+    /** 修改使用时间失败  */
+    UPDATE_DATE_ERROR("1014", "UPDATE_DATE_ERROR"),
+
     ;
 	
 	

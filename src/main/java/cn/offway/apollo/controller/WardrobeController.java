@@ -1,9 +1,13 @@
 package cn.offway.apollo.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import cn.offway.apollo.domain.PhWardrobe;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +104,18 @@ public class WardrobeController {
 				return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
 			}
 		}
+	}
+
+	@ApiOperation("修改使用时间")
+	@PostMapping("/deitByIds")
+	public JsonResult deitByIds(@ApiParam("衣柜ID,多个用逗号隔开") @RequestParam String wardrobeIds,@ApiParam("使用日期,格式yyyy-MM-dd") @RequestParam String useDate) throws ParseException {
+		List<String> a =  Arrays.asList(wardrobeIds.split(","));
+		for (String s : a) {
+			PhWardrobe wardrobe = phWardrobeService.findOne(Long.valueOf(s));
+			wardrobe.setUseDate(DateUtils.parseDate(useDate, "yyyy-MM-dd"));
+			phWardrobeService.save(wardrobe);
+		}
+		return jsonResultHelper.buildFailJsonResult(CommonResultCode.SUCCESS);
 	}
 	
 }

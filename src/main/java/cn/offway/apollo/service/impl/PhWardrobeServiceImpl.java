@@ -1,11 +1,6 @@
 package cn.offway.apollo.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -193,6 +188,10 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		List<PhWardrobe> invalids = new ArrayList<>();
 
 		Date now = new Date();
+		Calendar calendar = new GregorianCalendar();
+
+		calendar.setTime(now);
+		calendar.add(calendar.DATE,2);
 		for (PhWardrobe wr : all) {
 			boolean exists = false;
 			for (PhWardrobe w : eff) {
@@ -211,7 +210,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 				wardrobes.add(wr);
 				effMap.put(key, wardrobes);
 				
-			}else if(wr.getUseDate().before(now)){
+			}else if(wr.getUseDate().before(now) || wr.getUseDate().before(calendar.getTime()) ){
 				//使用时间无效
 				wr.setRemark("1");
 				invalids.add(wr);
