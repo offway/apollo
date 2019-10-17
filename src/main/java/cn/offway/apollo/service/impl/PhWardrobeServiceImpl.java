@@ -191,7 +191,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		Calendar calendar = new GregorianCalendar();
 
 		calendar.setTime(now);
-		calendar.add(calendar.DATE,3);
+		calendar.add(calendar.DATE,2);
 		for (PhWardrobe wr : all) {
 			boolean exists = false;
 			for (PhWardrobe w : eff) {
