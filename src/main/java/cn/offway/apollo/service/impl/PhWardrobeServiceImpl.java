@@ -191,7 +191,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		Calendar calendar = new GregorianCalendar();
 
 		calendar.setTime(now);
-		calendar.add(calendar.DATE,2);
+		calendar.add(calendar.DATE,3);
 		for (PhWardrobe wr : all) {
 			boolean exists = false;
 			for (PhWardrobe w : eff) {
@@ -200,24 +200,31 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 					break;
 				}
 			}
+			logger.info(wr.getUseDate().toString());
+			logger.info(calendar.getTime().toString());
 			if(exists){
-				String key = "1".equals(wr.getIsOffway())?"OFFWAY Showroom":wr.getBrandName();
-				key = key+","+DateFormatUtils.format(wr.getUseDate(), "yyyy-MM-dd");
-				List<PhWardrobe> wardrobes = effMap.get(key);
-				if(null == wardrobes ||wardrobes.isEmpty()){
-					wardrobes = new ArrayList<>();
+
+				if(wr.getUseDate().before(now) || wr.getUseDate().before(calendar.getTime()) ){
+					//使用时间无效
+					wr.setRemark("1");
+					invalids.add(wr);
+					logger.info("使用时间无效");
+				}else{
+					String key = "1".equals(wr.getIsOffway())?"OFFWAY Showroom":wr.getBrandName();
+					key = key+","+DateFormatUtils.format(wr.getUseDate(), "yyyy-MM-dd");
+					List<PhWardrobe> wardrobes = effMap.get(key);
+					if(null == wardrobes ||wardrobes.isEmpty()){
+						wardrobes = new ArrayList<>();
+					}
+					wardrobes.add(wr);
+					effMap.put(key, wardrobes);
+					logger.info("正常");
 				}
-				wardrobes.add(wr);
-				effMap.put(key, wardrobes);
-				
-			}else if(wr.getUseDate().before(now) || wr.getUseDate().before(calendar.getTime()) ){
-				//使用时间无效
-				wr.setRemark("1");
-				invalids.add(wr);
-			}else{
+			}else {
 				//缺货
 				wr.setRemark("0");
 				invalids.add(wr);
+				logger.info("缺货");
 			}
 		}
 		
