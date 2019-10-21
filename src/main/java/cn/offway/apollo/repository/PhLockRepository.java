@@ -14,4 +14,5 @@ import cn.offway.apollo.domain.PhLock;
 public interface PhLockRepository extends JpaRepository<PhLock,Long>,JpaSpecificationExecutor<PhLock> {
 
 	/** 此处写一些自定义的方法 **/
+	PhLock findByGoodsIdAndTemplateTypeAndTemplateId(Long goodsid,String templateType,Long templateId);
 }

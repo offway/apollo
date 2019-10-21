@@ -20,4 +20,6 @@ public interface PhTemplateConfigService{
     void delete(Long id);
 
     List<PhTemplateConfig> save(List<PhTemplateConfig> entities);
+
+    List<PhTemplateConfig> findByGoodsId(Long id);
 }

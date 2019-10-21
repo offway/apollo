@@ -45,4 +45,9 @@ public class PhTemplateConfigServiceImpl implements PhTemplateConfigService {
 	public List<PhTemplateConfig> save(List<PhTemplateConfig> entities){
 		return phTemplateConfigRepository.save(entities);
 	}
+
+	@Override
+	public List<PhTemplateConfig> findByGoodsId(Long id){
+		return phTemplateConfigRepository.findByGoodsIdOrderBySort(id);
+	}
 }

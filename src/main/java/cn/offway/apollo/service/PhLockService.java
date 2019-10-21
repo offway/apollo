@@ -20,4 +20,6 @@ public interface PhLockService{
     void delete(Long id);
 
     List<PhLock> save(List<PhLock> entities);
+
+    PhLock findByGoodsidAndTemplateTypeAndTemplateId(Long goodsid, String templateType, Long templateId);
 }

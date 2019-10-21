@@ -23,7 +23,7 @@ public class PhLock implements Serializable {
     /** 模版类型:[0-1号模板,1-2号模板,2-3号模板,3-4号模板,4-5号模板] **/
     private String templateType;
 
-    /** 模版类型中的id **/
+    /** 模版id **/
     private Long templateId;
 
     /** 是否解锁[0-否,1-是] **/

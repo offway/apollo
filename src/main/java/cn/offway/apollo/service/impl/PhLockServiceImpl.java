@@ -45,4 +45,9 @@ public class PhLockServiceImpl implements PhLockService {
 	public List<PhLock> save(List<PhLock> entities){
 		return phLockRepository.save(entities);
 	}
+
+	@Override
+	public PhLock findByGoodsidAndTemplateTypeAndTemplateId(Long goodsid,String templateType,Long templateId){
+		return phLockRepository.findByGoodsIdAndTemplateTypeAndTemplateId(goodsid,templateType,templateId);
+	}
 }
