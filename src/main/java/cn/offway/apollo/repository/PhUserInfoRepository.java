@@ -14,4 +14,6 @@ import cn.offway.apollo.domain.PhUserInfo;
 public interface PhUserInfoRepository extends JpaRepository<PhUserInfo,Long>,JpaSpecificationExecutor<PhUserInfo> {
 
 	PhUserInfo findByUnionid(String unionid);
+
+	PhUserInfo findByPhone(String phone);
 }

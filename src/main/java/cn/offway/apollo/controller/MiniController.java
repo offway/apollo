@@ -41,9 +41,18 @@ public class MiniController {
 
 	@Value("${mini.secret}")
 	private String SECRET;
+
+	@Value("${mini.booksappid}")
+	private String BOOKSAPPID;
+
+	@Value("${mini.bookssecret}")
+	private String BOOKSSECRET;
+
+	@Value("${mini.appregister.url}")
+	private String APPREGISTERURL;
 	
 	private static final String JSCODE2SESSION = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=CODE&grant_type=authorization_code";
-	
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
@@ -51,6 +60,9 @@ public class MiniController {
 	
 	@Autowired
 	private PhUserInfoService phuserInfoService;
+
+	@Autowired
+	private PhUserInfoService userInfoService;
 	
 	@GetMapping(value = "/getwxacodeunlimit",produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
@@ -129,7 +141,73 @@ public class MiniController {
     public byte[] download(String url) throws IOException {
 		return HttpClientUtil.getByteArray(url);
 	}
-	
+
+	@ApiOperation("获取电子刊小程序用户SESSION")
+	@PostMapping("/bookssendCode")
+	public JsonResult bookssendCode(String code){
+		String url = JSCODE2SESSION;
+		url = url.replace("APPID", BOOKSAPPID).replace("SECRET", BOOKSSECRET).replace("CODE", code);
+		String result = HttpClientUtil.get(url);
+//		JSONObject jsonObject = JSON.parseObject(result);
+//		if(StringUtils.isNotBlank(jsonObject.getString("errcode"))){
+//			return jsonResultHelper.buildFailJsonResult(CommonResultCode.PARAM_ERROR);
+//		}
+//
+//		String session_key = jsonObject.getString("session_key");
+		return jsonResultHelper.buildSuccessJsonResult(JSON.parseObject(result));
+	}
+
+
+	@ApiOperation("电子刊小程序注册/登录")
+	@PostMapping("/booksregister")
+	public JsonResult booksregister(
+			@ApiParam("微信用户ID") @RequestParam String unionid,
+			@ApiParam("微信用户昵称") @RequestParam String nickName,
+			@ApiParam("微信用户头像") @RequestParam String headimgurl,
+			@ApiParam("session_key") @RequestParam String sessionKey,
+			@ApiParam("encryptedData,获取手机号得到") @RequestParam String encryptedData,
+			@ApiParam("iv,获取手机号得到") @RequestParam String iv){
+
+		try {
+			//验证是用户
+			PhUserInfo phUserInfo = null;
+			if(StringUtils.isNotBlank(unionid)){
+				phUserInfo = userInfoService.findByUnionid(unionid);
+				if(null!=phUserInfo){
+					return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
+				}
+			}
+
+			String result = AesCbcUtil.decrypt(encryptedData, sessionKey, iv, "UTF-8");
+			logger.info("解密小程序获取手机号信息:"+result);
+			JSONObject jsonObject = JSON.parseObject(result);
+			String purePhoneNumber = jsonObject.getString("purePhoneNumber");
+			String countryCode = jsonObject.getString("countryCode");
+			StringBuilder sb = new StringBuilder();
+			sb.append("+").append(countryCode).append(purePhoneNumber);
+			String phone = sb.toString();
+
+			phUserInfo = userInfoService.findByPhone(phone);
+			if(null!=phUserInfo){
+				return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
+			}
+			//unionid=UNIONID&nickName=NICKNAME&headimgurl=HEADIMGURL&sessionKey=SESSIONKEY&encryptedData=ENCRYPTEDDATA&iv=IV
+			JSONObject params = new JSONObject();
+			params.put("unionid", unionid);
+			params.put("nickName", nickName);
+			params.put("headimgurl", headimgurl);
+			params.put("sessionKey", sessionKey);
+			params.put("encryptedData", encryptedData);
+			params.put("iv", iv);
+			String url = APPREGISTERURL;
+			HttpClientUtil.postByteArray(url,params.toJSONString());
+			return jsonResultHelper.buildSuccessJsonResult(userInfoService.registered(phone,unionid,nickName,headimgurl));
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("小程序注册异常",e);
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+		}
+	}
 	
 	
 }

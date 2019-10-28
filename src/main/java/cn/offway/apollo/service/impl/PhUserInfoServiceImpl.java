@@ -1,5 +1,6 @@
 package cn.offway.apollo.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import cn.offway.apollo.service.PhUserInfoService;
 
 import cn.offway.apollo.domain.PhUserInfo;
 import cn.offway.apollo.repository.PhUserInfoRepository;
+
+import java.util.Date;
 
 
 /**
@@ -37,5 +40,26 @@ public class PhUserInfoServiceImpl implements PhUserInfoService {
 	@Override
 	public PhUserInfo findByUnionid(String unionid) {
 		return phUserInfoRepository.findByUnionid(unionid);
+	}
+
+	@Override
+	public PhUserInfo findByPhone(String phone){
+		return phUserInfoRepository.findByPhone(phone);
+	}
+
+	@Override
+	public PhUserInfo registered(String phone, String unionid, String nickName,
+								 String headimgurl){
+		PhUserInfo phUserInfo = new PhUserInfo();
+		phUserInfo.setPhone(phone);
+		if(StringUtils.isNotBlank(phone)){
+			nickName = StringUtils.isBlank(nickName)?"OFFWAY_"+phone.substring(5):nickName;
+		}
+		phUserInfo.setNickname(nickName);
+		phUserInfo.setHeadimgurl(headimgurl);
+		phUserInfo.setUnionid(unionid);
+		phUserInfo.setSex("1");
+		phUserInfo = save(phUserInfo);
+		return phUserInfo;
 	}
 }

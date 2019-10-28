@@ -15,4 +15,9 @@ public interface PhUserInfoService{
 	PhUserInfo findOne(Long id);
 	
 	PhUserInfo findByUnionid(String unionid);
+
+	PhUserInfo findByPhone(String phone);
+
+	PhUserInfo registered(String phone, String unionid, String nickName,
+						  String headimgurl);
 }
