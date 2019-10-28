@@ -38,6 +38,9 @@ public class PhTemplate4 implements Serializable {
     /** 备注 **/
     private String remark;
 
+    /** 提示 **/
+    private String promptText;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -112,6 +115,15 @@ public class PhTemplate4 implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "prompt_text", length = 100)
+    public String getPromptText() {
+        return promptText;
+    }
+
+    public void setPromptText(String promptText) {
+        this.promptText = promptText;
     }
 
 }
