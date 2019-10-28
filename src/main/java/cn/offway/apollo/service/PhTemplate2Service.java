@@ -20,4 +20,6 @@ public interface PhTemplate2Service{
     void delete(Long id);
 
     List<PhTemplate2> save(List<PhTemplate2> entities);
+
+    List<PhTemplate2> findOneList(Long id);
 }

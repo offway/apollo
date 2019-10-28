@@ -41,6 +41,9 @@ public class PhTemplate2 implements Serializable {
     /** 备注 **/
     private String remark;
 
+    /** pid **/
+    private Long pid;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -124,6 +127,15 @@ public class PhTemplate2 implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "pid", length = 11)
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
     }
 
 }

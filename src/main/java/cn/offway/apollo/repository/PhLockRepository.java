@@ -15,4 +15,6 @@ public interface PhLockRepository extends JpaRepository<PhLock,Long>,JpaSpecific
 
 	/** 此处写一些自定义的方法 **/
 	PhLock findByGoodsIdAndTemplateTypeAndTemplateId(Long goodsid,String templateType,Long templateId);
+
+	PhLock findByPid(Long pid);
 }

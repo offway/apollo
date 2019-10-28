@@ -30,7 +30,7 @@ public class PhTemplateConfig implements Serializable {
     private Long sort;
 
     /** 发布状态[0-公开,1-解锁] **/
-    private String lock;
+    private String islock;
 
     /** 解锁条件[0-公开,1-解锁] **/
     private String conditions;
@@ -89,13 +89,13 @@ public class PhTemplateConfig implements Serializable {
         this.sort = sort;
     }
 
-    @Column(name = "lock", length = 2)
+    @Column(name = "islock", length = 2)
     public String getLock() {
-        return lock;
+        return islock;
     }
 
-    public void setLock(String lock) {
-        this.lock = lock;
+    public void setLock(String islock) {
+        this.islock = islock;
     }
 
     @Column(name = "conditions", length = 2)

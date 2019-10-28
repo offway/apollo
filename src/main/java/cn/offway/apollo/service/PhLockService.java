@@ -22,4 +22,6 @@ public interface PhLockService{
     List<PhLock> save(List<PhLock> entities);
 
     PhLock findByGoodsidAndTemplateTypeAndTemplateId(Long goodsid, String templateType, Long templateId);
+
+    PhLock findByPid(Long pid);
 }

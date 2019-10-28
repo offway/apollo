@@ -45,4 +45,9 @@ public class PhTemplate2ServiceImpl implements PhTemplate2Service {
 	public List<PhTemplate2> save(List<PhTemplate2> entities){
 		return phTemplate2Repository.save(entities);
 	}
+
+	@Override
+	public List<PhTemplate2> findOneList(Long id){
+		return phTemplate2Repository.findById(id);
+	}
 }

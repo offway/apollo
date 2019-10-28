@@ -66,9 +66,10 @@ public class TemplateController {
                     map.put("lock",lock);
                     break;
                 case "template2":
-                    PhTemplate2 template2 = template2Service.findOne(templateConfig.getTemplateId());
-                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(),"1",template2.getId());
-                    map.put("template2",template2);
+                    List<PhTemplate2> template2s = template2Service.findOneList(templateConfig.getTemplateId());
+                    PhTemplate2 phTemplate2 = template2s.get(0);
+                    lock = lockService.findByPid(phTemplate2.getPid());
+                    map.put("template2",template2s);
                     map.put("lock",lock);
                     break;
                 case "template3":
@@ -79,13 +80,13 @@ public class TemplateController {
                     break;
                 case "template4":
                     PhTemplate4 template4 = template4Service.findOne(templateConfig.getTemplateId());
-                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(),"4",template4.getId());
+                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(),"3",template4.getId());
                     map.put("template4",template4);
                     map.put("lock",lock);
                     break;
                 case "template5":
                     PhTemplate5 template5 = template5Service.findOne(templateConfig.getTemplateId());
-                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(),"5",template5.getId());
+                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(),"4",template5.getId());
                     map.put("template5",template5);
                     map.put("lock",lock);
                     break;

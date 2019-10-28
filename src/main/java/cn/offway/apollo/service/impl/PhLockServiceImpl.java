@@ -50,4 +50,9 @@ public class PhLockServiceImpl implements PhLockService {
 	public PhLock findByGoodsidAndTemplateTypeAndTemplateId(Long goodsid,String templateType,Long templateId){
 		return phLockRepository.findByGoodsIdAndTemplateTypeAndTemplateId(goodsid,templateType,templateId);
 	}
+
+	@Override
+	public PhLock findByPid(Long pid){
+		return phLockRepository.findByPid(pid);
+	}
 }

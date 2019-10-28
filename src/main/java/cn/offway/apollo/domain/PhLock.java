@@ -27,7 +27,7 @@ public class PhLock implements Serializable {
     private Long templateId;
 
     /** 是否解锁[0-否,1-是] **/
-    private String unlock;
+    private String islock;
 
     /** 解锁订阅数 **/
     private Long subscribeCount;
@@ -40,6 +40,9 @@ public class PhLock implements Serializable {
 
     /** 备注 **/
     private String remark;
+
+    /** pid **/
+    private Long pid;
 
 
     @Id
@@ -80,13 +83,13 @@ public class PhLock implements Serializable {
         this.templateId = templateId;
     }
 
-    @Column(name = "unlock", length = 2)
+    @Column(name = "islock", length = 2)
     public String getUnlock() {
-        return unlock;
+        return islock;
     }
 
-    public void setUnlock(String unlock) {
-        this.unlock = unlock;
+    public void setUnlock(String islock) {
+        this.islock = islock;
     }
 
     @Column(name = "subscribe_count", length = 11)
@@ -124,6 +127,15 @@ public class PhLock implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "pid", length = 11)
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
     }
 
 }
