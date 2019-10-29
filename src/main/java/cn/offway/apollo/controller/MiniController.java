@@ -3,7 +3,9 @@ package cn.offway.apollo.controller;
 import java.io.IOException;
 import java.util.*;
 
+import cn.offway.apollo.domain.PhReadcode;
 import cn.offway.apollo.domain.PhTemplate;
+import cn.offway.apollo.service.PhReadcodeService;
 import cn.offway.apollo.service.PhTemplateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -68,6 +70,9 @@ public class MiniController {
 
 	@Autowired
 	private PhTemplateService templateService;
+
+	@Autowired
+    private PhReadcodeService readcodeService;
 	
 	@GetMapping(value = "/getwxacodeunlimit",produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
@@ -173,10 +178,25 @@ public class MiniController {
 	@ApiOperation("电子刊排行榜详情")
 	@GetMapping("/booksranking")
 	public JsonResult booksranking(@ApiParam("电子刊id") @RequestParam Long id){
-		PhTemplate phTemplates = templateService.findOne(id);
+		List<Object> list = new ArrayList<>();
+		Map<String,Object> remap = new HashMap<>();
 		Map<String,Object> map = new HashMap<>();
-		map.put("","");
-		return jsonResultHelper.buildSuccessJsonResult(phTemplates);
+		PhTemplate phTemplates = templateService.findOne(id);
+		List<PhReadcode> readcodeList = readcodeService.findAllBybuyersid(id);
+		map.put("imageurl",phTemplates.getImageUrl());
+		map.put("subscribesum",phTemplates.getSubscribeSum());
+		remap.put("title",map);
+        for (PhReadcode phReadcode : readcodeList) {
+        	Map<String,Object> map1 = new HashMap<>();
+            PhUserInfo phUserInfo = userInfoService.findOne(phReadcode.getBuyersId());
+			map1.put("nickname",phUserInfo.getNickname());
+			map1.put("headimgurl",phUserInfo.getHeadimgurl());
+			map1.put("userid",phReadcode.getBuyersId());
+			map1.put("sum",phReadcode.getRemark());
+			list.add(map1);
+        }
+		remap.put("ranking",list);
+		return jsonResultHelper.buildSuccessJsonResult(remap);
 	}
 
 	@ApiOperation("电子刊小程序注册/登录")

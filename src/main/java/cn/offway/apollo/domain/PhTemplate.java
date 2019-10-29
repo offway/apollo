@@ -35,7 +35,7 @@ public class PhTemplate implements Serializable {
     /** 电子刊封面 **/
     private String imageUrl;
 
-    /** 电子刊封面 **/
+    /** 电子刊音频 **/
     private String audioUrl;
 
     /** 备注 **/

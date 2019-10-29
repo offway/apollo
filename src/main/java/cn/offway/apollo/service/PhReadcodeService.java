@@ -20,4 +20,6 @@ public interface PhReadcodeService{
     void delete(Long id);
 
     List<PhReadcode> save(List<PhReadcode> entities);
+
+    List<PhReadcode> findAllBybuyersid(Long id);
 }

@@ -38,6 +38,9 @@ public class PhReadcode implements Serializable {
     /** 创建时间 **/
     private Date createTime;
 
+    /** 备注 **/
+    private String remark;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -113,6 +116,15 @@ public class PhReadcode implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @Column(name = "remark", length = 200)
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
 }

@@ -45,4 +45,9 @@ public class PhReadcodeServiceImpl implements PhReadcodeService {
 	public List<PhReadcode> save(List<PhReadcode> entities){
 		return phReadcodeRepository.save(entities);
 	}
+
+	@Override
+	public List<PhReadcode> findAllBybuyersid(Long id){
+		return phReadcodeRepository.findAllBybuyersid(id);
+	}
 }
