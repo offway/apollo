@@ -32,6 +32,12 @@ public class PhTemplate implements Serializable {
     /** 创建时间 **/
     private Date createTime;
 
+    /** 电子刊封面 **/
+    private String imageUrl;
+
+    /** 电子刊封面 **/
+    private String audioUrl;
+
     /** 备注 **/
     private String remark;
 
@@ -100,6 +106,24 @@ public class PhTemplate implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "image_url", length = 200)
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    @Column(name = "audio_url", length = 200)
+    public String getAudioUrl() {
+        return audioUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
     }
 
 }

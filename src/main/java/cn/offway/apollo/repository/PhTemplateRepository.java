@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import cn.offway.apollo.domain.PhTemplate;
 
+import java.util.List;
+
 /**
  * 杂志管理Repository接口
  *
@@ -14,4 +16,5 @@ import cn.offway.apollo.domain.PhTemplate;
 public interface PhTemplateRepository extends JpaRepository<PhTemplate,Long>,JpaSpecificationExecutor<PhTemplate> {
 
 	/** 此处写一些自定义的方法 **/
+	List<PhTemplate> findByStateOrderByCreateTime(String state);
 }

@@ -1,8 +1,10 @@
 package cn.offway.apollo.controller;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.*;
 
+import cn.offway.apollo.domain.PhTemplate;
+import cn.offway.apollo.service.PhTemplateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +65,9 @@ public class MiniController {
 
 	@Autowired
 	private PhUserInfoService userInfoService;
+
+	@Autowired
+	private PhTemplateService templateService;
 	
 	@GetMapping(value = "/getwxacodeunlimit",produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
@@ -157,6 +162,21 @@ public class MiniController {
 		return jsonResultHelper.buildSuccessJsonResult(JSON.parseObject(result));
 	}
 
+	@ApiOperation("电子刊首页")
+	@GetMapping("/booksIndex")
+	public JsonResult booksIndex(){
+		List<PhTemplate> phTemplates = new ArrayList<>();
+		phTemplates = templateService.findAll();
+		return jsonResultHelper.buildSuccessJsonResult(phTemplates);
+	}
+
+	@ApiOperation("电子刊排行榜详情")
+	@GetMapping("/booksranking")
+	public JsonResult booksranking(@ApiParam("电子刊id") @RequestParam Long id){
+		PhTemplate phTemplates = templateService.findOne(id);
+		Map<String,Object> map = new HashMap<>();
+		return jsonResultHelper.buildSuccessJsonResult(phTemplates);
+	}
 
 	@ApiOperation("电子刊小程序注册/登录")
 	@PostMapping("/booksregister")
@@ -208,6 +228,6 @@ public class MiniController {
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
 		}
 	}
-	
-	
+
+
 }

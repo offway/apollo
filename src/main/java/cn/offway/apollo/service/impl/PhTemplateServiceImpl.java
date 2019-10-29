@@ -45,4 +45,9 @@ public class PhTemplateServiceImpl implements PhTemplateService {
 	public List<PhTemplate> save(List<PhTemplate> entities){
 		return phTemplateRepository.save(entities);
 	}
+
+	@Override
+	public List<PhTemplate> findAll(){
+		return phTemplateRepository.findByStateOrderByCreateTime("0");
+	}
 }
