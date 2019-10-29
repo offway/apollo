@@ -175,6 +175,7 @@ public class MiniController {
 	public JsonResult booksranking(@ApiParam("电子刊id") @RequestParam Long id){
 		PhTemplate phTemplates = templateService.findOne(id);
 		Map<String,Object> map = new HashMap<>();
+		map.put("","");
 		return jsonResultHelper.buildSuccessJsonResult(phTemplates);
 	}
 
