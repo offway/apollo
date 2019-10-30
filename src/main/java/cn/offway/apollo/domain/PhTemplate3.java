@@ -29,6 +29,12 @@ public class PhTemplate3 implements Serializable {
     /** 备注 **/
     private String remark;
 
+    /** 标题图 **/
+    private String imageTag;
+
+    /** 背景图 **/
+    private String imageUnder;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,6 +82,24 @@ public class PhTemplate3 implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "image_tag", length = 200)
+    public String getImageTag() {
+        return imageTag;
+    }
+
+    public void setImageTag(String imageTag) {
+        this.imageTag = imageTag;
+    }
+
+    @Column(name = "image_under", length = 200)
+    public String getImageUnder() {
+        return imageUnder;
+    }
+
+    public void setImageUnder(String imageUnder) {
+        this.imageUnder = imageUnder;
     }
 
 }
