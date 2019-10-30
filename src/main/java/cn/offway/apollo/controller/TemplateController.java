@@ -55,6 +55,7 @@ public class TemplateController {
     @Autowired
     private PhTemplate5Service template5Service;
 
+
     private Map<String, Object> transform(Object obj) {
 //        ObjectMapper mapper = new ObjectMapper();
 //        Map<String,Object> map = mapper.convertValue(obj,HashMap.class);
@@ -189,6 +190,8 @@ public class TemplateController {
         PhTemplate template = templateService.findOne(id);
         List<PhTemplateConfig> templateConfigs = templateConfigService.findByGoodsId(template.getId());
         List<Map<String, Object>> list = new ArrayList<>();
+        template.setReadingNumber(template.getReadingNumber()+1);
+        templateService.save(template);
         for (PhTemplateConfig templateConfig : templateConfigs) {
             PhLock lock;
             Map<String, Object> obj;

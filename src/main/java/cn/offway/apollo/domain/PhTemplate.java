@@ -41,6 +41,15 @@ public class PhTemplate implements Serializable {
     /** 备注 **/
     private String remark;
 
+    /** 价格 **/
+    private Double price;
+
+    /** 阅读数量 **/
+    private Long readingNumber;
+
+    /** 销售数量 **/
+    private Long soldNumber;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -124,6 +133,33 @@ public class PhTemplate implements Serializable {
 
     public void setAudioUrl(String audioUrl) {
         this.audioUrl = audioUrl;
+    }
+
+    @Column(name = "price", precision = 15, scale = 2)
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    @Column(name = "reading_number", length = 11)
+    public Long getReadingNumber() {
+        return readingNumber;
+    }
+
+    public void setReadingNumber(Long readingNumber) {
+        this.readingNumber = readingNumber;
+    }
+
+    @Column(name = "sold_number", length = 11)
+    public Long getSoldNumber() {
+        return soldNumber;
+    }
+
+    public void setSoldNumber(Long soldNumber) {
+        this.soldNumber = soldNumber;
     }
 
 }
