@@ -1,0 +1,189 @@
+API URL：
+http://外网IP:端口/template/list
+
+参数：
+
+id 数字，比如 6
+
+GET 请求
+
+返回值 JSON:
+
+{
+	"code": "200",
+	"msg": null,
+	"data": ..
+}
+
+code 为 200 时候，请求被正常处理，data 为有意义值。
+code 不为 200 时，参见 msg 字段排查错误.
+
+下面仅讨论 code 为 200 的情况下，data 字段的结构解析.
+
+data 为 array 类型，随着杂志的页数而增长，默认排序 按页数递增。
+
+{
+	"code": "200",
+	"msg": null,
+	"data": [
+		{...},// 第一页
+		{...},// 第二页
+		{...}// 第三页，以此类推
+	]
+}
+
+模板类型共分为5种，用 type 字段 表明. 1 => 样式1，2 => 样式二，以此类推
+
+第一种模板样式：
+
+{
+	"code": "200",
+	"msg": null,
+	"data": [
+		{.....},
+		{
+			"type": "1", //样式：1样式一、2样式二、3样式三、4样式四、5样式五
+			"cover_style": "0", //类型[0-重叠,1-不重叠]
+			"magazine_id": 6, //杂志id
+			"rolling_type": "0", //滚动区域类型[0-图片,1-文字]
+			"rolling_pic": "https://qiniu.offway.cn/image/wx//1572255411088.jpg", //滚动区域图片
+			"rolling_text": "", //滚动区域文字
+			"text_pic": "https://qiniu.offway.cn/image/wx//1572255404062.jpeg", //文字图
+			"tail_pic": "https://qiniu.offway.cn/image/wx//1572255402695.gif", //底图
+			"lock": { //页锁定信息
+				"isLock": "1", //是否解锁[0-否,1-是]
+				"subscribeCount": null, //解锁订阅数
+				"promptText": "110" //提示文字
+			}
+		},
+		{.....}
+	]
+}
+
+
+第二种模板样式：
+
+{
+	"code": "200",
+	"msg": null,
+	"data": [
+		{.....},
+		{
+			"magazine_id": 6, //杂志id
+			"type": "2", //样式：1样式一、2样式二、3样式三、4样式四、5样式五
+			"items": [//内容子集合
+				{
+					"show_style": "1", //展示类型[0-效果图,1-文字]
+					"action_mode": "0", //操作方式[0-左滑,1-自动]
+					"location": "3", //位置[0-文字左上滑出,1-文字右上滑出,2-文字左下滑出,3-文字右下滑出,4-文字居中显示]
+					"pic": "", //图片链接
+					"text": "rtuyt", //提示文案
+					"text_style": { //提示文案字体
+						"size": "0", //提示文案字体 大小
+						"color": "0" //提示文案字体 颜色
+					}
+				}
+			],
+			"lock": {//页锁定信息 同上
+				"isLock": "0",
+				"subscribeCount": null,
+				"promptText": null
+			}
+		},
+		{.....}
+	]
+}
+
+
+第三种模板样式：
+
+{
+	"code": "200",
+	"msg": null,
+	"data": [
+		{.....},
+		{
+			"magazine_id": 6, //杂志id
+			"type": "3", //样式：1样式一、2样式二、3样式三、4样式四、5样式五
+			"items": [//内容子集合
+				{
+					"role_name": "123", //角色名
+					"role_icon": "https://qiniu.offway.cn/image/wx/300/300/6b3b6943-c02f-c46a-f446-453489ed4799.gif", //角色头像
+					"audio_url": "https://qiniu.offway.cn/audio/wx/65fb13b2-317a-a894-582b-33548eff91bb.mp3", //音频url
+					"action_mode": "0" //操作方式[0-左滑,1-自动]
+				},
+				..... 下列结构同上
+				{
+					"role_name": "我",
+					"role_icon": "https://qiniu.offway.cn/image/wx/240/240/a7228486-72e8-ee40-8a5c-151e74e99fe5.jpg",
+					"audio_url": "https://qiniu.offway.cn/audio/wx/335aad6f-e3d4-03b6-cab6-10eb75859909.mp3",
+					"action_mode": "0"
+				},
+				{
+					"role_name": "333",
+					"role_icon": "https://qiniu.offway.cn/image/wx/500/394/137847d9-d36d-d242-b069-c2eac7a761ab.jpg",
+					"audio_url": "https://qiniu.offway.cn/audio/wx/48bf12bb-2386-861b-5656-86c5553fd8d5.mp3",
+					"action_mode": "0"
+				}
+			],
+			"lock": {//页锁定信息 同上
+				"isLock": "0",
+				"subscribeCount": null,
+				"promptText": null
+			}
+		},
+		{.....}
+	]
+}
+
+
+第四种模板样式：
+
+{
+	"code": "200",
+	"msg": null,
+	"data": [
+		{.....},
+		{
+			"type": "4", //样式：1样式一、2样式二、3样式三、4样式四、5样式五
+			"magazine_id": 6, //杂志id
+			"layout_style": "0", //类型[0-类型1(两张图片),1-类型2(三张图片),2-类型3(三张图片),3-类型4(三张图片),4-类型5(两张图片),5-类型6(两张图片),6-类型7(两张图片),7-类型8(两张图片)]
+			"pics": [//内容图片子集合，数量不固定，随类型变动
+				"https://qiniu.offway.cn/image/wx//1572255695158.jpeg",
+				"https://qiniu.offway.cn/image/wx//1572255698754.jpeg"
+			],
+			"lock": {//页锁定信息 同上
+				"isLock": "1",
+				"subscribeCount": null,
+				"promptText": "123312"
+			}
+		},
+		{.....}
+	]
+}
+
+
+第五种模板样式：
+
+{
+	"code": "200",
+	"msg": null,
+	"data": [
+		{.....},
+		{
+			"type": "5", //样式：1样式一、2样式二、3样式三、4样式四、5样式五
+			"magazine_id": 6, //杂志id
+			"video_style": "0", //类型[0-底图,1-无边框]
+			"video_cover": "https://qiniu.offway.cn/image/wx//1572256656459.jpeg", //视频封面
+			"video_url": "https://qiniu.offway.cn/video/wx/8a3a35da-16b1-6fd1-58c6-b3901754d1a1.mp4", //视频
+			"base_pic": "https://qiniu.offway.cn/image/wx//1572256647986.jpeg", //底图
+			"text": "123", //提示文字
+			"lock": {//页锁定信息 同上
+				"isLock": "1",
+				"subscribeCount": null,
+				"promptText": "123"
+			}
+		}
+		{.....}
+	]
+}
