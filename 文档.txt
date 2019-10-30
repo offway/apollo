@@ -46,6 +46,7 @@ data 为 array 类型，随着杂志的页数而增长，默认排序 按页数�
 			"cover_style": "0", //类型[0-重叠,1-不重叠]
 			"magazine_id": 6, //杂志id
 			"rolling_type": "0", //滚动区域类型[0-图片,1-文字]
+			"rolling_position": "2", //浮窗位置[0-左下,1-左上,2-正局中,3-右上,4-右下]
 			"rolling_pic": "https://qiniu.offway.cn/image/wx//1572255411088.jpg", //滚动区域图片
 			"rolling_text": "", //滚动区域文字
 			"text_pic": "https://qiniu.offway.cn/image/wx//1572255404062.jpeg", //文字图
@@ -75,7 +76,7 @@ data 为 array 类型，随着杂志的页数而增长，默认排序 按页数�
 				{
 					"show_style": "1", //展示类型[0-效果图,1-文字]
 					"action_mode": "0", //操作方式[0-左滑,1-自动]
-					"location": "3", //位置[0-文字左上滑出,1-文字右上滑出,2-文字左下滑出,3-文字右下滑出,4-文字居中显示]
+					"location": "3", //位置[0-文字左上滑出,1-文字右上滑出,2-文字左下滑出,3-文字右下滑出,4-文字居中显示,5-全屏居中显示]
 					"pic": "", //图片链接
 					"text": "rtuyt", //提示文案
 					"text_style": { //提示文案字体
@@ -105,13 +106,20 @@ data 为 array 类型，随着杂志的页数而增长，默认排序 按页数�
 		{
 			"magazine_id": 6, //杂志id
 			"type": "3", //样式：1样式一、2样式二、3样式三、4样式四、5样式五
+			"title": "洛枫测试对话洛枫测试对话洛枫", //标题
+			"background": "https://qiniu.offway.cn/image/wx/1200/844/72d34d9c-e157-fb45-cd4b-edc84f6aed5d.jpg", //背景图
 			"items": [//内容子集合
-				{
-					"role_name": "123", //角色名
-					"role_icon": "https://qiniu.offway.cn/image/wx/300/300/6b3b6943-c02f-c46a-f446-453489ed4799.gif", //角色头像
-					"audio_url": "https://qiniu.offway.cn/audio/wx/65fb13b2-317a-a894-582b-33548eff91bb.mp3", //音频url
-					"action_mode": "0" //操作方式[0-左滑,1-自动]
-				},
+                {
+                  "role_name": "333", //角色名
+                  "role_icon": "https://qiniu.offway.cn/image/wx/500/394/137847d9-d36d-d242-b069-c2eac7a761ab.jpg", //角色头像
+                  "content_type": "2", //内容类型[0-音频,1-文字,2-表情]
+                  "content_txt": "我是一段文本我是一段文本，我是一段文本我是一段文本，我是一段文本我是一段文本，我是一段文本我是一段文本，我是一段文本我是一段文本，我是一段文本我是一段文本", //文本内容
+                  "emotion": "https://qiniu.offway.cn/image/wx/1200/844/d44de5e5-5f15-e695-ae00-13e6a89ee721.jpg", //表情URL
+                  "emotion_cfg": "0", //表情参数[0-240*240,1-480*480]
+                  "audio_url": "https://qiniu.offway.cn/audio/wx/48bf12bb-2386-861b-5656-86c5553fd8d5.mp3", //音频url
+                  "audio_url_cfg": "31", //音频参数
+                  "action_mode": "0" //操作方式[0-左滑,1-自动]
+                }
 				..... 下列结构同上
 				{
 					"role_name": "我",
