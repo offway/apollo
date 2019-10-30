@@ -29,6 +29,9 @@ public class PhTemplate1 implements Serializable {
     /** 文字图 **/
     private String imageTextUrl;
 
+    /** 浮窗位置[0-左下,1-左上,2-正局中,3-右上,4-右下] **/
+    private String rollingPosition;
+
     /** 滚动区域类型[0-图片,1-文字] **/
     private String rollingType;
 
@@ -148,6 +151,15 @@ public class PhTemplate1 implements Serializable {
 
     public void setPromptText(String promptText) {
         this.promptText = promptText;
+    }
+
+    @Column(name = "rolling_position", length = 2)
+    public String getRollingPosition() {
+        return rollingPosition;
+    }
+
+    public void setRollingPosition(String rollingPosition) {
+        this.rollingPosition = rollingPosition;
     }
 
 }
