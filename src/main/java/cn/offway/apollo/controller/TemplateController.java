@@ -100,7 +100,7 @@ public class TemplateController {
                     JSONObject jsonObject = JSONObject.parseObject(template2.getRemark());
                     innerMap.put("text_style", jsonObject.toJavaObject(Map.class));
                 }
-                /* 位置[0-文字左上滑出,1-文字右上滑出,2-文字左下滑出,3-文字右下滑出,4-文字居中显示] **/
+                /* 位置[0-文字左上滑出,1-文字右上滑出,2-文字左下滑出,3-文字右下滑出,4-文字居中显示,5-全屏居中显示] **/
                 innerMap.put("location", template2.getLocation());
                 arr.add(innerMap);
             }
@@ -120,10 +120,20 @@ public class TemplateController {
                 innerMap.put("role_name", jsonObject.getString("role"));
                 //角色头像
                 innerMap.put("role_icon", jsonObject.getString("icon"));
+                //内容类型[0-音频,1-文字,2-表情]
+                innerMap.put("content_type", jsonObject.getString("contentType"));
                 /* 操作方式[0-左滑,1-自动] **/
                 innerMap.put("action_mode", jsonObject.getString("way"));
                 //音频url
                 innerMap.put("audio_url", jsonObject.getString("audioUrl"));
+                //音频参数
+                innerMap.put("audio_url_cfg", jsonObject.getString("audioUrlCfg"));
+                //文本内容
+                innerMap.put("content_txt", jsonObject.getString("contentTxt"));
+                //表情URL
+                innerMap.put("emotion", jsonObject.getString("emotion"));
+                //表情参数[0-240*240,1-480*480]
+                innerMap.put("emotion_cfg", jsonObject.getString("emotionCfg"));
                 arr.add(innerMap);
             }
             newObj.put("items", arr);
@@ -190,7 +200,7 @@ public class TemplateController {
         PhTemplate template = templateService.findOne(id);
         List<PhTemplateConfig> templateConfigs = templateConfigService.findByGoodsId(template.getId());
         List<Map<String, Object>> list = new ArrayList<>();
-        template.setReadingNumber(template.getReadingNumber()+1);
+        template.setReadingNumber(template.getReadingNumber() + 1);
         templateService.save(template);
         for (PhTemplateConfig templateConfig : templateConfigs) {
             PhLock lock;

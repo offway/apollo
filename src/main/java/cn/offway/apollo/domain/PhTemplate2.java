@@ -32,7 +32,7 @@ public class PhTemplate2 implements Serializable {
     /** 提示文案 **/
     private String promptText;
 
-    /** 位置[0-文字左上滑出,1-文字右上滑出,2-文字左下滑出,3-文字右下滑出,4-文字居中显示] **/
+    /** 位置[0-文字左上滑出,1-文字右上滑出,2-文字左下滑出,3-文字右下滑出,4-文字居中显示,5-全屏居中显示] **/
     private String location;
 
     /** 创建时间 **/
