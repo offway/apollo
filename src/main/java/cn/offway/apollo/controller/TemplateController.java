@@ -74,6 +74,8 @@ public class TemplateController {
             newObj.put("text_pic", template1.getImageTextUrl());
             /* 滚动区域类型[0-图片,1-文字] **/
             newObj.put("rolling_type", template1.getRollingType());
+            /* 浮窗位置[0-左下,1-左上,2-正局中,3-右上,4-右下] **/
+            newObj.put("rolling_position", template1.getRollingPosition());
             /* 滚动区域图片, 滚动区域类型为0时必填 **/
             newObj.put("rolling_pic", template1.getRollingImageUrl());
             /* 滚动区域文字, 滚动区域类型为1时必填 **/
@@ -111,6 +113,10 @@ public class TemplateController {
             newObj.put("type", "3");
             //杂志id
             newObj.put("magazine_id", template3.getGoodsId());
+            //标题
+            newObj.put("title", template3.getImageTag());
+            //背景图
+            newObj.put("background", template3.getImageUnder());
             List<Map<String, Object>> arr = new ArrayList<>();
             JSONArray jsonArray = JSONArray.parseArray(template3.getContent());
             for (Object o : jsonArray) {
