@@ -5,8 +5,10 @@ import java.util.*;
 
 import cn.offway.apollo.domain.PhReadcode;
 import cn.offway.apollo.domain.PhTemplate;
+import cn.offway.apollo.domain.PhUser;
 import cn.offway.apollo.service.PhReadcodeService;
 import cn.offway.apollo.service.PhTemplateService;
+import cn.offway.apollo.service.PhUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +75,9 @@ public class MiniController {
 
 	@Autowired
     private PhReadcodeService readcodeService;
+
+	@Autowired
+	private PhUserService userService;
 	
 	@GetMapping(value = "/getwxacodeunlimit",produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
@@ -185,12 +190,14 @@ public class MiniController {
 		List<PhReadcode> readcodeList = readcodeService.findAllBybuyersid(id);
 		map.put("imageurl",phTemplates.getImageUrl());
 		map.put("subscribesum",phTemplates.getSubscribeSum());
+		map.put("price",phTemplates.getPrice());
+		map.put("templateName",phTemplates.getTemplateName());
 		remap.put("title",map);
         for (PhReadcode phReadcode : readcodeList) {
         	Map<String,Object> map1 = new HashMap<>();
-            PhUserInfo phUserInfo = userInfoService.findOne(phReadcode.getBuyersId());
-			map1.put("nickname",phUserInfo.getNickname());
-			map1.put("headimgurl",phUserInfo.getHeadimgurl());
+            PhUser phUser = userService.findOne(phReadcode.getBuyersId());
+			map1.put("nickname",phUser.getNickname());
+			map1.put("headimgurl",phUser.getHeadimgurl());
 			map1.put("userid",phReadcode.getBuyersId());
 			map1.put("sum",phReadcode.getRemark());
 			list.add(map1);
