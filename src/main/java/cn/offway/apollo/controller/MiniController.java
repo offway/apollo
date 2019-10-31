@@ -3,18 +3,15 @@ package cn.offway.apollo.controller;
 import java.io.IOException;
 import java.util.*;
 
-import cn.offway.apollo.domain.PhReadcode;
-import cn.offway.apollo.domain.PhTemplate;
-import cn.offway.apollo.domain.PhUser;
-import cn.offway.apollo.service.PhReadcodeService;
-import cn.offway.apollo.service.PhTemplateService;
-import cn.offway.apollo.service.PhUserService;
+import cn.offway.apollo.domain.*;
+import cn.offway.apollo.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import cn.offway.apollo.domain.PhUserInfo;
 import cn.offway.apollo.dto.MiniUserInfo;
-import cn.offway.apollo.service.PhUserInfoService;
 import cn.offway.apollo.utils.AesCbcUtil;
 import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.HttpClientUtil;
@@ -78,6 +73,12 @@ public class MiniController {
 
 	@Autowired
 	private PhUserService userService;
+
+	@Autowired
+	private PhOrderService orderService;
+
+	@Autowired
+	private PhOrderInfoService orderInfoService;
 	
 	@GetMapping(value = "/getwxacodeunlimit",produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
@@ -155,6 +156,36 @@ public class MiniController {
     @ResponseBody
     public byte[] download(String url) throws IOException {
 		return HttpClientUtil.getByteArray(url);
+	}
+
+	@ApiOperation("生成订单号")
+	@GetMapping("/booksGetOrderNo")
+	@Transactional
+	public JsonResult booksGetOrderNo(@ApiParam("杂志ID") @RequestParam Long goodsId,@ApiParam("用户ID") @RequestParam Long userId,@ApiParam("购买数量") @RequestParam Long sum){
+		PhUser user = userService.findOne(userId);
+		if (null==user){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
+		}
+		String no = orderInfoService.generateOrderNo("PH");
+		PhTemplate template = templateService.findOne(goodsId);
+		PhOrder order = new PhOrder();
+		order.setUserId(userId);
+		order.setUnionid(user.getUnionid());
+		order.setTemplateId(goodsId);
+		order.setStatus("0");
+		order.setPrice(template.getPrice()*sum);
+		order.setSum(String.valueOf(sum));
+		order.setPhone(user.getPhone());
+		order.setTemplateName(template.getTemplateName());
+		order.setOrderNo(no);
+		order.setCreateTime(new Date());
+		order = orderService.save(order);
+		Map<String,Object> map = new HashMap<>();
+		map.put("orderId",order.getId());
+		map.put("orderNo",order.getOrderNo());
+		map.put("price",order.getPrice());
+		map.put("status",order.getStatus());
+		return jsonResultHelper.buildSuccessJsonResult(map);
 	}
 
 	@ApiOperation("获取电子刊小程序用户SESSION")
