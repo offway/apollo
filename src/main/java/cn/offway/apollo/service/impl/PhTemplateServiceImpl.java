@@ -1,16 +1,16 @@
 package cn.offway.apollo.service.impl;
 
-import java.util.List;
-
-import com.baomidou.dynamic.datasource.annotation.DS;
+import cn.offway.apollo.domain.PhTemplate;
+import cn.offway.apollo.dynamic.DS;
+import cn.offway.apollo.dynamic.DataSourceNames;
+import cn.offway.apollo.repository.PhTemplateRepository;
+import cn.offway.apollo.service.PhTemplateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import cn.offway.apollo.service.PhTemplateService;
 
-import cn.offway.apollo.domain.PhTemplate;
-import cn.offway.apollo.repository.PhTemplateRepository;
+import java.util.List;
 
 
 /**
@@ -20,36 +20,40 @@ import cn.offway.apollo.repository.PhTemplateRepository;
  * @version $v: 1.0.0, $time:2019-10-21 12:01:34 Exp $
  */
 @Service
-@DS("slave")
 public class PhTemplateServiceImpl implements PhTemplateService {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private PhTemplateRepository phTemplateRepository;
-	
-	@Override
-	public PhTemplate save(PhTemplate phTemplate){
-		return phTemplateRepository.save(phTemplate);
-	}
-	
-	@Override
-	public PhTemplate findOne(Long id){
-		return phTemplateRepository.findOne(id);
-	}
+    @Autowired
+    private PhTemplateRepository phTemplateRepository;
 
-	@Override
-	public void delete(Long id){
-		phTemplateRepository.delete(id);
-	}
+    @Override
+    @DS(DataSourceNames.BK)
+    public PhTemplate save(PhTemplate phTemplate) {
+        return phTemplateRepository.save(phTemplate);
+    }
 
-	@Override
-	public List<PhTemplate> save(List<PhTemplate> entities){
-		return phTemplateRepository.save(entities);
-	}
+    @Override
+    @DS(DataSourceNames.BK)
+    public PhTemplate findOne(Long id) {
+        return phTemplateRepository.findOne(id);
+    }
 
-	@Override
-	public List<PhTemplate> findAll(){
-		return phTemplateRepository.findByStateOrderByCreateTime("0");
-	}
+    @Override
+    @DS(DataSourceNames.BK)
+    public void delete(Long id) {
+        phTemplateRepository.delete(id);
+    }
+
+    @Override
+    @DS(DataSourceNames.BK)
+    public List<PhTemplate> save(List<PhTemplate> entities) {
+        return phTemplateRepository.save(entities);
+    }
+
+    @Override
+    @DS(DataSourceNames.BK)
+    public List<PhTemplate> findAll() {
+        return phTemplateRepository.findByStateOrderByCreateTime("0");
+    }
 }
