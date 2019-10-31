@@ -232,9 +232,9 @@ public class MiniController {
 
         try {
             //验证是用户
-            PhUserInfo phUserInfo = null;
+            PhUser phUserInfo = null;
             if (StringUtils.isNotBlank(unionid)) {
-                phUserInfo = userInfoService.findByUnionid(unionid);
+                phUserInfo = userService.findByUnionid(unionid);
                 if (null != phUserInfo) {
                     return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
                 }
@@ -249,7 +249,7 @@ public class MiniController {
             sb.append("+").append(countryCode).append(purePhoneNumber);
             String phone = sb.toString();
 
-            phUserInfo = userInfoService.findByPhone(phone);
+            phUserInfo = userService.findByPhone(phone);
             if (null != phUserInfo) {
                 return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
             }
