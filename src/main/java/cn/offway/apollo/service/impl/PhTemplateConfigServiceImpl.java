@@ -2,6 +2,7 @@ package cn.offway.apollo.service.impl;
 
 import java.util.List;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import cn.offway.apollo.repository.PhTemplateConfigRepository;
  * @version $v: 1.0.0, $time:2019-10-21 11:31:24 Exp $
  */
 @Service
+@DS("slave")
 public class PhTemplateConfigServiceImpl implements PhTemplateConfigService {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
