@@ -1,5 +1,6 @@
 package cn.offway.apollo.repository;
 
+import cn.offway.apollo.domain.PhUserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -14,4 +15,8 @@ import cn.offway.apollo.domain.PhUser;
 public interface PhUserRepository extends JpaRepository<PhUser,Long>,JpaSpecificationExecutor<PhUser> {
 
 	/** 此处写一些自定义的方法 **/
+
+    PhUser findByUnionid(String unionid);
+
+    PhUser findByPhone(String phone);
 }

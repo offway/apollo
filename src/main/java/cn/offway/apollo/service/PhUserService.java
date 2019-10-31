@@ -20,4 +20,8 @@ public interface PhUserService{
     void delete(Long id);
 
     List<PhUser> save(List<PhUser> entities);
+
+    PhUser findByUnionid(String unionid);
+
+    PhUser findByPhone(String phone);
 }

@@ -2,6 +2,7 @@ package cn.offway.apollo.service.impl;
 
 import java.util.List;
 
+import cn.offway.apollo.domain.PhUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,15 @@ public class PhUserServiceImpl implements PhUserService {
 	@Override
 	public List<PhUser> save(List<PhUser> entities){
 		return phUserRepository.save(entities);
+	}
+
+	@Override
+	public PhUser findByUnionid(String unionid) {
+		return phUserRepository.findByUnionid(unionid);
+	}
+
+	@Override
+	public PhUser findByPhone(String phone){
+		return phUserRepository.findByPhone(phone);
 	}
 }

@@ -17,6 +17,6 @@ import java.util.List;
 public interface PhReadcodeRepository extends JpaRepository<PhReadcode,Long>,JpaSpecificationExecutor<PhReadcode> {
 
 	/** 此处写一些自定义的方法 **/
-    @Query(nativeQuery=true,value="select id,books_id,state,code,buyers_id,use_id,use_time,create_time,count(*) as remark from ph_readcode where books_id = ?1 GROUP BY buyers_id")
+    @Query(nativeQuery=true,value="select id,books_id,state,code,buyers_id,use_id,use_time,create_time,count(*) as remark from ph_readcode where books_id = ?1 GROUP BY buyers_id ORDER BY remark DESC")
     List<PhReadcode> findAllBybuyersid(Long roleId);
 }
