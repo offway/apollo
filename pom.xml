@@ -60,10 +60,11 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 		<!-- 添加Druid依赖 -->
+		<!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->
 		<dependency>
-		    <groupId>com.alibaba</groupId>
-		    <artifactId>druid</artifactId>
-		    <version>1.1.9</version>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+			<version>1.1.10</version>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -128,7 +129,7 @@
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-			<version>2.5.7</version>
+			<version>2.5.6</version>
 		</dependency>
 	</dependencies>
 
