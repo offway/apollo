@@ -2,6 +2,8 @@ package cn.offway.apollo.service.impl;
 
 import java.util.List;
 
+import cn.offway.apollo.dynamic.DS;
+import cn.offway.apollo.dynamic.DataSourceNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +29,25 @@ public class PhOrderServiceImpl implements PhOrderService {
 	private PhOrderRepository phOrderRepository;
 	
 	@Override
+	@DS(DataSourceNames.BK)
 	public PhOrder save(PhOrder phOrder){
 		return phOrderRepository.save(phOrder);
 	}
 	
 	@Override
+	@DS(DataSourceNames.BK)
 	public PhOrder findOne(Long id){
 		return phOrderRepository.findOne(id);
 	}
 
 	@Override
+	@DS(DataSourceNames.BK)
 	public void delete(Long id){
 		phOrderRepository.delete(id);
 	}
 
 	@Override
+	@DS(DataSourceNames.BK)
 	public List<PhOrder> save(List<PhOrder> entities){
 		return phOrderRepository.save(entities);
 	}

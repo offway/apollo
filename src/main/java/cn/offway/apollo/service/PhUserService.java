@@ -4,6 +4,8 @@ package cn.offway.apollo.service;
 import java.util.List;
 
 import cn.offway.apollo.domain.PhUser;
+import cn.offway.apollo.dynamic.DS;
+import cn.offway.apollo.dynamic.DataSourceNames;
 
 /**
  * 用户信息Service接口
@@ -24,4 +26,8 @@ public interface PhUserService{
     PhUser findByUnionid(String unionid);
 
     PhUser findByPhone(String phone);
+
+    @DS(DataSourceNames.BK)
+    PhUser registered(String phone, String unionid, String nickName,
+                      String headimgurl);
 }

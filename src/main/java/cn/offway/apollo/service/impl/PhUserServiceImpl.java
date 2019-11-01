@@ -1,8 +1,12 @@
 package cn.offway.apollo.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import cn.offway.apollo.domain.PhUserInfo;
+import cn.offway.apollo.dynamic.DS;
+import cn.offway.apollo.dynamic.DataSourceNames;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,32 +32,57 @@ public class PhUserServiceImpl implements PhUserService {
 	private PhUserRepository phUserRepository;
 	
 	@Override
+	@DS(DataSourceNames.BK)
 	public PhUser save(PhUser phUser){
 		return phUserRepository.save(phUser);
 	}
 	
 	@Override
+	@DS(DataSourceNames.BK)
 	public PhUser findOne(Long id){
 		return phUserRepository.findOne(id);
 	}
 
 	@Override
+	@DS(DataSourceNames.BK)
 	public void delete(Long id){
 		phUserRepository.delete(id);
 	}
 
 	@Override
+	@DS(DataSourceNames.BK)
 	public List<PhUser> save(List<PhUser> entities){
 		return phUserRepository.save(entities);
 	}
 
 	@Override
+	@DS(DataSourceNames.BK)
 	public PhUser findByUnionid(String unionid) {
 		return phUserRepository.findByUnionid(unionid);
 	}
 
 	@Override
+	@DS(DataSourceNames.BK)
 	public PhUser findByPhone(String phone){
 		return phUserRepository.findByPhone(phone);
+	}
+
+
+	@Override
+	@DS(DataSourceNames.BK)
+	public PhUser registered(String phone, String unionid, String nickName,
+								 String headimgurl){
+		PhUser phUserInfo = new PhUser();
+		phUserInfo.setPhone(phone);
+		if(StringUtils.isNotBlank(phone)){
+			nickName = StringUtils.isBlank(nickName)?"OFFWAY_"+phone.substring(5):nickName;
+		}
+		phUserInfo.setNickname(nickName);
+		phUserInfo.setHeadimgurl(headimgurl);
+		phUserInfo.setUnionid(unionid);
+		phUserInfo.setSex("1");
+		phUserInfo.setCreateTime(new Date());
+		phUserInfo = save(phUserInfo);
+		return phUserInfo;
 	}
 }

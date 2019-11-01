@@ -6,6 +6,7 @@ import cn.offway.apollo.service.*;
 import cn.offway.apollo.utils.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
@@ -13,12 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.ls.LSInput;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/mini")
@@ -61,6 +67,11 @@ public class MiniController {
 
     @Autowired
     private PhOrderInfoService orderInfoService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    private static String USER_TOKEN_KEY = "USER_TOKEN";
 
     @GetMapping(value = "/getwxacodeunlimit", produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
@@ -174,50 +185,171 @@ public class MiniController {
     @ApiOperation("获取电子刊小程序用户SESSION")
     @PostMapping("/bookssendCode")
     public JsonResult bookssendCode(String code) {
-        String url = JSCODE2SESSION;
-        url = url.replace("APPID", BOOKSAPPID).replace("SECRET", BOOKSSECRET).replace("CODE", code);
-        String result = HttpClientUtil.get(url);
+        try {
+            String url = JSCODE2SESSION;
+            url = url.replace("APPID", BOOKSAPPID).replace("SECRET", BOOKSSECRET).replace("CODE", code);
+            String result = HttpClientUtil.get(url);
 //		JSONObject jsonObject = JSON.parseObject(result);
 //		if(StringUtils.isNotBlank(jsonObject.getString("errcode"))){
 //			return jsonResultHelper.buildFailJsonResult(CommonResultCode.PARAM_ERROR);
 //		}
 //
 //		String session_key = jsonObject.getString("session_key");
-        return jsonResultHelper.buildSuccessJsonResult(JSON.parseObject(result));
+            return jsonResultHelper.buildSuccessJsonResult(JSON.parseObject(result));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("获取电子刊小程序用户SESSION异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
     }
 
     @ApiOperation("电子刊首页")
     @GetMapping("/booksIndex")
     public JsonResult booksIndex() {
-        List<PhTemplate> phTemplates = new ArrayList<>();
-        phTemplates = templateService.findAll();
-        return jsonResultHelper.buildSuccessJsonResult(phTemplates);
+        try {
+            List<PhTemplate> phTemplates = new ArrayList<>();
+            phTemplates = templateService.findAll();
+//        for (int i =0;i<phTemplates.size();i++){
+//            PhTemplate phTemplate = phTemplates.get(i);
+//            phTemplate.setPrice(phTemplate.getPrice()*100);
+//            phTemplates.set(i,phTemplate);
+//        }
+            return jsonResultHelper.buildSuccessJsonResult(phTemplates);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("电子刊首页异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("电子刊获得用户token")
+    @GetMapping("/booksUserToken")
+    public JsonResult booksUserToken(@ApiParam("unionid") @RequestParam String unionid){
+        try {
+            PhUser user = userService.findByUnionid(unionid);
+            if (user == null){
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
+            }else {
+                String userToken = stringRedisTemplate.opsForValue().get(USER_TOKEN_KEY + "." + unionid);
+                Map<String,Object> map = new HashMap<>();
+                if (StringUtils.isBlank(userToken)){
+                    String token = UUID.randomUUID().toString().replaceAll("-","");
+                    stringRedisTemplate.opsForValue().set(USER_TOKEN_KEY + "_" + unionid, token,1, TimeUnit.DAYS);
+                    map.put("token",token);
+                }else {
+                    map.put("token",userToken);
+                }
+                return jsonResultHelper.buildSuccessJsonResult(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("电子刊获得用户token异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("电子刊查询阅读码")
+    @GetMapping("/booksGetCode")
+    public JsonResult booksGetCode(@ApiParam("unionid") @RequestParam String unionid,@ApiParam("杂志ID")@RequestParam Long id){
+        try {
+            PhUser user =userService.findByUnionid(unionid);
+            List<PhReadcode> readcodeList = readcodeService.findByBuyersIdAndBooksId(user.getId(),id);
+            if (readcodeList.size()>=0){
+                List<Object> list = new ArrayList<>();
+                for (PhReadcode readcode : readcodeList) {
+                    Map<String,Object> newmap = new HashMap<>();
+                    newmap.put("booksId",readcode.getBooksId());
+                    newmap.put("code",readcode.getCode());
+                    newmap.put("state",readcode.getState());
+                    list.add(newmap);
+                }
+                return jsonResultHelper.buildSuccessJsonResult(list);
+            }else {
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_CODE_ERROR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("电子刊查询阅读码异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("电子刊已购买杂志个人信息")
+    @GetMapping("/booksUserInfo")
+    public JsonResult booksUserInfo(@ApiParam("unionid")@RequestParam String unionid){
+        try {
+            List<Object> list =new ArrayList<>();
+            Map<String,Object> map = new HashMap<>();
+            PhUser user = userService.findByUnionid(unionid);
+            map.put("userInfo",user);
+            List<PhReadcode> readcode = readcodeService.findByUseridCode(user.getId());
+            for (PhReadcode phReadcode : readcode) {
+                PhTemplate template = templateService.findOne(phReadcode.getBooksId());
+                list.add(template);
+            }
+            map.put("magazine",list);
+            return jsonResultHelper.buildSuccessJsonResult(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("电子刊已购买杂志个人信息异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("电子刊小程序修改用户信息")
+    @PostMapping("/booksUpdateUser")
+    @Transactional
+    public JsonResult booksUpdateUser(
+            @ApiParam("unionid")@RequestParam String unionid,
+            @ApiParam("用户昵称") @RequestParam String nickname,
+            @ApiParam("用户的性别，值为1时是男性，值为2时是女性，值为0时是未知") @RequestParam String sex,
+            @ApiParam("生日")@RequestParam Date birthday,
+            @ApiParam("用户头像")@RequestParam String headimgurl){
+        try {
+            PhUser user = userService.findByUnionid(unionid);
+            user.setNickname(nickname);
+            user.setSex(sex);
+            user.setBirthday(birthday);
+            user.setHeadimgurl(headimgurl);
+            userService.save(user);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("修改用户信息异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
     }
 
     @ApiOperation("电子刊排行榜详情")
-    @GetMapping("/booksranking")
+    @GetMapping("/bookranking")
     public JsonResult booksranking(@ApiParam("电子刊id") @RequestParam Long id) {
-        List<Object> list = new ArrayList<>();
-        Map<String, Object> remap = new HashMap<>();
-        Map<String, Object> map = new HashMap<>();
-        PhTemplate phTemplates = templateService.findOne(id);
-        List<PhReadcode> readcodeList = readcodeService.findAllBybuyersid(id);
-        map.put("imageurl", phTemplates.getImageUrl());
-        map.put("subscribesum", phTemplates.getSubscribeSum());
-        map.put("price", phTemplates.getPrice());
-        map.put("templateName", phTemplates.getTemplateName());
-        remap.put("title", map);
-        for (PhReadcode phReadcode : readcodeList) {
-            Map<String, Object> map1 = new HashMap<>();
-            PhUser phUser = userService.findOne(phReadcode.getBuyersId());
-            map1.put("nickname", phUser.getNickname());
-            map1.put("headimgurl", phUser.getHeadimgurl());
-            map1.put("userid", phReadcode.getBuyersId());
-            map1.put("sum", phReadcode.getRemark());
-            list.add(map1);
+        try {
+            List<Object> list = new ArrayList<>();
+            Map<String, Object> remap = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
+            PhTemplate phTemplates = templateService.findOne(id);
+            List<PhReadcode> readcodeList = readcodeService.findAllBybuyersid(id);
+            map.put("imageurl", phTemplates.getImageUrl());
+            map.put("subscribesum", phTemplates.getSubscribeSum());
+            map.put("price", phTemplates.getPrice());
+            map.put("templateName", phTemplates.getTemplateName());
+            remap.put("title", map);
+            for (PhReadcode phReadcode : readcodeList) {
+                Map<String, Object> map1 = new HashMap<>();
+                PhUser phUser = userService.findOne(phReadcode.getBuyersId());
+                map1.put("nickname", phUser.getNickname());
+                map1.put("headimgurl", phUser.getHeadimgurl());
+                map1.put("userid", phReadcode.getBuyersId());
+                map1.put("sum", phReadcode.getRemark());
+                list.add(map1);
+            }
+            remap.put("ranking", list);
+            return jsonResultHelper.buildSuccessJsonResult(remap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("电子刊排行榜详情异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
         }
-        remap.put("ranking", list);
-        return jsonResultHelper.buildSuccessJsonResult(remap);
     }
 
     @ApiOperation("电子刊小程序注册/登录")
@@ -248,7 +380,6 @@ public class MiniController {
             StringBuilder sb = new StringBuilder();
             sb.append("+").append(countryCode).append(purePhoneNumber);
             String phone = sb.toString();
-
             phUserInfo = userService.findByPhone(phone);
             if (null != phUserInfo) {
                 return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
@@ -261,15 +392,14 @@ public class MiniController {
             params.put("sessionKey", sessionKey);
             params.put("encryptedData", encryptedData);
             params.put("iv", iv);
-            String url = APPREGISTERURL;
-            HttpClientUtil.postByteArray(url, params.toJSONString());
-            return jsonResultHelper.buildSuccessJsonResult(userInfoService.registered(phone, unionid, nickName, headimgurl));
+//            String url = APPREGISTERURL;
+//            HttpClientUtil.postByteArray(url, params.toJSONString());
+            return jsonResultHelper.buildSuccessJsonResult(userService.registered(phone, unionid, nickName, headimgurl));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("小程序注册异常", e);
             return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
         }
     }
-
 
 }

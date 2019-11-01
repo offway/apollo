@@ -22,4 +22,8 @@ public interface PhReadcodeService{
     List<PhReadcode> save(List<PhReadcode> entities);
 
     List<PhReadcode> findAllBybuyersid(Long id);
+
+    List<PhReadcode> findByUseridCode(Long id);
+
+    List<PhReadcode> findByBuyersIdAndBooksId(Long userid,Long id);
 }

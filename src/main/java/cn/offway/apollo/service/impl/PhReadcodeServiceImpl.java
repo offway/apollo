@@ -50,4 +50,14 @@ public class PhReadcodeServiceImpl implements PhReadcodeService {
 	public List<PhReadcode> findAllBybuyersid(Long id){
 		return phReadcodeRepository.findAllBybuyersid(id);
 	}
+
+	@Override
+	public List<PhReadcode> findByUseridCode(Long id){
+		return phReadcodeRepository.findByUseridCode(id);
+	}
+
+	@Override
+	public List<PhReadcode> findByBuyersIdAndBooksId(Long userid, Long id){
+		return phReadcodeRepository.findByBuyersIdAndBooksId(userid,id);
+	}
 }

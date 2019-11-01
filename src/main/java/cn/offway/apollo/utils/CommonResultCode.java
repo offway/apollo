@@ -55,6 +55,9 @@ public enum CommonResultCode implements ResultCode {
     /** 修改使用时间失败  */
     UPDATE_DATE_ERROR("1014", "UPDATE_DATE_ERROR"),
 
+    /** 暂无可使用阅读码  */
+    USER_CODE_ERROR("1015", "USER_CODE_ERROR"),
+
     ;
 	
 	
