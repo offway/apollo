@@ -6,7 +6,6 @@ import cn.offway.apollo.service.*;
 import cn.offway.apollo.utils.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
@@ -18,11 +17,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.ls.LSInput;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -32,6 +28,7 @@ public class MiniController {
 
     private static final String JSCODE2SESSION = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=CODE&grant_type=authorization_code";
     private static String access_token = "";
+    private static String USER_TOKEN_KEY = "USER_TOKEN";
     @Value("${mini.appid}")
     private String APPID;
     @Value("${mini.secret}")
@@ -43,35 +40,24 @@ public class MiniController {
     @Value("${mini.appregister.url}")
     private String APPREGISTERURL;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private JsonResultHelper jsonResultHelper;
-
     @Autowired
     private PhUserInfoService phuserInfoService;
-
     @Autowired
     private PhUserInfoService userInfoService;
-
     @Autowired
     private PhTemplateService templateService;
-
     @Autowired
     private PhReadcodeService readcodeService;
-
     @Autowired
     private PhUserService userService;
-
     @Autowired
     private PhOrderService orderService;
-
     @Autowired
     private PhOrderInfoService orderInfoService;
-
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-
-    private static String USER_TOKEN_KEY = "USER_TOKEN";
 
     @GetMapping(value = "/getwxacodeunlimit", produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
@@ -224,20 +210,20 @@ public class MiniController {
 
     @ApiOperation("电子刊获得用户token")
     @GetMapping("/booksUserToken")
-    public JsonResult booksUserToken(@ApiParam("unionid") @RequestParam String unionid){
+    public JsonResult booksUserToken(@ApiParam("unionid") @RequestParam String unionid) {
         try {
             PhUser user = userService.findByUnionid(unionid);
-            if (user == null){
+            if (user == null) {
                 return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
-            }else {
+            } else {
                 String userToken = stringRedisTemplate.opsForValue().get(USER_TOKEN_KEY + "." + unionid);
-                Map<String,Object> map = new HashMap<>();
-                if (StringUtils.isBlank(userToken)){
-                    String token = UUID.randomUUID().toString().replaceAll("-","");
-                    stringRedisTemplate.opsForValue().set(USER_TOKEN_KEY + "_" + unionid, token,1, TimeUnit.DAYS);
-                    map.put("token",token);
-                }else {
-                    map.put("token",userToken);
+                Map<String, Object> map = new HashMap<>();
+                if (StringUtils.isBlank(userToken)) {
+                    String token = UUID.randomUUID().toString().replaceAll("-", "");
+                    stringRedisTemplate.opsForValue().set(USER_TOKEN_KEY + "_" + unionid, token, 1, TimeUnit.DAYS);
+                    map.put("token", token);
+                } else {
+                    map.put("token", userToken);
                 }
                 return jsonResultHelper.buildSuccessJsonResult(map);
             }
@@ -250,21 +236,21 @@ public class MiniController {
 
     @ApiOperation("电子刊查询阅读码")
     @GetMapping("/booksGetCode")
-    public JsonResult booksGetCode(@ApiParam("unionid") @RequestParam String unionid,@ApiParam("杂志ID")@RequestParam Long id){
+    public JsonResult booksGetCode(@ApiParam("unionid") @RequestParam String unionid, @ApiParam("杂志ID") @RequestParam Long id) {
         try {
-            PhUser user =userService.findByUnionid(unionid);
-            List<PhReadcode> readcodeList = readcodeService.findByBuyersIdAndBooksId(user.getId(),id);
-            if (readcodeList.size()>=0){
+            PhUser user = userService.findByUnionid(unionid);
+            List<PhReadcode> readcodeList = readcodeService.findByBuyersIdAndBooksId(user.getId(), id);
+            if (readcodeList.size() >= 0) {
                 List<Object> list = new ArrayList<>();
                 for (PhReadcode readcode : readcodeList) {
-                    Map<String,Object> newmap = new HashMap<>();
-                    newmap.put("booksId",readcode.getBooksId());
-                    newmap.put("code",readcode.getCode());
-                    newmap.put("state",readcode.getState());
+                    Map<String, Object> newmap = new HashMap<>();
+                    newmap.put("booksId", readcode.getBooksId());
+                    newmap.put("code", readcode.getCode());
+                    newmap.put("state", readcode.getState());
                     list.add(newmap);
                 }
                 return jsonResultHelper.buildSuccessJsonResult(list);
-            }else {
+            } else {
                 return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_CODE_ERROR);
             }
         } catch (Exception e) {
@@ -276,18 +262,18 @@ public class MiniController {
 
     @ApiOperation("电子刊已购买杂志个人信息")
     @GetMapping("/booksUserInfo")
-    public JsonResult booksUserInfo(@ApiParam("unionid")@RequestParam String unionid){
+    public JsonResult booksUserInfo(@ApiParam("unionid") @RequestParam String unionid) {
         try {
-            List<Object> list =new ArrayList<>();
-            Map<String,Object> map = new HashMap<>();
+            List<Object> list = new ArrayList<>();
+            Map<String, Object> map = new HashMap<>();
             PhUser user = userService.findByUnionid(unionid);
-            map.put("userInfo",user);
+            map.put("userInfo", user);
             List<PhReadcode> readcode = readcodeService.findByUseridCode(user.getId());
             for (PhReadcode phReadcode : readcode) {
                 PhTemplate template = templateService.findOne(phReadcode.getBooksId());
                 list.add(template);
             }
-            map.put("magazine",list);
+            map.put("magazine", list);
             return jsonResultHelper.buildSuccessJsonResult(map);
         } catch (Exception e) {
             e.printStackTrace();
@@ -300,11 +286,11 @@ public class MiniController {
     @PostMapping("/booksUpdateUser")
     @Transactional
     public JsonResult booksUpdateUser(
-            @ApiParam("unionid")@RequestParam String unionid,
+            @ApiParam("unionid") @RequestParam String unionid,
             @ApiParam("用户昵称") @RequestParam String nickname,
             @ApiParam("用户的性别，值为1时是男性，值为2时是女性，值为0时是未知") @RequestParam String sex,
-            @ApiParam("生日")@RequestParam Date birthday,
-            @ApiParam("用户头像")@RequestParam String headimgurl){
+            @ApiParam("生日") @RequestParam Date birthday,
+            @ApiParam("用户头像") @RequestParam String headimgurl) {
         try {
             PhUser user = userService.findByUnionid(unionid);
             user.setNickname(nickname);
