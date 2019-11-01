@@ -13,11 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -140,32 +143,37 @@ public class MiniController {
 
     @ApiOperation("生成订单号")
     @GetMapping("/booksGetOrderNo")
-    @Transactional
-    public JsonResult booksGetOrderNo(@ApiParam("杂志ID") @RequestParam Long goodsId, @ApiParam("用户ID") @RequestParam Long userId, @ApiParam("购买数量") @RequestParam Long sum) {
-        PhUser user = userService.findOne(userId);
-        if (null == user) {
-            return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
+    public JsonResult booksGetOrderNo(@ApiParam("杂志ID") @RequestParam Long goodsId, @ApiParam("用户ID") @RequestParam String unionid, @ApiParam("购买数量") @RequestParam Long sum) {
+        try {
+            PhUser user = userService.findByUnionid(unionid);
+            if (null == user) {
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
+            }
+            String no = orderInfoService.generateOrderNo("PH");
+            PhTemplate template = templateService.findOne(goodsId);
+            PhOrder order = new PhOrder();
+            order.setUserId(user.getId());
+            order.setUnionid(user.getUnionid());
+            order.setTemplateId(goodsId);
+            order.setStatus("0");
+            order.setPrice(template.getPrice() * sum);
+            order.setSum(String.valueOf(sum));
+            order.setPhone(user.getPhone());
+            order.setTemplateName(template.getTemplateName());
+            order.setOrderNo(no);
+            order.setCreateTime(new Date());
+            order = orderService.save(order);
+            Map<String, Object> map = new HashMap<>();
+            map.put("orderId", order.getId());
+            map.put("orderNo", order.getOrderNo());
+            map.put("price", order.getPrice());
+            map.put("status", order.getStatus());
+            return jsonResultHelper.buildSuccessJsonResult(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("生成订单号异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
         }
-        String no = orderInfoService.generateOrderNo("PH");
-        PhTemplate template = templateService.findOne(goodsId);
-        PhOrder order = new PhOrder();
-        order.setUserId(userId);
-        order.setUnionid(user.getUnionid());
-        order.setTemplateId(goodsId);
-        order.setStatus("0");
-        order.setPrice(template.getPrice() * sum);
-        order.setSum(String.valueOf(sum));
-        order.setPhone(user.getPhone());
-        order.setTemplateName(template.getTemplateName());
-        order.setOrderNo(no);
-        order.setCreateTime(new Date());
-        order = orderService.save(order);
-        Map<String, Object> map = new HashMap<>();
-        map.put("orderId", order.getId());
-        map.put("orderNo", order.getOrderNo());
-        map.put("price", order.getPrice());
-        map.put("status", order.getStatus());
-        return jsonResultHelper.buildSuccessJsonResult(map);
     }
 
     @ApiOperation("获取电子刊小程序用户SESSION")
@@ -236,11 +244,16 @@ public class MiniController {
 
     @ApiOperation("电子刊查询阅读码")
     @GetMapping("/booksGetCode")
-    public JsonResult booksGetCode(@ApiParam("unionid") @RequestParam String unionid, @ApiParam("杂志ID") @RequestParam Long id) {
+    public JsonResult booksGetCode(
+            @ApiParam("unionid") @RequestParam String unionid,
+            @ApiParam("杂志ID") @RequestParam Long id,
+            @ApiParam("状态[0-所有，1-未使用，2-已使用]") @RequestParam String state,
+            @ApiParam("页码,从0开始") @RequestParam int page,
+            @ApiParam("页大小") @RequestParam int size) {
         try {
             PhUser user = userService.findByUnionid(unionid);
-            List<PhReadcode> readcodeList = readcodeService.findByBuyersIdAndBooksId(user.getId(), id);
-            if (readcodeList.size() >= 0) {
+            Page<PhReadcode> readcodeList = readcodeService.findByBuyersIdAndBooksId(state,user.getId(), id,new PageRequest(page,size));
+            if (null != readcodeList) {
                 List<Object> list = new ArrayList<>();
                 for (PhReadcode readcode : readcodeList) {
                     Map<String, Object> newmap = new HashMap<>();
@@ -284,12 +297,12 @@ public class MiniController {
 
     @ApiOperation("电子刊小程序修改用户信息")
     @PostMapping("/booksUpdateUser")
-    @Transactional
     public JsonResult booksUpdateUser(
+            HttpServletRequest request,
             @ApiParam("unionid") @RequestParam String unionid,
             @ApiParam("用户昵称") @RequestParam String nickname,
             @ApiParam("用户的性别，值为1时是男性，值为2时是女性，值为0时是未知") @RequestParam String sex,
-            @ApiParam("生日") @RequestParam Date birthday,
+            @ApiParam("生日") @DateTimeFormat(pattern="yyyy-MM-dd") @RequestParam Date birthday,
             @ApiParam("用户头像") @RequestParam String headimgurl) {
         try {
             PhUser user = userService.findByUnionid(unionid);

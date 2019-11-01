@@ -4,6 +4,8 @@ package cn.offway.apollo.service;
 import java.util.List;
 
 import cn.offway.apollo.domain.PhReadcode;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * 阅读码购买使用表Service接口
@@ -25,5 +27,5 @@ public interface PhReadcodeService{
 
     List<PhReadcode> findByUseridCode(Long id);
 
-    List<PhReadcode> findByBuyersIdAndBooksId(Long userid,Long id);
+    Page<PhReadcode> findByBuyersIdAndBooksId(String state,Long userid, Long id, Pageable page);
 }
