@@ -1,11 +1,11 @@
 package cn.offway.apollo.service;
 
 
-import java.util.List;
-
 import cn.offway.apollo.domain.PhUser;
 import cn.offway.apollo.dynamic.DS;
 import cn.offway.apollo.dynamic.DataSourceNames;
+
+import java.util.List;
 
 /**
  * 用户信息Service接口
@@ -13,10 +13,10 @@ import cn.offway.apollo.dynamic.DataSourceNames;
  * @author wn
  * @version $v: 1.0.0, $time:2019-10-30 14:38:27 Exp $
  */
-public interface PhUserService{
+public interface PhUserService {
 
     PhUser save(PhUser phUser);
-	
+
     PhUser findOne(Long id);
 
     void delete(Long id);
@@ -29,5 +29,8 @@ public interface PhUserService{
 
     @DS(DataSourceNames.BK)
     PhUser registered(String phone, String unionid, String nickName,
-                      String headimgurl);
+                      String headimgurl, long id);
+
+    @DS(DataSourceNames.BK)
+    int getMaxUserId();
 }

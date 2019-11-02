@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +32,8 @@ public class MiniController {
 
     private static final String JSCODE2SESSION = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=CODE&grant_type=authorization_code";
     private static String access_token = "";
-    private static String USER_TOKEN_KEY = "USER_TOKEN";
+    private static final String USER_TOKEN_KEY = "USER_TOKEN";
+    private static final String USER_MAX_ID_KEY = "USER_MAX_ID";
     @Value("${mini.appid}")
     private String APPID;
     @Value("${mini.secret}")
@@ -45,8 +47,6 @@ public class MiniController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JsonResultHelper jsonResultHelper;
-    @Autowired
-    private PhUserInfoService phuserInfoService;
     @Autowired
     private PhUserInfoService userInfoService;
     @Autowired
@@ -70,8 +70,8 @@ public class MiniController {
         params.put("scene", scene);
         params.put("width", width);
         byte[] result = HttpClientUtil.postByteArray("https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + access_token, params.toJSONString());
-        String resultStr = new String(result, "UTF-8");
-        if (resultStr.indexOf("errcode") >= 0) {
+        String resultStr = new String(result, StandardCharsets.UTF_8);
+        if (resultStr.contains("errcode")) {
             String accessTokenResult = HttpClientUtil.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + APPID + "&secret=" + SECRET);
             logger.info(accessTokenResult);
             JSONObject jsonObject = JSON.parseObject(accessTokenResult);
@@ -108,7 +108,7 @@ public class MiniController {
             MiniUserInfo miniUserInfo = JSON.parseObject(result, MiniUserInfo.class);
 
             String unionid = miniUserInfo.getUnionId();
-            PhUserInfo phWxuserInfo = phuserInfoService.findByUnionid(unionid);
+            PhUserInfo phWxuserInfo = userInfoService.findByUnionid(unionid);
 
             if (null == phWxuserInfo) {
                 phWxuserInfo = new PhUserInfo();
@@ -123,7 +123,7 @@ public class MiniController {
             phWxuserInfo.setSex(miniUserInfo.getGender());
             phWxuserInfo.setUnionid(unionid);
 //			phWxuserInfo.setCreditScore(500L);
-            phWxuserInfo = phuserInfoService.save(phWxuserInfo);
+            phWxuserInfo = userInfoService.save(phWxuserInfo);
 
             return jsonResultHelper.buildSuccessJsonResult(phWxuserInfo);
 
@@ -252,7 +252,7 @@ public class MiniController {
             @ApiParam("页大小") @RequestParam int size) {
         try {
             PhUser user = userService.findByUnionid(unionid);
-            Page<PhReadcode> readcodeList = readcodeService.findByBuyersIdAndBooksId(state,user.getId(), id,new PageRequest(page,size));
+            Page<PhReadcode> readcodeList = readcodeService.findByBuyersIdAndBooksId(state, user.getId(), id, new PageRequest(page, size));
             if (null != readcodeList) {
                 List<Object> list = new ArrayList<>();
                 for (PhReadcode readcode : readcodeList) {
@@ -302,7 +302,7 @@ public class MiniController {
             @ApiParam("unionid") @RequestParam String unionid,
             @ApiParam("用户昵称") @RequestParam String nickname,
             @ApiParam("用户的性别，值为1时是男性，值为2时是女性，值为0时是未知") @RequestParam String sex,
-            @ApiParam("生日") @DateTimeFormat(pattern="yyyy-MM-dd") @RequestParam Date birthday,
+            @ApiParam("生日") @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam Date birthday,
             @ApiParam("用户头像") @RequestParam String headimgurl) {
         try {
             PhUser user = userService.findByUnionid(unionid);
@@ -393,7 +393,12 @@ public class MiniController {
             params.put("iv", iv);
 //            String url = APPREGISTERURL;
 //            HttpClientUtil.postByteArray(url, params.toJSONString());
-            return jsonResultHelper.buildSuccessJsonResult(userService.registered(phone, unionid, nickName, headimgurl));
+            if (!stringRedisTemplate.hasKey(USER_MAX_ID_KEY)) {
+                int maxId = userService.getMaxUserId();
+                stringRedisTemplate.opsForValue().setIfAbsent(USER_MAX_ID_KEY, String.valueOf(maxId));
+            }
+            long nextUserId = stringRedisTemplate.opsForValue().increment(USER_MAX_ID_KEY, 1);
+            return jsonResultHelper.buildSuccessJsonResult(userService.registered(phone, unionid, nickName, headimgurl, nextUserId));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("小程序注册异常", e);
