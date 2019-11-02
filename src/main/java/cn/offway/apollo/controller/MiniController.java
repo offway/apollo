@@ -319,14 +319,70 @@ public class MiniController {
         }
     }
 
+    @ApiOperation("阅读码兑换")
+    @GetMapping("/booksexchange")
+    public JsonResult booksexchange(@ApiParam("电子刊id") @RequestParam Long id,@ApiParam("使用者unionid") @RequestParam String unionid,@ApiParam("code") @RequestParam String code){
+        try {
+            PhUser user = userService.findByUnionid(unionid);
+            PhReadcode readcode = readcodeService.findByBooksIdAndStateAndUseIdAndCode(id,"0",user.getId(),code);
+            if (readcode!=null){
+                readcode.setUseId(user.getId());
+                readcode.setState("1");
+                readcode.setUseTime(new Date());
+                readcodeService.save(readcode);
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.SUCCESS);
+            }else {
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.CODE_ERROR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("阅读码兑换异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("购买后第一次自动使用阅读码")
+    @GetMapping("/booksInsetCode")
+    public JsonResult booksInsetCode(@ApiParam("电子刊id") @RequestParam Long id,@ApiParam("购买者unionid") @RequestParam String unionid){
+        try {
+            PhUser user = userService.findByUnionid(unionid);
+            List<PhReadcode> readcodeList = readcodeService.findByBooksIdAndStateAndUseId(id,"0",user.getId());
+            if (readcodeList.size()>0){
+                PhReadcode readcode = readcodeList.get(0);
+                readcode.setState("1");
+                readcode.setUseId(user.getId());
+                readcode.setUseTime(new Date());
+                readcodeService.save(readcode);
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.SUCCESS);
+            }else {
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.PARAM_ERROR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("购买后第一次自动使用阅读码异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @ApiOperation("电子刊排行榜详情")
     @GetMapping("/bookranking")
-    public JsonResult booksranking(@ApiParam("电子刊id") @RequestParam Long id) {
+    public JsonResult booksranking(@ApiParam("电子刊id") @RequestParam Long id,@ApiParam("unionid") @RequestParam String unionid) {
         try {
             List<Object> list = new ArrayList<>();
             Map<String, Object> remap = new HashMap<>();
             Map<String, Object> map = new HashMap<>();
             PhTemplate phTemplates = templateService.findOne(id);
+            if (StringUtils.isNotBlank(unionid)){
+                PhUser user = userService.findByUnionid(unionid);
+                PhReadcode readcode = readcodeService.findByUseIdAndBooksIdAndState(user.getId(),id,"1");
+                if (readcode!=null){
+                    map.put("state", "1");
+                }else {
+                    map.put("state", "0");
+                }
+            }else {
+                map.put("state", "0");
+            }
             List<PhReadcode> readcodeList = readcodeService.findAllBybuyersid(id);
             map.put("imageurl", phTemplates.getImageUrl());
             map.put("subscribesum", phTemplates.getSubscribeSum());

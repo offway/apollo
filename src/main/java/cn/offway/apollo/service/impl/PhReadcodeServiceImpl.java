@@ -85,4 +85,19 @@ public class PhReadcodeServiceImpl implements PhReadcodeService {
 			}
 		},page);
 	}
+
+	@Override
+	public PhReadcode findByUseIdAndBooksIdAndState(Long userid, Long booksid, String state){
+		return phReadcodeRepository.findByUseIdAndBooksIdAndState(userid,booksid,state);
+	}
+
+	@Override
+	public PhReadcode findByBooksIdAndStateAndUseIdAndCode(Long booksid, String state, Long userid, String code){
+		return phReadcodeRepository.findByBooksIdAndStateAndUseIdAndCode(booksid,state,userid,code);
+	}
+
+	@Override
+	public List<PhReadcode> findByBooksIdAndStateAndUseId(Long booksid, String state, Long userid){
+		return phReadcodeRepository.findByBooksIdAndStateAndBuyersId(booksid,state,userid);
+	}
 }

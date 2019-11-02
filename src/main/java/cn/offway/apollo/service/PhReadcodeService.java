@@ -28,4 +28,10 @@ public interface PhReadcodeService{
     List<PhReadcode> findByUseridCode(Long id);
 
     Page<PhReadcode> findByBuyersIdAndBooksId(String state,Long userid, Long id, Pageable page);
+
+    PhReadcode findByUseIdAndBooksIdAndState(Long userid, Long booksid, String state);
+
+    PhReadcode findByBooksIdAndStateAndUseIdAndCode(Long booksid, String state, Long userid, String code);
+
+    List<PhReadcode> findByBooksIdAndStateAndUseId(Long booksid, String state, Long userid);
 }
