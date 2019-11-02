@@ -167,7 +167,7 @@ public class MiniController {
             order = orderService.save(order);
             //微信统一下单
             String body = "电子刊购买";
-            double amount = order.getAmount();
+            double amount = order.getPrice();
             return wxpayService.trade_JSAPI(no, IpUtil.getIpAddr(request), body, amount, openid);
         } catch (Exception e) {
             e.printStackTrace();

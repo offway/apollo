@@ -59,7 +59,7 @@ public class WxpayService {
             // 设置请求参数(商户订单号)
             paraMap.put("out_trade_no", outtradeno);
             // 设置请求参数(总金额)
-            paraMap.put("total_fee", priceFee.toBigInteger().toString());
+            paraMap.put("total_fee", String.valueOf(priceFee.setScale(2, BigDecimal.ROUND_HALF_UP).intValue()));
             // 设置请求参数(终端IP) 如果是springmvc,或者能获取到request的servlet,用下面这种
             paraMap.put("spbill_create_ip", ip);
             // 设置请求参数(通知地址)
