@@ -11,11 +11,13 @@ import cn.offway.apollo.domain.PhOrder;
  * @author wn
  * @version $v: 1.0.0, $time:2019-10-31 14:58:50 Exp $
  */
-public interface PhOrderService{
+public interface PhOrderService {
 
     PhOrder save(PhOrder phOrder);
-	
+
     PhOrder findOne(Long id);
+
+    PhOrder findOne(String orderNo);
 
     void delete(Long id);
 
