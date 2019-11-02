@@ -61,6 +61,8 @@ public class MiniController {
     private PhOrderInfoService orderInfoService;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private WxpayService wxpayService;
 
     @GetMapping(value = "/getwxacodeunlimit", produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
@@ -143,7 +145,7 @@ public class MiniController {
 
     @ApiOperation("生成订单号")
     @GetMapping("/booksGetOrderNo")
-    public JsonResult booksGetOrderNo(@ApiParam("杂志ID") @RequestParam Long goodsId, @ApiParam("用户ID") @RequestParam String unionid, @ApiParam("购买数量") @RequestParam Long sum) {
+    public JsonResult booksGetOrderNo(HttpServletRequest request, @ApiParam("杂志ID") @RequestParam Long goodsId, @ApiParam("用户ID") @RequestParam String unionid, @ApiParam("购买数量") @RequestParam Long sum, @ApiParam("OPENID") @RequestParam String openid) {
         try {
             PhUser user = userService.findByUnionid(unionid);
             if (null == user) {
@@ -163,12 +165,10 @@ public class MiniController {
             order.setOrderNo(no);
             order.setCreateTime(new Date());
             order = orderService.save(order);
-            Map<String, Object> map = new HashMap<>();
-            map.put("orderId", order.getId());
-            map.put("orderNo", order.getOrderNo());
-            map.put("price", order.getPrice());
-            map.put("status", order.getStatus());
-            return jsonResultHelper.buildSuccessJsonResult(map);
+            //微信统一下单
+            String body = "电子刊购买";
+            double amount = order.getAmount();
+            return wxpayService.trade_JSAPI(no, IpUtil.getIpAddr(request), body, amount, openid);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("生成订单号异常", e);
