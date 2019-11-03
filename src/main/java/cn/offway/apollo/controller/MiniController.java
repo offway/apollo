@@ -183,12 +183,6 @@ public class MiniController {
             String url = JSCODE2SESSION;
             url = url.replace("APPID", BOOKSAPPID).replace("SECRET", BOOKSSECRET).replace("CODE", code);
             String result = HttpClientUtil.get(url);
-//		JSONObject jsonObject = JSON.parseObject(result);
-//		if(StringUtils.isNotBlank(jsonObject.getString("errcode"))){
-//			return jsonResultHelper.buildFailJsonResult(CommonResultCode.PARAM_ERROR);
-//		}
-//
-//		String session_key = jsonObject.getString("session_key");
             return jsonResultHelper.buildSuccessJsonResult(JSON.parseObject(result));
         } catch (Exception e) {
             e.printStackTrace();
