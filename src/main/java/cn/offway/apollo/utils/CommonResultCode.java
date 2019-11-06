@@ -58,6 +58,9 @@ public enum CommonResultCode implements ResultCode {
     /** 暂无可使用阅读码  */
     USER_CODE_ERROR("1015", "USER_CODE_ERROR"),
 
+    /** 无阅读权限  */
+    USER_PERMISSIONS_ERROR("1016", "USER_PERMISSIONS_ERROR"),
+
     ;
 	
 	

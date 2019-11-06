@@ -2,6 +2,7 @@ package cn.offway.apollo.controller;
 
 import cn.offway.apollo.domain.*;
 import cn.offway.apollo.service.*;
+import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
 import com.alibaba.fastjson.JSONArray;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +29,7 @@ import java.util.Map;
 public class TemplateController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String USER_TOKEN_KEY = "USER_TOKEN";
 
     @Autowired
     private JsonResultHelper jsonResultHelper;
@@ -54,6 +57,15 @@ public class TemplateController {
 
     @Autowired
     private PhTemplate5Service template5Service;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private PhUserService userService;
+
+    @Autowired
+    private PhReadcodeService readcodeService;
 
 
     private Map<String, Object> transform(Object obj) {
@@ -202,56 +214,69 @@ public class TemplateController {
 
     @ApiOperation("杂志列表")
     @GetMapping("/list")
-    public JsonResult list(@ApiParam("杂志id") @RequestParam Long id) {
-        PhTemplate template = templateService.findOne(id);
-        List<PhTemplateConfig> templateConfigs = templateConfigService.findByGoodsId(template.getId());
-        List<Map<String, Object>> list = new ArrayList<>();
-        template.setReadingNumber(template.getReadingNumber() + 1);
-        templateService.save(template);
-        for (PhTemplateConfig templateConfig : templateConfigs) {
-            PhLock lock;
-            Map<String, Object> obj;
-            switch (templateConfig.getName()) {
-                case "template1":
-                    PhTemplate1 template1 = template1Service.findOne(templateConfig.getTemplateId());
-                    obj = transform(template1);
-                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "0", template1.getId());
-                    obj.put("lock", processLock(lock));
-                    list.add(obj);
-                    break;
-                case "template2":
-                    List<PhTemplate2> template2s = template2Service.findOneList(templateConfig.getTemplateId());
-                    obj = transform(template2s);
-                    lock = lockService.findByPid(templateConfig.getId());
-                    obj.put("lock", processLock(lock));
-                    list.add(obj);
-                    break;
-                case "template3":
-                    PhTemplate3 template3 = template3Service.findOne(templateConfig.getTemplateId());
-                    obj = transform(template3);
-                    lock = lockService.findByPid(templateConfig.getId());
-                    obj.put("lock", processLock(lock));
-                    list.add(obj);
-                    break;
-                case "template4":
-                    PhTemplate4 template4 = template4Service.findOne(templateConfig.getTemplateId());
-                    obj = transform(template4);
-                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "3", template4.getId());
-                    obj.put("lock", processLock(lock));
-                    list.add(obj);
-                    break;
-                case "template5":
-                    PhTemplate5 template5 = template5Service.findOne(templateConfig.getTemplateId());
-                    obj = transform(template5);
-                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "4", template5.getId());
-                    obj.put("lock", processLock(lock));
-                    list.add(obj);
-                    break;
-                default:
-                    break;
+    public JsonResult list(@ApiParam("杂志id") @RequestParam Long id, @ApiParam("unionid") @RequestParam String unionid, @ApiParam("token") @RequestParam String token) {
+        String userToken = stringRedisTemplate.opsForValue().get(USER_TOKEN_KEY + "_" + unionid);
+        if("".equals(userToken) || userToken == null){
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
+        }else if (!userToken.equals(token)) {
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
+        } else {
+            PhUser user = userService.findByUnionid(unionid);
+            PhReadcode readcode = readcodeService.findByUseIdAndBooksIdAndState(user.getId(), id, "1");
+            if (null == readcode) {
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_PERMISSIONS_ERROR);
+            } else {
+                PhTemplate template = templateService.findOne(id);
+                List<PhTemplateConfig> templateConfigs = templateConfigService.findByGoodsId(template.getId());
+                List<Map<String, Object>> list = new ArrayList<>();
+                template.setReadingNumber(template.getReadingNumber() + 1);
+                templateService.save(template);
+                for (PhTemplateConfig templateConfig : templateConfigs) {
+                    PhLock lock;
+                    Map<String, Object> obj;
+                    switch (templateConfig.getName()) {
+                        case "template1":
+                            PhTemplate1 template1 = template1Service.findOne(templateConfig.getTemplateId());
+                            obj = transform(template1);
+                            lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "0", template1.getId());
+                            obj.put("lock", processLock(lock));
+                            list.add(obj);
+                            break;
+                        case "template2":
+                            List<PhTemplate2> template2s = template2Service.findOneList(templateConfig.getTemplateId());
+                            obj = transform(template2s);
+                            lock = lockService.findByPid(templateConfig.getId());
+                            obj.put("lock", processLock(lock));
+                            list.add(obj);
+                            break;
+                        case "template3":
+                            PhTemplate3 template3 = template3Service.findOne(templateConfig.getTemplateId());
+                            obj = transform(template3);
+                            lock = lockService.findByPid(templateConfig.getId());
+                            obj.put("lock", processLock(lock));
+                            list.add(obj);
+                            break;
+                        case "template4":
+                            PhTemplate4 template4 = template4Service.findOne(templateConfig.getTemplateId());
+                            obj = transform(template4);
+                            lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "3", template4.getId());
+                            obj.put("lock", processLock(lock));
+                            list.add(obj);
+                            break;
+                        case "template5":
+                            PhTemplate5 template5 = template5Service.findOne(templateConfig.getTemplateId());
+                            obj = transform(template5);
+                            lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "4", template5.getId());
+                            obj.put("lock", processLock(lock));
+                            list.add(obj);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return jsonResultHelper.buildSuccessJsonResult(list);
             }
         }
-        return jsonResultHelper.buildSuccessJsonResult(list);
     }
 
 }

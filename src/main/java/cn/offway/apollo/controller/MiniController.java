@@ -218,7 +218,7 @@ public class MiniController {
             if (user == null) {
                 return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
             } else {
-                String userToken = stringRedisTemplate.opsForValue().get(USER_TOKEN_KEY + "." + unionid);
+                String userToken = stringRedisTemplate.opsForValue().get(USER_TOKEN_KEY + "_" + unionid);
                 Map<String, Object> map = new HashMap<>();
                 if (StringUtils.isBlank(userToken)) {
                     String token = UUID.randomUUID().toString().replaceAll("-", "");
