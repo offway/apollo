@@ -27,7 +27,7 @@ public interface PhReadcodeRepository extends JpaRepository<PhReadcode,Long>,Jpa
 
     PhReadcode findByUseIdAndBooksIdAndState(Long userid,Long booksid,String state);
 
-    PhReadcode findByBooksIdAndStateAndUseIdAndCode(Long booksid,String state,Long userid,String code);
+    PhReadcode findByBooksIdAndStateAndCode(Long booksid,String state,String code);
 
     List<PhReadcode> findByBooksIdAndStateAndBuyersId(Long booksid,String state,Long userid);
 }

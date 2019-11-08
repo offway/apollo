@@ -86,6 +86,7 @@ public class CallbackController {
                         readcodeService.save(codeList);
                         PhTemplate template = phTemplateService.findOne(order.getTemplateId());
                         template.setSubscribeSum(template.getSubscribeSum() + Integer.parseInt(order.getSum()));
+                        template.setSoldNumber(template.getSoldNumber() + Integer.parseInt(order.getSum()));
                         phTemplateService.save(template);
                         //写入redis
                         String key = MessageFormat.format("{0}_{1}", KEY_RANK, order.getTemplateId());

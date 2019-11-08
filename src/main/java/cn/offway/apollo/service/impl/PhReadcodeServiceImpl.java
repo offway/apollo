@@ -93,7 +93,7 @@ public class PhReadcodeServiceImpl implements PhReadcodeService {
 
 	@Override
 	public PhReadcode findByBooksIdAndStateAndUseIdAndCode(Long booksid, String state, Long userid, String code){
-		return phReadcodeRepository.findByBooksIdAndStateAndUseIdAndCode(booksid,state,userid,code);
+		return phReadcodeRepository.findByBooksIdAndStateAndCode(booksid,state,code);
 	}
 
 	@Override

@@ -184,12 +184,6 @@ public class MiniController {
             String url = JSCODE2SESSION;
             url = url.replace("APPID", BOOKSAPPID).replace("SECRET", BOOKSSECRET).replace("CODE", code);
             String result = HttpClientUtil.get(url);
-//		JSONObject jsonObject = JSON.parseObject(result);
-//		if(StringUtils.isNotBlank(jsonObject.getString("errcode"))){
-//			return jsonResultHelper.buildFailJsonResult(CommonResultCode.PARAM_ERROR);
-//		}
-//
-//		String session_key = jsonObject.getString("session_key");
             return jsonResultHelper.buildSuccessJsonResult(JSON.parseObject(result));
         } catch (Exception e) {
             e.printStackTrace();
@@ -225,7 +219,7 @@ public class MiniController {
             if (user == null) {
                 return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
             } else {
-                String userToken = stringRedisTemplate.opsForValue().get(USER_TOKEN_KEY + "." + unionid);
+                String userToken = stringRedisTemplate.opsForValue().get(USER_TOKEN_KEY + "_" + unionid);
                 Map<String, Object> map = new HashMap<>();
                 if (StringUtils.isBlank(userToken)) {
                     String token = UUID.randomUUID().toString().replaceAll("-", "");
