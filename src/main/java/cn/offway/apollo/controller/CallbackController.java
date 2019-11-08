@@ -1,6 +1,8 @@
 package cn.offway.apollo.controller;
 
-import cn.offway.apollo.domain.*;
+import cn.offway.apollo.domain.PhOrder;
+import cn.offway.apollo.domain.PhReadcode;
+import cn.offway.apollo.domain.PhTemplate;
 import cn.offway.apollo.properties.WxpayProperties;
 import cn.offway.apollo.service.PhOrderService;
 import cn.offway.apollo.service.PhReadcodeService;
@@ -14,19 +16,24 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Api(tags = {"系统通知对外服务"})
 @RestController
 @RequestMapping("/callback")
 public class CallbackController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static String KEY_RANK = "GOODS_SELL_RANK";
     @Autowired
     private PhUserService userService;
     @Autowired
@@ -39,6 +46,8 @@ public class CallbackController {
     private WxpayProperties wxpayProperties;
     @Autowired
     private PhTemplateService phTemplateService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @ApiOperation("微信支付结果通知")
     @PostMapping("/wxpay")
@@ -62,9 +71,9 @@ public class CallbackController {
                     if (order != null && "0".equals(order.getStatus())) {
                         order.setStatus("1");
                         orderService.save(order);
-                        //TODO 生成优惠券，写入排行榜
+                        //生成优惠券，写入排行榜
                         List<PhReadcode> codeList = new ArrayList<>();
-                        for (int i = 0;i<Integer.parseInt(order.getSum());i++){
+                        for (int i = 0; i < Integer.parseInt(order.getSum()); i++) {
                             String uuid = RandomStringUtils.randomAlphanumeric(10).toUpperCase();
                             PhReadcode code = new PhReadcode();
                             code.setBooksId(order.getTemplateId());
@@ -76,8 +85,11 @@ public class CallbackController {
                         }
                         readcodeService.save(codeList);
                         PhTemplate template = phTemplateService.findOne(order.getTemplateId());
-                        template.setSubscribeSum(template.getSubscribeSum()+Integer.parseInt(order.getSum()));
+                        template.setSubscribeSum(template.getSubscribeSum() + Integer.parseInt(order.getSum()));
                         phTemplateService.save(template);
+                        //写入redis
+                        String key = MessageFormat.format("{0}_{1}", KEY_RANK, order.getTemplateId());
+                        stringRedisTemplate.opsForZSet().incrementScore(key, String.valueOf(order.getUserId()), Long.valueOf(order.getSum()));
                     }
                 }
                 return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
