@@ -77,6 +77,7 @@ public class CallbackController {
                         readcodeService.save(codeList);
                         PhTemplate template = phTemplateService.findOne(order.getTemplateId());
                         template.setSubscribeSum(template.getSubscribeSum()+Integer.parseInt(order.getSum()));
+                        template.setSoldNumber(template.getSoldNumber()+Integer.parseInt(order.getSum()));
                         phTemplateService.save(template);
                     }
                 }
