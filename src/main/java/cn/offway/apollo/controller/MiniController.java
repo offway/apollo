@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +24,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/mini")
 public class MiniController {
-
     private static final String JSCODE2SESSION = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=CODE&grant_type=authorization_code";
     private static String access_token = "";
     private static final String USER_TOKEN_KEY = "USER_TOKEN";
@@ -396,6 +397,45 @@ public class MiniController {
                 map1.put("headimgurl", phUser.getHeadimgurl());
                 map1.put("userid", phReadcode.getBuyersId());
                 map1.put("sum", phReadcode.getRemark());
+                list.add(map1);
+            }
+            remap.put("ranking", list);
+            return jsonResultHelper.buildSuccessJsonResult(remap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("电子刊排行榜详情异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("电子刊排行榜详情(包含虚拟用户)")
+    @GetMapping("/booksRankingAll")
+    public JsonResult booksRankingAll(@ApiParam("电子刊id") @RequestParam Long id, @ApiParam("unionid") @RequestParam String unionId) {
+        try {
+            Map<String, Object> remap = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
+            PhTemplate phTemplates = templateService.findOne(id);
+            map.put("imageurl", phTemplates.getImageUrl());
+            map.put("subscribesum", phTemplates.getSubscribeSum());
+            map.put("price", phTemplates.getPrice());
+            map.put("templateName", phTemplates.getTemplateName());
+            if (StringUtils.isNotBlank(unionId)) {
+                PhUser user = userService.findByUnionid(unionId);
+                PhReadcode readcode = readcodeService.findByUseIdAndBooksIdAndState(user.getId(), id, "1");
+                map.put("state", readcode != null ? "1" : "0");
+            } else {
+                map.put("state", "0");
+            }
+            remap.put("title", map);
+            List<Object> list = new ArrayList<>();
+            String key = MessageFormat.format("{0}_{1}", CallbackController.KEY_RANK, id);
+            for (ZSetOperations.TypedTuple obj : stringRedisTemplate.opsForZSet().reverseRangeWithScores(key, 0, 100)) {
+                Map<String, Object> map1 = new HashMap<>();
+                PhUser phUser = userService.findOne(Long.valueOf(String.valueOf(obj.getValue())));
+                map1.put("nickname", phUser.getNickname());
+                map1.put("headimgurl", phUser.getHeadimgurl());
+                map1.put("userid", phUser.getId());
+                map1.put("sum", obj.getScore());
                 list.add(map1);
             }
             remap.put("ranking", list);

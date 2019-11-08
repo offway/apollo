@@ -32,8 +32,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/callback")
 public class CallbackController {
+    public final static String KEY_RANK = "GOODS_SELL_RANK";
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final static String KEY_RANK = "GOODS_SELL_RANK";
     @Autowired
     private PhUserService userService;
     @Autowired
