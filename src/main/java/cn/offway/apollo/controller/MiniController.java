@@ -474,15 +474,16 @@ public class MiniController {
                 return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
             }
             //unionid=UNIONID&nickName=NICKNAME&headimgurl=HEADIMGURL&sessionKey=SESSIONKEY&encryptedData=ENCRYPTEDDATA&iv=IV
-            JSONObject params = new JSONObject();
+            Map<String,String> params = new HashMap<>();
             params.put("unionid", unionid);
             params.put("nickName", nickName);
             params.put("headimgurl", headimgurl);
             params.put("sessionKey", sessionKey);
             params.put("encryptedData", encryptedData);
             params.put("iv", iv);
-//            String url = APPREGISTERURL;
-//            HttpClientUtil.postByteArray(url, params.toJSONString());
+            params.put("source","0");
+            String url = APPREGISTERURL;
+            HttpClientUtil.post(url, params);
             if (!stringRedisTemplate.hasKey(USER_MAX_ID_KEY)) {
                 int maxId = userService.getMaxUserId();
                 stringRedisTemplate.opsForValue().setIfAbsent(USER_MAX_ID_KEY, String.valueOf(maxId));
