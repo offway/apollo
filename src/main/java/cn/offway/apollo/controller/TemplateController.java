@@ -216,9 +216,9 @@ public class TemplateController {
     @GetMapping("/list")
     public JsonResult list(@ApiParam("杂志id") @RequestParam Long id, @ApiParam("unionid") @RequestParam String unionid, @ApiParam("token") @RequestParam String token) {
         String userToken = stringRedisTemplate.opsForValue().get(USER_TOKEN_KEY + "_" + unionid);
-        if("".equals(userToken) || userToken == null){
+        if ("".equals(userToken) || userToken == null) {
             return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
-        }else if (!userToken.equals(token)) {
+        } else if (!userToken.equals(token)) {
             return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
         } else {
             PhUser user = userService.findByUnionid(unionid);
@@ -227,54 +227,58 @@ public class TemplateController {
                 return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_PERMISSIONS_ERROR);
             } else {
                 PhTemplate template = templateService.findOne(id);
-                List<PhTemplateConfig> templateConfigs = templateConfigService.findByGoodsId(template.getId());
-                List<Map<String, Object>> list = new ArrayList<>();
-                template.setReadingNumber(template.getReadingNumber() + 1);
-                templateService.save(template);
-                for (PhTemplateConfig templateConfig : templateConfigs) {
-                    PhLock lock;
-                    Map<String, Object> obj;
-                    switch (templateConfig.getName()) {
-                        case "template1":
-                            PhTemplate1 template1 = template1Service.findOne(templateConfig.getTemplateId());
-                            obj = transform(template1);
-                            lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "0", template1.getId());
-                            obj.put("lock", processLock(lock));
-                            list.add(obj);
-                            break;
-                        case "template2":
-                            List<PhTemplate2> template2s = template2Service.findOneList(templateConfig.getTemplateId());
-                            obj = transform(template2s);
-                            lock = lockService.findByPid(templateConfig.getId());
-                            obj.put("lock", processLock(lock));
-                            list.add(obj);
-                            break;
-                        case "template3":
-                            PhTemplate3 template3 = template3Service.findOne(templateConfig.getTemplateId());
-                            obj = transform(template3);
-                            lock = lockService.findByPid(templateConfig.getId());
-                            obj.put("lock", processLock(lock));
-                            list.add(obj);
-                            break;
-                        case "template4":
-                            PhTemplate4 template4 = template4Service.findOne(templateConfig.getTemplateId());
-                            obj = transform(template4);
-                            lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "3", template4.getId());
-                            obj.put("lock", processLock(lock));
-                            list.add(obj);
-                            break;
-                        case "template5":
-                            PhTemplate5 template5 = template5Service.findOne(templateConfig.getTemplateId());
-                            obj = transform(template5);
-                            lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "4", template5.getId());
-                            obj.put("lock", processLock(lock));
-                            list.add(obj);
-                            break;
-                        default:
-                            break;
+                if (null != template) {
+                    List<PhTemplateConfig> templateConfigs = templateConfigService.findByGoodsId(template.getId());
+                    List<Map<String, Object>> list = new ArrayList<>();
+                    template.setReadingNumber(template.getReadingNumber() + 1);
+                    templateService.save(template);
+                    for (PhTemplateConfig templateConfig : templateConfigs) {
+                        PhLock lock;
+                        Map<String, Object> obj;
+                        switch (templateConfig.getName()) {
+                            case "template1":
+                                PhTemplate1 template1 = template1Service.findOne(templateConfig.getTemplateId());
+                                obj = transform(template1);
+                                lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "0", template1.getId());
+                                obj.put("lock", processLock(lock));
+                                list.add(obj);
+                                break;
+                            case "template2":
+                                List<PhTemplate2> template2s = template2Service.findOneList(templateConfig.getTemplateId());
+                                obj = transform(template2s);
+                                lock = lockService.findByPid(templateConfig.getId());
+                                obj.put("lock", processLock(lock));
+                                list.add(obj);
+                                break;
+                            case "template3":
+                                PhTemplate3 template3 = template3Service.findOne(templateConfig.getTemplateId());
+                                obj = transform(template3);
+                                lock = lockService.findByPid(templateConfig.getId());
+                                obj.put("lock", processLock(lock));
+                                list.add(obj);
+                                break;
+                            case "template4":
+                                PhTemplate4 template4 = template4Service.findOne(templateConfig.getTemplateId());
+                                obj = transform(template4);
+                                lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "3", template4.getId());
+                                obj.put("lock", processLock(lock));
+                                list.add(obj);
+                                break;
+                            case "template5":
+                                PhTemplate5 template5 = template5Service.findOne(templateConfig.getTemplateId());
+                                obj = transform(template5);
+                                lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "4", template5.getId());
+                                obj.put("lock", processLock(lock));
+                                list.add(obj);
+                                break;
+                            default:
+                                break;
+                        }
                     }
+                    return jsonResultHelper.buildSuccessJsonResult(list);
+                } else {
+                    return jsonResultHelper.buildFailJsonResult(CommonResultCode.MAGAZINES_DONOT_EXIST);
                 }
-                return jsonResultHelper.buildSuccessJsonResult(list);
             }
         }
     }

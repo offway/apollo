@@ -61,6 +61,8 @@ public enum CommonResultCode implements ResultCode {
     /** 无阅读权限  */
     USER_PERMISSIONS_ERROR("1016", "USER_PERMISSIONS_ERROR"),
 
+    /** 杂志不存在 **/
+    MAGAZINES_DONOT_EXIST("1017","MAGAZINES_DONOT_EXIST"),
     ;
 	
 	
