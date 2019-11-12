@@ -68,7 +68,7 @@ public class TemplateController {
     private PhReadcodeService readcodeService;
 
 
-    private Map<String, Object> transform(Object obj) {
+    private Map<String, Object> transform(Object obj, PhTemplate template) {
 //        ObjectMapper mapper = new ObjectMapper();
 //        Map<String,Object> map = mapper.convertValue(obj,HashMap.class);
         Map<String, Object> newObj = new HashMap<>();
@@ -78,6 +78,8 @@ public class TemplateController {
             newObj.put("type", "1");
             //杂志id
             newObj.put("magazine_id", template1.getGoodsId());
+            //电子刊音频
+            newObj.put("bgm_url", template.getAudioUrl());
             /* 类型[0-重叠,1-不重叠] **/
             newObj.put("cover_style", template1.getType());
             //底图
@@ -100,6 +102,8 @@ public class TemplateController {
             for (PhTemplate2 template2 : template2s) {
                 //杂志id
                 newObj.put("magazine_id", template2.getGoodsId());
+                //电子刊音频
+                newObj.put("bgm_url", template.getAudioUrl());
                 Map<String, Object> innerMap = new HashMap<>();
                 /* 展示类型[0-效果图,1-文字] **/
                 innerMap.put("show_style", template2.getType());
@@ -125,6 +129,8 @@ public class TemplateController {
             newObj.put("type", "3");
             //杂志id
             newObj.put("magazine_id", template3.getGoodsId());
+            //电子刊音频
+            newObj.put("bgm_url", template.getAudioUrl());
             //标题
             newObj.put("title", template3.getImageTag());
             //背景图
@@ -161,6 +167,8 @@ public class TemplateController {
             newObj.put("type", "5");
             //杂志id
             newObj.put("magazine_id", template4.getGoodsId());
+            //电子刊音频
+            newObj.put("bgm_url", template.getAudioUrl());
             /* 类型[0-类型1(两张图片),1-类型2(三张图片),2-类型3(三张图片),3-类型4(三张图片),4-类型5(两张图片),5-类型6(两张图片),6-类型7(两张图片),7-类型8(两张图片)] **/
             newObj.put("layout_style", template4.getType());
             List<String> arr = new ArrayList<>();
@@ -186,6 +194,8 @@ public class TemplateController {
             newObj.put("type", "4");
             //杂志id
             newObj.put("magazine_id", template5.getGoodsId());
+            //电子刊音频
+            newObj.put("bgm_url", template.getAudioUrl());
             /* 类型[0-底图,1-无边框] **/
             newObj.put("video_style", template5.getType());
             //底图
@@ -216,9 +226,9 @@ public class TemplateController {
     @GetMapping("/list")
     public JsonResult list(@ApiParam("杂志id") @RequestParam Long id, @ApiParam("unionid") @RequestParam String unionid, @ApiParam("token") @RequestParam String token) {
         String userToken = stringRedisTemplate.opsForValue().get(USER_TOKEN_KEY + "_" + unionid);
-        if("".equals(userToken) || userToken == null){
+        if ("".equals(userToken) || userToken == null) {
             return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
-        }else if (!userToken.equals(token)) {
+        } else if (!userToken.equals(token)) {
             return jsonResultHelper.buildFailJsonResult(CommonResultCode.USER_NOT_EXISTS);
         } else {
             PhUser user = userService.findByUnionid(unionid);
@@ -237,35 +247,35 @@ public class TemplateController {
                     switch (templateConfig.getName()) {
                         case "template1":
                             PhTemplate1 template1 = template1Service.findOne(templateConfig.getTemplateId());
-                            obj = transform(template1);
+                            obj = transform(template1, template);
                             lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "0", template1.getId());
                             obj.put("lock", processLock(lock));
                             list.add(obj);
                             break;
                         case "template2":
                             List<PhTemplate2> template2s = template2Service.findOneList(templateConfig.getTemplateId());
-                            obj = transform(template2s);
+                            obj = transform(template2s, template);
                             lock = lockService.findByPid(templateConfig.getId());
                             obj.put("lock", processLock(lock));
                             list.add(obj);
                             break;
                         case "template3":
                             PhTemplate3 template3 = template3Service.findOne(templateConfig.getTemplateId());
-                            obj = transform(template3);
+                            obj = transform(template3, template);
                             lock = lockService.findByPid(templateConfig.getId());
                             obj.put("lock", processLock(lock));
                             list.add(obj);
                             break;
                         case "template4":
                             PhTemplate4 template4 = template4Service.findOne(templateConfig.getTemplateId());
-                            obj = transform(template4);
+                            obj = transform(template4, template);
                             lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "3", template4.getId());
                             obj.put("lock", processLock(lock));
                             list.add(obj);
                             break;
                         case "template5":
                             PhTemplate5 template5 = template5Service.findOne(templateConfig.getTemplateId());
-                            obj = transform(template5);
+                            obj = transform(template5, template);
                             lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "4", template5.getId());
                             obj.put("lock", processLock(lock));
                             list.add(obj);
