@@ -158,7 +158,7 @@ public class TemplateController {
         } else if (obj instanceof PhTemplate4) {
             PhTemplate4 template4 = (PhTemplate4) obj;
             //样式：1样式一、2样式二、3样式三、4样式四、5样式五、6样式六
-            newObj.put("type", "4");
+            newObj.put("type", "5");
             //杂志id
             newObj.put("magazine_id", template4.getGoodsId());
             /* 类型[0-类型1(两张图片),1-类型2(三张图片),2-类型3(三张图片),3-类型4(三张图片),4-类型5(两张图片),5-类型6(两张图片),6-类型7(两张图片),7-类型8(两张图片)] **/
@@ -183,7 +183,7 @@ public class TemplateController {
         } else if (obj instanceof PhTemplate5) {
             PhTemplate5 template5 = (PhTemplate5) obj;
             //样式：1样式一、2样式二、3样式三、4样式四、5样式五、6样式六
-            newObj.put("type", "5");
+            newObj.put("type", "4");
             //杂志id
             newObj.put("magazine_id", template5.getGoodsId());
             /* 类型[0-底图,1-无边框] **/
