@@ -111,6 +111,8 @@ public class TemplateController {
                 innerMap.put("action_mode", template2.getWay());
                 //图片链接
                 innerMap.put("pic", template2.getImageUrl());
+                //底图链接
+                innerMap.put("bg_pic", template2.getImageUnderUrl());
                 //提示文案
                 innerMap.put("text", template2.getPromptText());
                 //提示文案字体
