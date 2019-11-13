@@ -44,6 +44,8 @@ public class PhTemplate2 implements Serializable {
     /** pid **/
     private Long pid;
 
+    /** 底图 **/
+    private String imageUnderUrl;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -136,6 +138,15 @@ public class PhTemplate2 implements Serializable {
 
     public void setPid(Long pid) {
         this.pid = pid;
+    }
+
+    @Column(name = "image_under_url", length = 200)
+    public String getImageUnderUrl() {
+        return imageUnderUrl;
+    }
+
+    public void setImageUnderUrl(String imageUnderUrl) {
+        this.imageUnderUrl = imageUnderUrl;
     }
 
 }
