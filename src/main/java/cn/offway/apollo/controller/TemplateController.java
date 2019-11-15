@@ -256,7 +256,7 @@ public class TemplateController {
                                 list.add(obj);
                                 break;
                             case "template2":
-                                List<PhTemplate2> template2s = template2Service.findOneList(templateConfig.getTemplateId());
+                                List<PhTemplate2> template2s = template2Service.findList(templateConfig.getTemplateId());
                                 obj = transform(template2s, template);
                                 lock = lockService.findByPid(templateConfig.getId());
                                 obj.put("lock", processLock(lock));

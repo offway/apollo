@@ -52,6 +52,11 @@ public class PhTemplate2ServiceImpl implements PhTemplate2Service {
     }
 
     @Override
+    public List<PhTemplate2> findList(Long pid) {
+        return phTemplate2Repository.findByPid(pid);
+    }
+
+    @Override
     @DS(DataSourceNames.BK)
     public List<PhTemplate2> findOneList(Long id) {
         return phTemplate2Repository.findById(id);

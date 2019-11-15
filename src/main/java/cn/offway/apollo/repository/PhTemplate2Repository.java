@@ -13,8 +13,8 @@ import java.util.List;
  * @author wn
  * @version $v: 1.0.0, $time:2019-10-21 11:31:24 Exp $
  */
-public interface PhTemplate2Repository extends JpaRepository<PhTemplate2,Long>,JpaSpecificationExecutor<PhTemplate2> {
+public interface PhTemplate2Repository extends JpaRepository<PhTemplate2, Long>, JpaSpecificationExecutor<PhTemplate2> {
+    List<PhTemplate2> findById(Long id);
 
-	/** 此处写一些自定义的方法 **/
-	List<PhTemplate2> findById(Long id);
+    List<PhTemplate2> findByPid(Long pid);
 }

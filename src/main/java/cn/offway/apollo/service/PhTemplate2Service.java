@@ -22,4 +22,6 @@ public interface PhTemplate2Service{
     List<PhTemplate2> save(List<PhTemplate2> entities);
 
     List<PhTemplate2> findOneList(Long id);
+
+    List<PhTemplate2> findList(Long pid);
 }
