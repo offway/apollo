@@ -50,6 +50,8 @@ public class PhTemplate1 implements Serializable {
     /** 提示 **/
     private String promptText;
 
+    /** 文字底图 **/
+    private String imageUnderTextUrl;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -160,6 +162,15 @@ public class PhTemplate1 implements Serializable {
 
     public void setRollingPosition(String rollingPosition) {
         this.rollingPosition = rollingPosition;
+    }
+
+    @Column(name = "image_under_text_url", length = 200)
+    public String getImageUnderTextUrl() {
+        return imageUnderTextUrl;
+    }
+
+    public void setImageUnderTextUrl(String imageUnderTextUrl) {
+        this.imageUnderTextUrl = imageUnderTextUrl;
     }
 
 }
