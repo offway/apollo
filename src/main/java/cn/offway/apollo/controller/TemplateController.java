@@ -86,6 +86,8 @@ public class TemplateController {
             newObj.put("tail_pic", template1.getImageUnderUrl());
             //文字图
             newObj.put("text_pic", template1.getImageTextUrl());
+            //文字底图
+            newObj.put("text_pic_bg", template1.getImageUnderTextUrl());
             /* 滚动区域类型[0-图片,1-文字] **/
             newObj.put("rolling_type", template1.getRollingType());
             /* 浮窗位置[0-左下,1-左上,2-正局中,3-右上,4-右下] **/
