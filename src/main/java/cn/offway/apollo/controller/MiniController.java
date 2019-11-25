@@ -386,7 +386,10 @@ public class MiniController {
                 map.put("state", "0");
             }
             List<PhReadcode> readcodeList = readcodeService.findAllBybuyersid(id);
-            map.put("imageurl", phTemplates.getImageUrl());
+            String image = phTemplates.getImageUrl();
+            String[] images = image.split(",");
+            List<String> stringList = Arrays.asList(images);
+            map.put("imageurls", stringList);
             map.put("subscribesum", phTemplates.getSubscribeSum());
             map.put("price", phTemplates.getPrice());
             map.put("templateName", phTemplates.getTemplateName());
