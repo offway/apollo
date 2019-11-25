@@ -196,14 +196,21 @@ public class MiniController {
     @GetMapping("/booksIndex")
     public JsonResult booksIndex() {
         try {
-            List<PhTemplate> phTemplates = new ArrayList<>();
-            phTemplates = templateService.findAll();
+            List<PhTemplate> phTemplateList = new ArrayList<>();
+            List<PhTemplate> phTemplates = templateService.findAll();
+            for (PhTemplate phTemplate : phTemplates) {
+                String image = phTemplate.getImageUrl();
+                String[] images = image.split(",");
+                List<String> stringList = Arrays.asList(images);
+                phTemplate.setImageUrls(stringList);
+                phTemplateList.add(phTemplate);
+            }
 //        for (int i =0;i<phTemplates.size();i++){
 //            PhTemplate phTemplate = phTemplates.get(i);
 //            phTemplate.setPrice(phTemplate.getPrice()*100);
 //            phTemplates.set(i,phTemplate);
 //        }
-            return jsonResultHelper.buildSuccessJsonResult(phTemplates);
+            return jsonResultHelper.buildSuccessJsonResult(phTemplateList);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("电子刊首页异常", e);

@@ -3,6 +3,7 @@ package cn.offway.apollo.domain;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 杂志管理
@@ -49,6 +50,9 @@ public class PhTemplate implements Serializable {
 
     /** 销售数量 **/
     private Long soldNumber;
+
+    /** 电子刊封面（多图） **/
+    private List imageUrls;
 
 
     @Id
@@ -160,6 +164,15 @@ public class PhTemplate implements Serializable {
 
     public void setSoldNumber(Long soldNumber) {
         this.soldNumber = soldNumber;
+    }
+
+    @Transient
+    public List getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
 }
