@@ -475,13 +475,14 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		phOrderGoodsService.save(phOrderGoodss);
 		//清除衣柜
 		phWardrobeRepository.delete(wrIds);
-		
+
 		try {
 			//短信通知61
 			smsService.sendMsgBatch("17601355261", "【OFFWAY】提醒您：亲，您有一笔Showroom新订单来啦！请尽快发货！");
+			smsService.sendMsgBatch("13524430033", "【OFFWAY】提醒您：亲，您有一笔Showroom新订单来啦！请尽快发货！");
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("短信通知商户异常unionid="+unionid,e);
+			logger.error("短信通知商户异常unionid=" + unionid, e);
 		}
 		
 		
