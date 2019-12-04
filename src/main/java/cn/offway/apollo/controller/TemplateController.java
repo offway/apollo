@@ -226,6 +226,8 @@ public class TemplateController {
         lockObj.put("contentType", lock.getContentType());
         //提示图片
         lockObj.put("promptImage", lock.getPromptImage());
+        //字体颜色大小
+        lockObj.put("attribute",lock.getRemark());
         return lockObj;
     }
 
