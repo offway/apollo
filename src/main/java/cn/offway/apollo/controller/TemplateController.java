@@ -230,7 +230,10 @@ public class TemplateController {
                 //字体颜色大小
                 lockObj.put("attribute",lock.getAttribute());
                 //内容类型[0-文字,1-图片]
-                lockObj.put("contentType", lock.getContentType());
+                if (StringUtils.isNotBlank(lock.getContentType())) {
+                    JSONObject jsonObject = JSONObject.parseObject(lock.getContentType());
+                    lockObj.put("contentType", jsonObject.toJavaObject(Map.class));
+                }
             }
         }
         return lockObj;
