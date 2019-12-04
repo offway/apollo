@@ -44,6 +44,12 @@ public class PhLock implements Serializable {
     /** pid **/
     private Long pid;
 
+    /** 内容类型[0-文字,1-图片] **/
+    private String contentType;
+
+    /** 提示图片 **/
+    private String promptImage;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -136,6 +142,25 @@ public class PhLock implements Serializable {
 
     public void setPid(Long pid) {
         this.pid = pid;
+    }
+
+
+    @Column(name = "content_type", length = 2)
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    @Column(name = "prompt_image", length = 200)
+    public String getPromptImage() {
+        return promptImage;
+    }
+
+    public void setPromptImage(String promptImage) {
+        this.promptImage = promptImage;
     }
 
 }

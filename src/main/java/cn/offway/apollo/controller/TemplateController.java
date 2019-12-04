@@ -222,6 +222,10 @@ public class TemplateController {
         lockObj.put("subscribeCount", lock.getSubscribeCount());
         //提示文字
         lockObj.put("promptText", lock.getPromptText());
+        //内容类型[0-文字,1-图片]
+        lockObj.put("contentType", lock.getContentType());
+        //提示图片
+        lockObj.put("promptImage", lock.getPromptImage());
         return lockObj;
     }
 
