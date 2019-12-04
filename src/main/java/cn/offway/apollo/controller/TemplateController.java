@@ -222,12 +222,17 @@ public class TemplateController {
         lockObj.put("subscribeCount", lock.getSubscribeCount());
         //提示文字
         lockObj.put("promptText", lock.getPromptText());
-        //内容类型[0-文字,1-图片]
-        lockObj.put("contentType", lock.getContentType());
-        //提示图片
-        lockObj.put("promptImage", lock.getPromptImage());
-        //字体颜色大小
-        lockObj.put("attribute",lock.getAttribute());
+        if ("4".equals(lock.getTemplateType())){
+            if ("1".equals(lock.getContentType())){
+                //提示图片
+                lockObj.put("promptImage", lock.getPromptImage());
+            }else {
+                //字体颜色大小
+                lockObj.put("attribute",lock.getAttribute());
+                //内容类型[0-文字,1-图片]
+                lockObj.put("contentType", lock.getContentType());
+            }
+        }
         return lockObj;
     }
 
