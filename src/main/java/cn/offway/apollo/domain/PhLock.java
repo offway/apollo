@@ -50,6 +50,9 @@ public class PhLock implements Serializable {
     /** 提示图片 **/
     private String promptImage;
 
+    /** 文字颜色,大小 **/
+    private String attribute;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -161,6 +164,15 @@ public class PhLock implements Serializable {
 
     public void setPromptImage(String promptImage) {
         this.promptImage = promptImage;
+    }
+
+    @Column(name = "attribute", length = 200)
+    public String getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
     }
 
 }
