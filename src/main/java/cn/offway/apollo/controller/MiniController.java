@@ -146,7 +146,14 @@ public class MiniController {
 
     @ApiOperation("生成订单号")
     @GetMapping("/booksGetOrderNo")
-    public JsonResult booksGetOrderNo(HttpServletRequest request, @ApiParam("杂志ID") @RequestParam Long goodsId, @ApiParam("用户ID") @RequestParam String unionid, @ApiParam("购买数量") @RequestParam Long sum, @ApiParam("OPENID") @RequestParam String openid) {
+    public JsonResult booksGetOrderNo(HttpServletRequest request,
+                                      @ApiParam("杂志ID") @RequestParam Long goodsId,
+                                      @ApiParam("用户ID") @RequestParam String unionid,
+                                      @ApiParam("购买数量") @RequestParam Long sum,
+                                      @ApiParam("支付方式[0-小程序，1-H5]") @RequestParam String type,
+                                      @ApiParam("wapUrl") @RequestParam String wapUrl,
+                                      @ApiParam("wapName") @RequestParam String wapName,
+                                      @ApiParam("OPENID") @RequestParam String openid) {
         try {
             PhUser user = userService.findByUnionid(unionid);
             if (null == user) {
@@ -169,7 +176,11 @@ public class MiniController {
             //微信统一下单
             String body = "电子刊购买";
             double amount = order.getPrice();
-            return wxpayService.trade_JSAPI(no, IpUtil.getIpAddr(request), body, amount, openid);
+            if("0".equals(type)){
+                return wxpayService.trade_JSAPI(no, IpUtil.getIpAddr(request), body, amount, openid);
+            }else {
+                return wxpayService.trade_MWEB(no, IpUtil.getIpAddr(request), body, amount, wapUrl,wapName);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("生成订单号异常", e);
