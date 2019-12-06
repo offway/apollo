@@ -223,17 +223,19 @@ public class TemplateController {
         //提示文字
         lockObj.put("promptText", lock.getPromptText());
         if ("4".equals(lock.getTemplateType())){
-            if ("1".equals(lock.getContentType())){
-                //提示图片
-                lockObj.put("promptImage", lock.getPromptImage());
-            }else {
-                //字体颜色大小
-                if (StringUtils.isNotBlank(lock.getAttribute())) {
-                    JSONObject jsonObject = JSONObject.parseObject(lock.getAttribute());
-                    lockObj.put("attribute", jsonObject.toJavaObject(Map.class));
+            if ("1".equals(lock.getUnlock())){
+                if ("1".equals(lock.getContentType())){
+                    //提示图片
+                    lockObj.put("promptImage", lock.getPromptImage());
+                }else {
+                    //字体颜色大小
+                    if (StringUtils.isNotBlank(lock.getAttribute())) {
+                        JSONObject jsonObject = JSONObject.parseObject(lock.getAttribute());
+                        lockObj.put("attribute", jsonObject.toJavaObject(Map.class));
+                    }
+                    //内容类型[0-文字,1-图片]
+                    lockObj.put("contentType", lock.getContentType());
                 }
-                //内容类型[0-文字,1-图片]
-                lockObj.put("contentType", lock.getContentType());
             }
         }
         return lockObj;
