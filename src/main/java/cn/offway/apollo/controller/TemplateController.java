@@ -313,4 +313,116 @@ public class TemplateController {
         }
     }
 
+    @ApiOperation("杂志预览")
+    @GetMapping("/preview_list")
+    public JsonResult previewList(@ApiParam("杂志id") @RequestParam Long id) {
+        PhTemplate template = templateService.findOne(id);
+        if (null != template) {
+            List<PhTemplateConfig> templateConfigs = templateConfigService.findByGoodsId(template.getId());
+            List<Map<String, Object>> list = new ArrayList<>();
+            template.setReadingNumber(template.getReadingNumber() + 1);
+            templateService.save(template);
+            for (PhTemplateConfig templateConfig : templateConfigs) {
+                PhLock lock;
+                Map<String, Object> obj;
+                switch (templateConfig.getName()) {
+                    case "template1":
+                        PhTemplate1 template1 = template1Service.findOne(templateConfig.getTemplateId());
+                        obj = transform(template1, template);
+                        lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "0", template1.getId());
+                        obj.put("lock", processLock(lock));
+                        list.add(obj);
+                        break;
+                    case "template2":
+                        List<PhTemplate2> template2s = template2Service.findList(templateConfig.getId());
+                        obj = transform(template2s, template);
+                        lock = lockService.findByPid(templateConfig.getId());
+                        obj.put("lock", processLock(lock));
+                        list.add(obj);
+                        break;
+                    case "template3":
+                        PhTemplate3 template3 = template3Service.findOne(templateConfig.getTemplateId());
+                        obj = transform(template3, template);
+                        lock = lockService.findByPid(templateConfig.getId());
+                        obj.put("lock", processLock(lock));
+                        list.add(obj);
+                        break;
+                    case "template4":
+                        PhTemplate4 template4 = template4Service.findOne(templateConfig.getTemplateId());
+                        obj = transform(template4, template);
+                        lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "3", template4.getId());
+                        obj.put("lock", processLock(lock));
+                        list.add(obj);
+                        break;
+                    case "template5":
+                        PhTemplate5 template5 = template5Service.findOne(templateConfig.getTemplateId());
+                        obj = transform(template5, template);
+                        lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "4", template5.getId());
+                        obj.put("lock", processLock(lock));
+                        list.add(obj);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return jsonResultHelper.buildSuccessJsonResult(list);
+        } else {
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.MAGAZINES_DONOT_EXIST);
+        }
+    }
+
+    @ApiOperation("杂志单页预览")
+    @GetMapping("/preview")
+    public JsonResult preview(@ApiParam("模板id") @RequestParam Long id) {
+        PhTemplateConfig templateConfig = templateConfigService.findOne(id);
+        if (null != templateConfig) {
+            PhTemplate template = templateService.findOne(templateConfig.getGoodsId());
+            PhLock lock;
+            Map<String, Object> obj;
+            List<Map<String, Object>> list = new ArrayList<>();
+            switch (templateConfig.getName()) {
+                case "template1":
+                    PhTemplate1 template1 = template1Service.findOne(templateConfig.getTemplateId());
+                    obj = transform(template1, template);
+                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "0", template1.getId());
+                    obj.put("lock", processLock(lock));
+                    list.add(obj);
+                    break;
+                case "template2":
+                    List<PhTemplate2> template2s = template2Service.findList(templateConfig.getId());
+                    obj = transform(template2s, template);
+                    lock = lockService.findByPid(templateConfig.getId());
+                    obj.put("lock", processLock(lock));
+                    list.add(obj);
+                    break;
+                case "template3":
+                    PhTemplate3 template3 = template3Service.findOne(templateConfig.getTemplateId());
+                    obj = transform(template3, template);
+                    lock = lockService.findByPid(templateConfig.getId());
+                    obj.put("lock", processLock(lock));
+                    list.add(obj);
+                    break;
+                case "template4":
+                    PhTemplate4 template4 = template4Service.findOne(templateConfig.getTemplateId());
+                    obj = transform(template4, template);
+                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "3", template4.getId());
+                    obj.put("lock", processLock(lock));
+                    list.add(obj);
+                    break;
+                case "template5":
+                    PhTemplate5 template5 = template5Service.findOne(templateConfig.getTemplateId());
+                    obj = transform(template5, template);
+                    lock = lockService.findByGoodsidAndTemplateTypeAndTemplateId(template.getId(), "4", template5.getId());
+                    obj.put("lock", processLock(lock));
+                    list.add(obj);
+                    break;
+                default:
+                    break;
+            }
+            return jsonResultHelper.buildSuccessJsonResult(list);
+        } else {
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.MAGAZINES_DONOT_EXIST);
+        }
+    }
+
 }
