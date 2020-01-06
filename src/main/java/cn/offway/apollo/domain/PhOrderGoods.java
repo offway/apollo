@@ -56,6 +56,18 @@ public class PhOrderGoods implements Serializable {
     /** SKU **/
     private String sku;
 
+    /** 快递批次 **/
+    private String batch;
+
+    /** 快递单号 **/
+    private String mailNo;
+
+    /** 库存ID **/
+    private Long stockId;
+
+    /** 返回快递单号 **/
+    private String returnMailNo;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -185,5 +197,41 @@ public class PhOrderGoods implements Serializable {
 	public void setSku(String sku) {
 		this.sku = sku;
 	}
+
+    @Column(name = "batch", length = 5)
+    public String getBatch() {
+        return batch;
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
+    @Column(name = "mailNo", length = 50)
+    public String getMailNo() {
+        return mailNo;
+    }
+
+    public void setMailNo(String mailNo) {
+        this.mailNo = mailNo;
+    }
+
+    @Column(name = "stock_id", length = 50)
+    public Long getStockId() {
+        return stockId;
+    }
+
+    public void setStockId(Long stockId) {
+        this.stockId = stockId;
+    }
+
+    @Column(name = "returnMailNo", length = 50)
+    public String getReturnMailNo() {
+        return returnMailNo;
+    }
+
+    public void setReturnMailNo(String returnMailNo) {
+        this.returnMailNo = returnMailNo;
+    }
 
 }

@@ -83,6 +83,12 @@ public class PhOrderExpressInfo implements Serializable {
     /** 快递员最晚上门时间 **/
     private String lastTime;
 
+    /** 快递批次 **/
+    private String batch;
+
+    /** 退货地址ID **/
+    private Long returnId;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -292,6 +298,24 @@ public class PhOrderExpressInfo implements Serializable {
 
     public void setLastTime(String lastTime) {
         this.lastTime = lastTime;
+    }
+
+    @Column(name = "batch", length = 5)
+    public String getBatch() {
+        return batch;
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
+    @Column(name = "return_id", length = 11)
+    public Long getReturnId() {
+        return returnId;
+    }
+
+    public void setReturnId(Long returnId) {
+        this.returnId = returnId;
     }
 
 }
