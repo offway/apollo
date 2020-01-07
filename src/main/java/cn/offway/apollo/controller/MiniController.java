@@ -151,8 +151,6 @@ public class MiniController {
                                       @ApiParam("用户ID") @RequestParam String unionid,
                                       @ApiParam("购买数量") @RequestParam Long sum,
                                       @ApiParam("支付方式[0-小程序，1-H5]") @RequestParam String type,
-                                      @ApiParam("wapUrl") @RequestParam String wapUrl,
-                                      @ApiParam("wapName") @RequestParam String wapName,
                                       @ApiParam("OPENID") @RequestParam String openid) {
         try {
             PhUser user = userService.findByUnionid(unionid);
@@ -174,12 +172,12 @@ public class MiniController {
             order.setCreateTime(new Date());
             order = orderService.save(order);
             //微信统一下单
-            String body = "电子刊购买";
+            String body = "电子刊购买,电子刊名称:"+template.getTemplateName();
             double amount = order.getPrice();
             if ("0".equals(type)) {
                 return wxpayService.trade_JSAPI(no, IpUtil.getIpAddr(request), body, amount, openid);
             } else {
-                return wxpayService.trade_MWEB(no, IpUtil.getIpAddr(request), body, amount, wapUrl, wapName);
+                return wxpayService.trade_JSAPI_IOS(no, IpUtil.getIpAddr(request), body, amount, openid);
             }
         } catch (Exception e) {
             e.printStackTrace();
