@@ -185,7 +185,7 @@ public class WxpayService {
         try {
             // 创建hashmap(用户获得签名)
             SortedMap<String, String> paraMap = new TreeMap<String, String>();
-            paraMap.put("appid", "wx22e5d09caef77790");//yuzhaojian@puhao-art.com	公众账号ID	是	String(32)	wxd678efh567hg6787	微信分配的公众账号ID（企业号corpid即为此appId）
+            paraMap.put("appid", "wxa32e68e20b08bf5d");//yuzhaojian@puhao-art.com	公众账号ID	是	String(32)	wxd678efh567hg6787	微信分配的公众账号ID（企业号corpid即为此appId）
             String mchId = wxpayProperties.getMchId();
             paraMap.put("mch_id", mchId);//	商户号	是	String(32)	1230000109	微信支付分配的商户号
             paraMap.put("device_info", "WEB");//	设备号	否	String(32)	1.3467E+13	终端设备号(门店号或收银设备ID)，注意：PC网页或公众号内支付请传"WEB"

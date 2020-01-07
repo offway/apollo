@@ -46,4 +46,9 @@ public class PhOrderExpressInfoServiceImpl implements PhOrderExpressInfoService 
 	public PhOrderExpressInfo findByOrderNoAndType(String orderNo,String type){
 		return phOrderExpressInfoRepository.findByOrderNoAndType(orderNo, type);
 	}
+
+	@Override
+	public PhOrderExpressInfo findByOrderNoAndTypeAndBatch(String orderNo,String type,String batch){
+		return phOrderExpressInfoRepository.findByOrderNoAndTypeAndBatch(orderNo, type,batch);
+	}
 }

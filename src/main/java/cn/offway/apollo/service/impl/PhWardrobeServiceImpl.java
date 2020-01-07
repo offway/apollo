@@ -352,6 +352,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		for (PhWardrobe phWardrobe : wardrobes) {
 			
 			PhOrderInfo phOrderInfo = null;
+			phOrderInfo = map.get(phWardrobe.getBrandId());
 			if("1".equals(phWardrobe.getIsOffway())){
 				//自营
 				if(null == offwayOrder){
@@ -370,11 +371,11 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 					offwayOrder.setUsers(users);
 					offwayOrder.setIsUpload("0");
 					phOrderInfos.add(offwayOrder);
-					
+
 					//保存订单物流
 					PhAddress toAddress = phAddressService.findOne(addrId);
 					PhAddress offwayAddress = phAddressService.findOne(1L);
-					
+
 					PhOrderExpressInfo phOrderExpressInfo = new PhOrderExpressInfo();
 					phOrderExpressInfo.setCreateTime(now);
 //					phOrderExpressInfo.setExpressOrderNo(phOrderInfoService.generateOrderNo("SF"));
@@ -396,11 +397,11 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 					phOrderExpressInfo.setToRealName(toAddress.getRealName());
 					phOrderExpressInfo.setType("0");
 					phOrderExpressInfos.add(phOrderExpressInfo);
-					
+
 				}
 				phOrderInfo = offwayOrder;
 			}else{
-				
+
 				phOrderInfo = map.get(phWardrobe.getBrandId());
 			}
 			
@@ -457,7 +458,9 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			phOrderGoods.setGoodsId(phWardrobe.getGoodsId());
 			phOrderGoods.setGoodsName(phWardrobe.getGoodsName());
 			PhGoodsStock phGoodsStock = phGoodsStockService.findByGoodsIdAndSizeAndColor(phWardrobe.getGoodsId(), phWardrobe.getSize(), phWardrobe.getColor());
+			phOrderGoods.setStockId(phGoodsStock.getId());
 			phOrderGoods.setSku(phGoodsStock.getSku());
+			phOrderGoods.setBatch("0");
 			phOrderGoods.setImage(phGoodsStock.getImage());
 			//phOrderGoods.setOrderId(orderId);
 			phOrderGoods.setOrderNo(phOrderInfo.getOrderNo());

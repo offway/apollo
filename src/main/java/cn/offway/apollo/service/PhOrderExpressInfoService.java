@@ -19,4 +19,6 @@ public interface PhOrderExpressInfoService{
 	List<PhOrderExpressInfo> save(List<PhOrderExpressInfo> phOrderExpressInfos);
 
 	PhOrderExpressInfo findByOrderNoAndType(String orderNo, String type);
+
+	PhOrderExpressInfo findByOrderNoAndTypeAndBatch(String orderNo, String type, String batch);
 }

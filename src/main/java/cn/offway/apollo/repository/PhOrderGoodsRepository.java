@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import cn.offway.apollo.domain.PhOrderGoods;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * 订单商品Repository接口
@@ -15,5 +16,9 @@ import cn.offway.apollo.domain.PhOrderGoods;
  */
 public interface PhOrderGoodsRepository extends JpaRepository<PhOrderGoods,Long>,JpaSpecificationExecutor<PhOrderGoods> {
 
-	List<PhOrderGoods> findByOrderNo(String orderNo);
+	@Query(nativeQuery=true,value="select * from ph_order_goods where order_no = ?1 and state != ?2 ")
+	List<PhOrderGoods> OrderNoAndStateIn(String orderNo,String state);
+
+	@Query(nativeQuery=true,value="select DISTINCT(batch) from ph_order_goods where order_no = ?1 and state != '2' ")
+	List<String> orderSum(String orderNo);
 }

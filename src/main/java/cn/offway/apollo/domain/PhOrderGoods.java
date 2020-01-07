@@ -68,6 +68,9 @@ public class PhOrderGoods implements Serializable {
     /** 返回快递单号 **/
     private String returnMailNo;
 
+    /** 状态:[0-未收回,1-已收回,2-取消] **/
+    private String state;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -232,6 +235,15 @@ public class PhOrderGoods implements Serializable {
 
     public void setReturnMailNo(String returnMailNo) {
         this.returnMailNo = returnMailNo;
+    }
+
+    @Column(name = "state", length = 2)
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
 }

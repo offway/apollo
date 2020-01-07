@@ -43,6 +43,11 @@ public class PhOrderGoodsServiceImpl implements PhOrderGoodsService {
 	
 	@Override
 	public List<PhOrderGoods> findByOrderNo(String orderNo){
-		return phOrderGoodsRepository.findByOrderNo(orderNo);
+		return phOrderGoodsRepository.OrderNoAndStateIn(orderNo,"2");
+	}
+
+	@Override
+	public List<String> orderSum(String orderNo){
+		return phOrderGoodsRepository.orderSum(orderNo);
 	}
 }

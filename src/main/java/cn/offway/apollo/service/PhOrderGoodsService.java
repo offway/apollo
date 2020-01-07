@@ -19,4 +19,6 @@ public interface PhOrderGoodsService{
 	List<PhOrderGoods> save(List<PhOrderGoods> phOrderGoodss);
 
 	List<PhOrderGoods> findByOrderNo(String orderNo);
+
+	List<String> orderSum(String orderNo);
 }
