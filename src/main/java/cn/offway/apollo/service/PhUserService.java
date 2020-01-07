@@ -33,4 +33,8 @@ public interface PhUserService {
 
     @DS(DataSourceNames.BK)
     int getMaxUserId();
+
+    @DS(DataSourceNames.BK)
+    PhUser registered(String unionid, String nickName,
+                      String headimgurl, long id);
 }

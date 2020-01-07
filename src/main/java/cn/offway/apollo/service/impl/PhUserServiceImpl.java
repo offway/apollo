@@ -91,4 +91,19 @@ public class PhUserServiceImpl implements PhUserService {
         phUserInfo = save(phUserInfo);
         return phUserInfo;
     }
+
+    @Override
+    @DS(DataSourceNames.BK)
+    public PhUser registered(String unionid, String nickName,
+                             String headimgurl, long id) {
+        PhUser phUserInfo = new PhUser();
+        phUserInfo.setId(id);
+        phUserInfo.setNickname(nickName);
+        phUserInfo.setHeadimgurl(headimgurl);
+        phUserInfo.setUnionid(unionid);
+        phUserInfo.setSex("1");
+        phUserInfo.setCreateTime(new Date());
+        phUserInfo = save(phUserInfo);
+        return phUserInfo;
+    }
 }

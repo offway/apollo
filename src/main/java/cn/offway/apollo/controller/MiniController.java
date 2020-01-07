@@ -32,9 +32,9 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/mini")
 public class MiniController {
     private static final String JSCODE2SESSION = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=CODE&grant_type=authorization_code";
-    private static String access_token = "";
     private static final String USER_TOKEN_KEY = "USER_TOKEN";
     private static final String USER_MAX_ID_KEY = "USER_MAX_ID";
+    private static String access_token = "";
     @Value("${mini.appid}")
     private String APPID;
     @Value("${mini.secret}")
@@ -176,10 +176,10 @@ public class MiniController {
             //微信统一下单
             String body = "电子刊购买";
             double amount = order.getPrice();
-            if("0".equals(type)){
+            if ("0".equals(type)) {
                 return wxpayService.trade_JSAPI(no, IpUtil.getIpAddr(request), body, amount, openid);
-            }else {
-                return wxpayService.trade_MWEB(no, IpUtil.getIpAddr(request), body, amount, wapUrl,wapName);
+            } else {
+                return wxpayService.trade_MWEB(no, IpUtil.getIpAddr(request), body, amount, wapUrl, wapName);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -334,17 +334,17 @@ public class MiniController {
 
     @ApiOperation("阅读码兑换")
     @GetMapping("/booksexchange")
-    public JsonResult booksexchange(@ApiParam("电子刊id") @RequestParam Long id,@ApiParam("使用者unionid") @RequestParam String unionid,@ApiParam("code") @RequestParam String code){
+    public JsonResult booksexchange(@ApiParam("电子刊id") @RequestParam Long id, @ApiParam("使用者unionid") @RequestParam String unionid, @ApiParam("code") @RequestParam String code) {
         try {
             PhUser user = userService.findByUnionid(unionid);
-            PhReadcode readcode = readcodeService.findByBooksIdAndStateAndUseIdAndCode(id,"0",user.getId(),code);
-            if (readcode!=null){
+            PhReadcode readcode = readcodeService.findByBooksIdAndStateAndUseIdAndCode(id, "0", user.getId(), code);
+            if (readcode != null) {
                 readcode.setUseId(user.getId());
                 readcode.setState("1");
                 readcode.setUseTime(new Date());
                 readcodeService.save(readcode);
                 return jsonResultHelper.buildFailJsonResult(CommonResultCode.SUCCESS);
-            }else {
+            } else {
                 return jsonResultHelper.buildFailJsonResult(CommonResultCode.CODE_ERROR);
             }
         } catch (Exception e) {
@@ -356,18 +356,18 @@ public class MiniController {
 
     @ApiOperation("购买后第一次自动使用阅读码")
     @GetMapping("/booksInsetCode")
-    public JsonResult booksInsetCode(@ApiParam("电子刊id") @RequestParam Long id,@ApiParam("购买者unionid") @RequestParam String unionid){
+    public JsonResult booksInsetCode(@ApiParam("电子刊id") @RequestParam Long id, @ApiParam("购买者unionid") @RequestParam String unionid) {
         try {
             PhUser user = userService.findByUnionid(unionid);
-            List<PhReadcode> readcodeList = readcodeService.findByBooksIdAndStateAndUseId(id,"0",user.getId());
-            if (readcodeList.size()>0){
+            List<PhReadcode> readcodeList = readcodeService.findByBooksIdAndStateAndUseId(id, "0", user.getId());
+            if (readcodeList.size() > 0) {
                 PhReadcode readcode = readcodeList.get(0);
                 readcode.setState("1");
                 readcode.setUseId(user.getId());
                 readcode.setUseTime(new Date());
                 readcodeService.save(readcode);
                 return jsonResultHelper.buildFailJsonResult(CommonResultCode.SUCCESS);
-            }else {
+            } else {
                 return jsonResultHelper.buildFailJsonResult(CommonResultCode.PARAM_ERROR);
             }
         } catch (Exception e) {
@@ -379,21 +379,21 @@ public class MiniController {
 
     @ApiOperation("电子刊排行榜详情")
     @GetMapping("/bookranking")
-    public JsonResult booksranking(@ApiParam("电子刊id") @RequestParam Long id,@ApiParam("unionid") @RequestParam String unionid) {
+    public JsonResult booksranking(@ApiParam("电子刊id") @RequestParam Long id, @ApiParam("unionid") @RequestParam String unionid) {
         try {
             List<Object> list = new ArrayList<>();
             Map<String, Object> remap = new HashMap<>();
             Map<String, Object> map = new HashMap<>();
             PhTemplate phTemplates = templateService.findOne(id);
-            if (StringUtils.isNotBlank(unionid)){
+            if (StringUtils.isNotBlank(unionid)) {
                 PhUser user = userService.findByUnionid(unionid);
-                PhReadcode readcode = readcodeService.findByUseIdAndBooksIdAndState(user.getId(),id,"1");
-                if (readcode!=null){
+                PhReadcode readcode = readcodeService.findByUseIdAndBooksIdAndState(user.getId(), id, "1");
+                if (readcode != null) {
                     map.put("state", "1");
-                }else {
+                } else {
                     map.put("state", "0");
                 }
-            }else {
+            } else {
                 map.put("state", "0");
             }
             List<PhReadcode> readcodeList = readcodeService.findAllBybuyersid(id);
@@ -462,6 +462,19 @@ public class MiniController {
         }
     }
 
+    private void AppRegister(String unionid, String nickName, String headimgurl, String sessionKey, String encryptedData, String iv) {
+        Map<String, String> params = new HashMap<>();
+        params.put("unionid", unionid);
+        params.put("nickName", nickName);
+        params.put("headimgurl", headimgurl);
+        params.put("sessionKey", sessionKey);
+        params.put("encryptedData", encryptedData);
+        params.put("iv", iv);
+        params.put("source", "0");
+        String url = APPREGISTERURL;
+        HttpClientUtil.post(url, params);
+    }
+
     @ApiOperation("电子刊小程序注册/登录")
     @PostMapping("/booksregister")
     public JsonResult booksregister(
@@ -473,15 +486,6 @@ public class MiniController {
             @ApiParam("iv,获取手机号得到") @RequestParam String iv) {
 
         try {
-            //验证是用户
-            PhUser phUserInfo = null;
-            if (StringUtils.isNotBlank(unionid)) {
-                phUserInfo = userService.findByUnionid(unionid);
-                if (null != phUserInfo) {
-                    return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
-                }
-            }
-
             String result = AesCbcUtil.decrypt(encryptedData, sessionKey, iv, "UTF-8");
             logger.info("解密小程序获取手机号信息:" + result);
             JSONObject jsonObject = JSON.parseObject(result);
@@ -490,27 +494,73 @@ public class MiniController {
             StringBuilder sb = new StringBuilder();
             sb.append("+").append(countryCode).append(purePhoneNumber);
             String phone = sb.toString();
+            //验证是用户
+            PhUser phUserInfo = null;
+            if (StringUtils.isNotBlank(unionid)) {
+                phUserInfo = userService.findByUnionid(unionid);
+                if (null != phUserInfo) {
+                    if (null != phUserInfo.getPhone()) {
+                        return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
+                    } else {
+                        phUserInfo.setPhone(phone);
+                        phUserInfo = userService.save(phUserInfo);
+                        AppRegister(unionid, nickName, headimgurl, sessionKey, encryptedData, iv);
+                        return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
+                    }
+                }
+            }
+
             phUserInfo = userService.findByPhone(phone);
             if (null != phUserInfo) {
                 return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
             }
             //unionid=UNIONID&nickName=NICKNAME&headimgurl=HEADIMGURL&sessionKey=SESSIONKEY&encryptedData=ENCRYPTEDDATA&iv=IV
-            Map<String,String> params = new HashMap<>();
-            params.put("unionid", unionid);
-            params.put("nickName", nickName);
-            params.put("headimgurl", headimgurl);
-            params.put("sessionKey", sessionKey);
-            params.put("encryptedData", encryptedData);
-            params.put("iv", iv);
-            params.put("source","0");
-            String url = APPREGISTERURL;
-            HttpClientUtil.post(url, params);
+            //Map<String,String> params = new HashMap<>();
+            //params.put("unionid", unionid);
+            //params.put("nickName", nickName);
+            //params.put("headimgurl", headimgurl);
+            //params.put("sessionKey", sessionKey);
+            //params.put("encryptedData", encryptedData);
+            //params.put("iv", iv);
+            //params.put("source","0");
+            //String url = APPREGISTERURL;
+            //HttpClientUtil.post(url, params);
+            AppRegister(unionid, nickName, headimgurl, sessionKey, encryptedData, iv);
             if (!stringRedisTemplate.hasKey(USER_MAX_ID_KEY)) {
                 int maxId = userService.getMaxUserId();
                 stringRedisTemplate.opsForValue().setIfAbsent(USER_MAX_ID_KEY, String.valueOf(maxId));
             }
             long nextUserId = stringRedisTemplate.opsForValue().increment(USER_MAX_ID_KEY, 1);
             return jsonResultHelper.buildSuccessJsonResult(userService.registered(phone, unionid, nickName, headimgurl, nextUserId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("小程序注册异常", e);
+            return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("电子刊H5注册/登录")
+    @PostMapping("/booksregisterH5")
+    public JsonResult booksregisterH5(
+            @ApiParam("微信用户ID") @RequestParam String unionid,
+            @ApiParam("微信用户昵称") @RequestParam String nickName,
+            @ApiParam("微信用户头像") @RequestParam String headimgurl) {
+
+        try {
+            //验证是用户
+            PhUser phUserInfo = null;
+            if (StringUtils.isNotBlank(unionid)) {
+                phUserInfo = userService.findByUnionid(unionid);
+                if (null != phUserInfo) {
+                    return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
+                }
+            }
+            if (!stringRedisTemplate.hasKey(USER_MAX_ID_KEY)) {
+                int maxId = userService.getMaxUserId();
+                stringRedisTemplate.opsForValue().setIfAbsent(USER_MAX_ID_KEY, String.valueOf(maxId));
+            }
+            long nextUserId = stringRedisTemplate.opsForValue().increment(USER_MAX_ID_KEY, 1);
+            return jsonResultHelper.buildSuccessJsonResult(userService.registered(unionid, nickName, headimgurl, nextUserId));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("小程序注册异常", e);
