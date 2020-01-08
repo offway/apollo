@@ -382,7 +382,11 @@ public class MiniController {
             List<Object> list = new ArrayList<>();
             Map<String, Object> remap = new HashMap<>();
             Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map0 = new HashMap<>();
             PhTemplate phTemplates = templateService.findOne(id);
+            map0.put("1",phTemplates.getWelfare1());
+            map0.put("2",phTemplates.getWelfare2());
+            map0.put("3",phTemplates.getWelfare3());
             if (StringUtils.isNotBlank(unionid)) {
                 PhUser user = userService.findByUnionid(unionid);
                 PhReadcode readcode = readcodeService.findByUseIdAndBooksIdAndState(user.getId(), id, "1");
@@ -402,6 +406,7 @@ public class MiniController {
             map.put("subscribesum", phTemplates.getSubscribeSum());
             map.put("price", phTemplates.getPrice());
             map.put("templateName", phTemplates.getTemplateName());
+            map.put("welfare",map0);
             remap.put("title", map);
             for (PhReadcode phReadcode : readcodeList) {
                 Map<String, Object> map1 = new HashMap<>();

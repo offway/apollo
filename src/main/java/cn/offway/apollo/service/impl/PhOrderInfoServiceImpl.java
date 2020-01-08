@@ -10,6 +10,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import cn.offway.apollo.domain.PhOrderGoods;
+import cn.offway.apollo.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -26,10 +28,6 @@ import cn.offway.apollo.domain.PhOrderExpressInfo;
 import cn.offway.apollo.domain.PhOrderInfo;
 import cn.offway.apollo.dto.sf.ReqAddOrder;
 import cn.offway.apollo.repository.PhOrderInfoRepository;
-import cn.offway.apollo.service.PhAddressService;
-import cn.offway.apollo.service.PhOrderExpressInfoService;
-import cn.offway.apollo.service.PhOrderInfoService;
-import cn.offway.apollo.service.SfExpressService;
 import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
@@ -60,6 +58,9 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 	
 	@Autowired
 	private PhAddressService phAddressService;
+
+	@Autowired
+	private PhOrderGoodsService phOrderGoodsService;
 	
 	@Override
 	public PhOrderInfo save(PhOrderInfo phOrderInfo){
@@ -126,10 +127,19 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 
 					}else if("1".equals(type)){
 						//使用日期当天
-						params.add(criteriaBuilder.equal(root.get("status"), "1"));
+						//params.add(criteriaBuilder.equal(root.get("status"), "1"));
+						In<String> in = criteriaBuilder.in(root.get("status"));
+						in.value("1");
+						in.value("7");
+						in.value("8");
+						params.add(in);
 						params.add(criteriaBuilder.lessThanOrEqualTo(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
 					}else if("2".equals(type)){
-						params.add(criteriaBuilder.equal(root.get("status"), "2"));
+						In<String> in = criteriaBuilder.in(root.get("status"));
+						in.value("8");
+						in.value("2");
+						params.add(in);
+						//params.add(criteriaBuilder.equal(root.get("status"), "2"));
 					}else if("3".equals(type)){
 						params.add(criteriaBuilder.equal(root.get("status"), "3"));
 					}else if("4".equals(type)){
@@ -203,7 +213,7 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 	}
 	
 	@Override
-	public JsonResult saveOrder(String orderNo,String sendstarttime,String mailNo,Long addrId){
+	public JsonResult saveOrder(String orderNo,String sendstarttime,String mailNo,Long addrId,String batch){
 		PhOrderInfo phOrderInfo = findByOrderNo(orderNo);
 		if("2".equals(phOrderInfo.getStatus())){
 			return jsonResultHelper.buildFailJsonResult(CommonResultCode.ORDER_BACK);
@@ -213,6 +223,9 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 		PhOrderExpressInfo phOrderExpressInfo = new PhOrderExpressInfo();
 		phOrderExpressInfo.setCreateTime(new Date());
 		phOrderExpressInfo.setExpressOrderNo(generateOrderNo("SF"));
+		List<PhOrderGoods> phOrderGoods = phOrderGoodsService.findByOrderNoAndBatch(orderNo,batch);
+		List<PhOrderGoods> goods = phOrderGoodsService.findByOrderNo(orderNo);
+		List<PhOrderGoods> returngoods = phOrderGoodsService.findByOrderNoAndState(orderNo,"1");
 		if(null != addrId){
 			PhAddress phAddress = phAddressService.findOne(addrId);
 			phOrderExpressInfo.setFromPhone(phAddress.getPhone());
@@ -244,8 +257,19 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 			phOrderExpressInfo.setMailNo(mailNo);
 			phOrderExpressInfo.setStatus("3");//运送中
 			phOrderExpressInfoService.save(phOrderExpressInfo);
-			phOrderInfo.setStatus("2");
+			if (goods.size() == (phOrderGoods.size()+returngoods.size())){
+				phOrderInfo.setStatus("2");
+			}else {
+				phOrderInfo.setStatus("8");
+			}
 			save(phOrderInfo);
+			List<PhOrderGoods> phOrderGoodsList = new ArrayList<>();
+			for (PhOrderGoods phOrderGood : phOrderGoods) {
+				phOrderGood.setReturnMailNo(mailNo);
+				phOrderGood.setState("1");
+				phOrderGoodsList.add(phOrderGood);
+			}
+			phOrderGoodsService.save(phOrderGoodsList);
 			return jsonResultHelper.buildSuccessJsonResult(mailNo);
 		}else{
 			
@@ -275,8 +299,19 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 				phOrderExpressInfo.setMailNo(mailNo1);
 				phOrderExpressInfo.setStatus("1");//已下单
 				phOrderExpressInfoService.save(phOrderExpressInfo);
-				phOrderInfo.setStatus("2");
+				if (goods.size() == (phOrderGoods.size()+returngoods.size())){
+					phOrderInfo.setStatus("2");
+				}else {
+					phOrderInfo.setStatus("8");
+				}
 				save(phOrderInfo);
+				List<PhOrderGoods> phOrderGoodsList = new ArrayList<>();
+				for (PhOrderGoods phOrderGood : phOrderGoods) {
+					phOrderGood.setReturnMailNo(mailNo1);
+					phOrderGood.setState("1");
+					phOrderGoodsList.add(phOrderGood);
+				}
+				phOrderGoodsService.save(phOrderGoodsList);
 			}
 			return result;
 		}

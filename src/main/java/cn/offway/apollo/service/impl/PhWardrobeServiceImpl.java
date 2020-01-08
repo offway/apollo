@@ -461,6 +461,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			phOrderGoods.setStockId(phGoodsStock.getId());
 			phOrderGoods.setSku(phGoodsStock.getSku());
 			phOrderGoods.setBatch("0");
+			phOrderGoods.setState("0");
 			phOrderGoods.setImage(phGoodsStock.getImage());
 			//phOrderGoods.setOrderId(orderId);
 			phOrderGoods.setOrderNo(phOrderInfo.getOrderNo());

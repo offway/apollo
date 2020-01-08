@@ -16,9 +16,26 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface PhOrderGoodsRepository extends JpaRepository<PhOrderGoods,Long>,JpaSpecificationExecutor<PhOrderGoods> {
 
+	@Query(nativeQuery=true,value="select * from ph_order_goods where order_no = ?1 and state != ?2 and state!= '1' and batch = ?3 ")
+	List<PhOrderGoods> OrderNoAndStateIn(String orderNo,String state,String batch);
+
 	@Query(nativeQuery=true,value="select * from ph_order_goods where order_no = ?1 and state != ?2 ")
 	List<PhOrderGoods> OrderNoAndStateIn(String orderNo,String state);
 
+	@Query(nativeQuery=true,value="select * from ph_order_goods where order_no = ?1 and state = '1' ")
+	List<PhOrderGoods> OrderNoAndStateInR(String orderNo);
+
 	@Query(nativeQuery=true,value="select DISTINCT(batch) from ph_order_goods where order_no = ?1 and state != '2' ")
 	List<String> orderSum(String orderNo);
+
+	@Query(nativeQuery=true,value="select DISTINCT(mail_no) from ph_order_goods where order_no = ?1 and batch = ?2 ")
+	String GetMailNo(String orderNo,String batch);
+
+	@Query(nativeQuery=true,value="select DISTINCT(batch) from ph_order_goods where order_no = ?1 and state = '1' ")
+	List<String> orderSumR(String orderNo);
+
+
+	List<PhOrderGoods> findByOrderNoAndBatch(String orderNo,String batch);
+
+	List<PhOrderGoods> findByOrderNoAndState(String orderNo,String state);
 }

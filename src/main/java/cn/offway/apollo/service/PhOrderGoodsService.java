@@ -20,5 +20,17 @@ public interface PhOrderGoodsService{
 
 	List<PhOrderGoods> findByOrderNo(String orderNo);
 
+	List<PhOrderGoods> findByOrderNoR(String orderNo);
+
+	List<PhOrderGoods> findByOrderNo(String orderNo, String batch);
+
 	List<String> orderSum(String orderNo);
+
+	List<String> orderSumR(String orderNo);
+
+	String GetMailNo(String orderNo, String batch);
+
+	List<PhOrderGoods> findByOrderNoAndBatch(String orderNo, String batch);
+
+	List<PhOrderGoods> findByOrderNoAndState(String orderNo, String state);
 }

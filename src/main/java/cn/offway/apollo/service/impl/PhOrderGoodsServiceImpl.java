@@ -47,7 +47,37 @@ public class PhOrderGoodsServiceImpl implements PhOrderGoodsService {
 	}
 
 	@Override
+	public List<PhOrderGoods> findByOrderNoR(String orderNo){
+		return phOrderGoodsRepository.OrderNoAndStateInR(orderNo);
+	}
+
+	@Override
+	public List<PhOrderGoods> findByOrderNo(String orderNo,String batch){
+		return phOrderGoodsRepository.OrderNoAndStateIn(orderNo,"2",batch);
+	}
+
+	@Override
 	public List<String> orderSum(String orderNo){
 		return phOrderGoodsRepository.orderSum(orderNo);
+	}
+
+	@Override
+	public List<String> orderSumR(String orderNo){
+		return phOrderGoodsRepository.orderSumR(orderNo);
+	}
+
+	@Override
+	public String GetMailNo(String orderNo, String batch){
+		return phOrderGoodsRepository.GetMailNo(orderNo,batch);
+	}
+
+	@Override
+	public List<PhOrderGoods> findByOrderNoAndBatch(String orderNo, String batch){
+		return phOrderGoodsRepository.findByOrderNoAndBatch(orderNo,batch);
+	}
+
+	@Override
+	public List<PhOrderGoods> findByOrderNoAndState(String orderNo, String state){
+		return phOrderGoodsRepository.findByOrderNoAndState(orderNo,state);
 	}
 }

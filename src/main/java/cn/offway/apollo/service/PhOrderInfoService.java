@@ -36,5 +36,5 @@ public interface PhOrderInfoService{
 
 	int notShowImage(String unionid);
 
-	JsonResult saveOrder(String orderNo, String sendstarttime, String mailNo, Long addrId);
+	JsonResult saveOrder(String orderNo, String sendstarttime, String mailNo, Long addrId,String batch);
 }

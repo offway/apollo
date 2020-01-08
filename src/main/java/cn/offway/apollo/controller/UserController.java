@@ -121,61 +121,69 @@ public class UserController {
 			@ApiParam("页码,从0开始") @RequestParam int page,
 		    @ApiParam("页大小") @RequestParam int size){
 
-		Page<PhOrderInfo> page2 = phOrderInfoService.findByPage(unionid.trim(), type.trim(), new PageRequest(page,size));
-		List<PhOrderInfo> phOrderInfos = page2.getContent();
-		List<OrderInfoDto> dtos = new ArrayList<>();
-		for (PhOrderInfo phOrderInfo : phOrderInfos) {
-			OrderInfoDto dto = new OrderInfoDto();
-			List<PhOrderGoods> goods = phOrderGoodsService.findByOrderNo(phOrderInfo.getOrderNo());
-			BeanUtils.copyProperties(phOrderInfo, dto);
-			dto.setGoods(goods);
-			dtos.add(dto);
-		}
-
-		Page<OrderInfoDto> page3 = new PageImpl<>(dtos, new PageRequest(page,size), page2.getTotalElements());
-		return jsonResultHelper.buildSuccessJsonResult(page3);
-//		Page<PhOrderInfo> page2 = phOrderInfoService.findByPage(unionid.trim(), type.trim(), new PageRequest(page, size));
+//		Page<PhOrderInfo> page2 = phOrderInfoService.findByPage(unionid.trim(), type.trim(), new PageRequest(page,size));
 //		List<PhOrderInfo> phOrderInfos = page2.getContent();
 //		List<OrderInfoDto> dtos = new ArrayList<>();
 //		for (PhOrderInfo phOrderInfo : phOrderInfos) {
-//			List<String> sum = phOrderGoodsService.orderSum(phOrderInfo.getOrderNo());
-//
+//			OrderInfoDto dto = new OrderInfoDto();
 //			List<PhOrderGoods> goods = phOrderGoodsService.findByOrderNo(phOrderInfo.getOrderNo());
-//
-//			for (String s : sum) {//String s : sum
-//				OrderInfoDto dto = new OrderInfoDto();
-//				BeanUtils.copyProperties(phOrderInfo, dto);
-//				List<PhOrderGoods> goodsList = new ArrayList<>();
-//				List<PhOrderGoods> goodsList1 = new ArrayList<>();
-//				for (PhOrderGoods good : goods) {
-//					if (null == good.getBatch()) {
-//						goodsList1.add(good);
-//					} else if (s.equals(good.getBatch())) {
-//						goodsList.add(good);
-//					}
-//				}
-//				if (goodsList.size() > 0) {
-//					if (!"0".equals(s)) {
-//						dto.setOrderNo(dto.getOrderNo() + "-" + s);
-//					}
-//					dto.setGoods(goodsList);
-//					dtos.add(dto);
-//				}
-//				if (goodsList1.size() > 0) {
-//					dto.setGoods(goodsList1);
-//					dtos.add(dto);
-//				}
-//			}
+//			BeanUtils.copyProperties(phOrderInfo, dto);
+//			dto.setGoods(goods);
+//			dtos.add(dto);
 //		}
 //
-//		Page<OrderInfoDto> page3 = new PageImpl<>(dtos, new PageRequest(page, size), page2.getTotalElements());
+//		Page<OrderInfoDto> page3 = new PageImpl<>(dtos, new PageRequest(page,size), page2.getTotalElements());
 //		return jsonResultHelper.buildSuccessJsonResult(page3);
+		Page<PhOrderInfo> page2 = phOrderInfoService.findByPage(unionid.trim(), type.trim(), new PageRequest(page, size));
+		List<PhOrderInfo> phOrderInfos = page2.getContent();
+		List<OrderInfoDto> dtos = new ArrayList<>();
+		for (PhOrderInfo phOrderInfo : phOrderInfos) {
+			List<String> sum = new ArrayList<>();
+			List<PhOrderGoods> goods = new ArrayList<>();
+			if (!"2".equals(type)){
+				sum =  phOrderGoodsService.orderSum(phOrderInfo.getOrderNo());
+				goods= phOrderGoodsService.findByOrderNo(phOrderInfo.getOrderNo());
+			}else {
+				sum =  phOrderGoodsService.orderSumR(phOrderInfo.getOrderNo());
+				goods = phOrderGoodsService.findByOrderNoR(phOrderInfo.getOrderNo());
+			}
+
+
+
+			for (String s : sum) {//String s : sum
+				OrderInfoDto dto = new OrderInfoDto();
+				BeanUtils.copyProperties(phOrderInfo, dto);
+				List<PhOrderGoods> goodsList = new ArrayList<>();
+				List<PhOrderGoods> goodsList1 = new ArrayList<>();
+				for (PhOrderGoods good : goods) {
+					if (null == good.getBatch()) {
+						goodsList1.add(good);
+					} else if (s.equals(good.getBatch())) {
+						goodsList.add(good);
+					}
+				}
+				if (goodsList.size() > 0) {
+					if (!"0".equals(s)) {
+						dto.setOrderNo(dto.getOrderNo() + "-" + s);
+					}
+					dto.setGoods(goodsList);
+					dtos.add(dto);
+				}
+				if (goodsList1.size() > 0) {
+					dto.setGoods(goodsList1);
+					dtos.add(dto);
+				}
+			}
+		}
+
+		Page<OrderInfoDto> page3 = new PageImpl<>(dtos, new PageRequest(page, size), page2.getTotalElements());
+		return jsonResultHelper.buildSuccessJsonResult(page3);
 	}
 	
 	@ApiOperation(value="订单商品查询")
 	@GetMapping("/orderGoods")
-	public JsonResult orderGoods(@ApiParam("订单号") @RequestParam String orderNo){
-		List<PhOrderGoods> goods = phOrderGoodsService.findByOrderNo(orderNo);
+	public JsonResult orderGoods(@ApiParam("订单号") @RequestParam String orderNo,@ApiParam("批次号") @RequestParam String batch){
+		List<PhOrderGoods> goods = phOrderGoodsService.findByOrderNo(orderNo,batch);
 		return jsonResultHelper.buildSuccessJsonResult(goods);
 	}
 
@@ -202,38 +210,48 @@ public class UserController {
 			@ApiParam("类型[0-寄,1-返]") @RequestParam String type,
 							@ApiParam("批次号") @RequestParam String batch){
 		
-		Map<String, Object> map = new HashMap<>();
-		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
-		map.put("orderNo", orderNo);
-		map.put("useDate", phOrderInfo.getUseDate());
-		PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
-		if(null != phOrderExpressInfo){
-			String mailno = phOrderExpressInfo.getMailNo();
-			map.put("toRealName", phOrderExpressInfo.getToRealName());
-			map.put("toPhone", phOrderExpressInfo.getToPhone());
-			map.put("toContent", phOrderExpressInfo.getToContent());
-			List<PhOrderExpressDetail> expressDetails = phOrderExpressDetailService.findByMailNoOrderByAcceptTimeDesc(mailno);
-			map.put("expressDetails", expressDetails);
-		}
-		return jsonResultHelper.buildSuccessJsonResult(map);
 //		Map<String, Object> map = new HashMap<>();
 //		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
 //		map.put("orderNo", orderNo);
 //		map.put("useDate", phOrderInfo.getUseDate());
-//		PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndTypeAndBatch(orderNo, type, batch);
-//		if (null != phOrderExpressInfo) {
+//		PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
+//		if(null != phOrderExpressInfo){
 //			String mailno = phOrderExpressInfo.getMailNo();
 //			map.put("toRealName", phOrderExpressInfo.getToRealName());
 //			map.put("toPhone", phOrderExpressInfo.getToPhone());
 //			map.put("toContent", phOrderExpressInfo.getToContent());
-//			map.put("toProvince", phOrderExpressInfo.getToProvince());
-//			map.put("toCity", phOrderExpressInfo.getToCity());
-//			map.put("toCounty", phOrderExpressInfo.getToCounty());
-//			String json = queryExpress("shunfeng", phOrderExpressInfo.getMailNo());
-//			JSONObject jsonObject = JSONObject.parseObject(json);
-//			map.put("details", jsonObject);
+//			List<PhOrderExpressDetail> expressDetails = phOrderExpressDetailService.findByMailNoOrderByAcceptTimeDesc(mailno);
+//			map.put("expressDetails", expressDetails);
 //		}
 //		return jsonResultHelper.buildSuccessJsonResult(map);
+		Map<String, Object> map = new HashMap<>();
+		String mailNo = null;
+		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
+		map.put("orderNo", orderNo);
+		map.put("useDate", phOrderInfo.getUseDate());
+		PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
+		if (null == phOrderExpressInfo.getMailNo() && !"0".equals(phOrderExpressInfo.getStatus())){
+			mailNo = phOrderGoodsService.GetMailNo(orderNo,batch);
+		}
+
+		if (null != phOrderExpressInfo) {
+			String json = null;
+			String mailno = phOrderExpressInfo.getMailNo();
+			map.put("toRealName", phOrderExpressInfo.getToRealName());
+			map.put("toPhone", phOrderExpressInfo.getToPhone());
+			map.put("toContent", phOrderExpressInfo.getToContent());
+			map.put("toProvince", phOrderExpressInfo.getToProvince());
+			map.put("toCity", phOrderExpressInfo.getToCity());
+			map.put("toCounty", phOrderExpressInfo.getToCounty());
+			if (mailNo!= null){
+				json = queryExpress("shunfeng", mailNo);
+			}else {
+				json = queryExpress("shunfeng", phOrderExpressInfo.getMailNo());
+			}
+			JSONObject jsonObject = JSONObject.parseObject(json);
+			map.put("details", jsonObject);
+		}
+		return jsonResultHelper.buildSuccessJsonResult(map);
 	}
 	
 	@ApiOperation(value="快递状态查询",notes="返回 status [1-已下单,2-已接单,3-运送中,4-已签收]")
@@ -242,17 +260,17 @@ public class UserController {
 							  @ApiParam("批次") @RequestParam String batch,
 			@ApiParam("类型[0-寄,1-返]") @RequestParam String type){
 
-		PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
-		return jsonResultHelper.buildSuccessJsonResult(phOrderExpressInfo);
-//		if ("0".equals(type)){
-//			Map<String,Object> map = new HashMap<>();
-//			PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndTypeAndBatch(orderNo, type, batch);
-//			map.put("phOrderExpressInfo",phOrderExpressInfo);
-//			return jsonResultHelper.buildSuccessJsonResult(map);
-//		}else {
-//			PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
-//			return jsonResultHelper.buildSuccessJsonResult(phOrderExpressInfo);
-//		}
+//		PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
+//		return jsonResultHelper.buildSuccessJsonResult(phOrderExpressInfo);
+		if ("0".equals(type)){
+			Map<String,Object> map = new HashMap<>();
+			PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
+			map.put("phOrderExpressInfo",phOrderExpressInfo);
+			return jsonResultHelper.buildSuccessJsonResult(map);
+		}else {
+			PhOrderExpressInfo phOrderExpressInfo = phOrderExpressInfoService.findByOrderNoAndType(orderNo, type);
+			return jsonResultHelper.buildSuccessJsonResult(phOrderExpressInfo);
+		}
 	}
 	
 	@ApiOperation(value="已晒图列表")
@@ -278,31 +296,6 @@ public class UserController {
 								@ApiParam("批次") @RequestParam String batch,
 		    @ApiParam("使用明星") @RequestParam String starName){
 		
-		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
-
-		PhShowImage phShowImage = new PhShowImage();
-		phShowImage.setBrandId(phOrderInfo.getBrandId());
-		phShowImage.setBrandLogo(phOrderInfo.getBrandLogo());
-		phShowImage.setBrandName(phOrderInfo.getBrandName());
-		String unionid = phOrderInfo.getUnionid();
-		phShowImage.setUnionid(unionid);
-		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
-		phShowImage.setRealName(phUserInfo.getRealName());
-		phShowImage.setPosition(phUserInfo.getPosition());
-		phShowImage.setCreateTime(new Date());
-		phShowImage.setUrl(url);
-		phShowImage.setIsOffway(phOrderInfo.getIsOffway());
-		phShowImage.setOrderNo(orderNo);
-		phShowImage.setShowImage(images);
-		phShowImage.setContent(content);
-		phShowImage.setStatus("0");
-		phShowImage.setStarName(starName);
-		phShowImageService.save(phShowImage);
-
-		phOrderInfo.setIsUpload("1");
-		phOrderInfoService.save(phOrderInfo);
-
-		return jsonResultHelper.buildSuccessJsonResult(null);
 //		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
 //
 //		PhShowImage phShowImage = new PhShowImage();
@@ -322,17 +315,42 @@ public class UserController {
 //		phShowImage.setContent(content);
 //		phShowImage.setStatus("0");
 //		phShowImage.setStarName(starName);
-//		if (null == batch) {
-//			phShowImage.setBatch("0");
-//		} else {
-//			phShowImage.setBatch(batch);
-//		}
 //		phShowImageService.save(phShowImage);
 //
 //		phOrderInfo.setIsUpload("1");
 //		phOrderInfoService.save(phOrderInfo);
 //
 //		return jsonResultHelper.buildSuccessJsonResult(null);
+		PhOrderInfo phOrderInfo = phOrderInfoService.findByOrderNo(orderNo);
+
+		PhShowImage phShowImage = new PhShowImage();
+		phShowImage.setBrandId(phOrderInfo.getBrandId());
+		phShowImage.setBrandLogo(phOrderInfo.getBrandLogo());
+		phShowImage.setBrandName(phOrderInfo.getBrandName());
+		String unionid = phOrderInfo.getUnionid();
+		phShowImage.setUnionid(unionid);
+		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
+		phShowImage.setRealName(phUserInfo.getRealName());
+		phShowImage.setPosition(phUserInfo.getPosition());
+		phShowImage.setCreateTime(new Date());
+		phShowImage.setUrl(url);
+		phShowImage.setIsOffway(phOrderInfo.getIsOffway());
+		phShowImage.setOrderNo(orderNo);
+		phShowImage.setShowImage(images);
+		phShowImage.setContent(content);
+		phShowImage.setStatus("0");
+		phShowImage.setStarName(starName);
+		if (null == batch) {
+			phShowImage.setBatch("0");
+		} else {
+			phShowImage.setBatch(batch);
+		}
+		phShowImageService.save(phShowImage);
+
+		phOrderInfo.setIsUpload("1");
+		phOrderInfoService.save(phOrderInfo);
+
+		return jsonResultHelper.buildSuccessJsonResult(null);
 	}
 	
 	@ApiOperation(value="我的")
@@ -367,9 +385,9 @@ public class UserController {
 			@ApiParam("订单号") @RequestParam String orderNo,
 			@ApiParam("要求上门取件开始时间，格式：YYYY-MM-DD HH24:MM:SS，示例：2012-7-30 09:30:00。两小时内上门不传该字段") @RequestParam(required = false) String sendstarttime,
 			@ApiParam("快递单号,自行投递必传") @RequestParam(required = false) String mailNo,
-//			@ApiParam("批次") @RequestParam String batch,
+			@ApiParam("批次") @RequestParam String batch,
 			@ApiParam("地址ID") @RequestParam(required = false) Long addrId){
-		return phOrderInfoService.saveOrder(orderNo, null==sendstarttime?"":sendstarttime, mailNo,addrId);
+		return phOrderInfoService.saveOrder(orderNo, null==sendstarttime?"":sendstarttime, mailNo,addrId,batch);
 	}
 	
 }

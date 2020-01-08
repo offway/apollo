@@ -54,6 +54,15 @@ public class PhTemplate implements Serializable {
     /** 电子刊封面（多图） **/
     private List imageUrls;
 
+    /** 福利1 **/
+    private String welfare1;
+
+    /** 福利2 **/
+    private String welfare2;
+
+    /** 福利3 **/
+    private String welfare3;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -173,6 +182,33 @@ public class PhTemplate implements Serializable {
 
     public void setImageUrls(List imageUrls) {
         this.imageUrls = imageUrls;
+    }
+
+    @Column(name = "welfare1", length = 200)
+    public String getWelfare1() {
+        return welfare1;
+    }
+
+    public void setWelfare1(String welfare1) {
+        this.welfare1 = welfare1;
+    }
+
+    @Column(name = "welfare2", length = 200)
+    public String getWelfare2() {
+        return welfare2;
+    }
+
+    public void setWelfare2(String welfare2) {
+        this.welfare2 = welfare2;
+    }
+
+    @Column(name = "welfare3", length = 200)
+    public String getWelfare3() {
+        return welfare3;
+    }
+
+    public void setWelfare3(String welfare3) {
+        this.welfare3 = welfare3;
     }
 
 }
