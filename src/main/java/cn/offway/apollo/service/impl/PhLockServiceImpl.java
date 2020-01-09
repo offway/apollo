@@ -55,4 +55,9 @@ public class PhLockServiceImpl implements PhLockService {
 	public PhLock findByPid(Long pid){
 		return phLockRepository.findByPid(pid);
 	}
+
+	@Override
+	public List<PhLock> findAllByGoodsId(Long id){
+		return phLockRepository.findByGoodsId(id);
+	}
 }

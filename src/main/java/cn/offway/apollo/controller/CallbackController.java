@@ -1,13 +1,11 @@
 package cn.offway.apollo.controller;
 
+import cn.offway.apollo.domain.PhLock;
 import cn.offway.apollo.domain.PhOrder;
 import cn.offway.apollo.domain.PhReadcode;
 import cn.offway.apollo.domain.PhTemplate;
 import cn.offway.apollo.properties.WxpayProperties;
-import cn.offway.apollo.service.PhOrderService;
-import cn.offway.apollo.service.PhReadcodeService;
-import cn.offway.apollo.service.PhTemplateService;
-import cn.offway.apollo.service.PhUserService;
+import cn.offway.apollo.service.*;
 import cn.offway.apollo.utils.JsonResultHelper;
 import com.jpay.ext.kit.PaymentKit;
 import io.swagger.annotations.Api;
@@ -48,6 +46,8 @@ public class CallbackController {
     private PhTemplateService phTemplateService;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private PhLockService phLockService;
 
     @ApiOperation("微信支付结果通知")
     @PostMapping("/wxpay")
@@ -87,7 +87,18 @@ public class CallbackController {
                         PhTemplate template = phTemplateService.findOne(order.getTemplateId());
                         template.setSubscribeSum(template.getSubscribeSum() + Integer.parseInt(order.getSum()));
                         template.setSoldNumber(template.getSoldNumber() + Integer.parseInt(order.getSum()));
-                        phTemplateService.save(template);
+                        template = phTemplateService.save(template);
+                        List<PhLock> locks = phLockService.findAllByGoodsId(template.getId());
+                        List<PhLock> lockList = new ArrayList<>();
+                        for (PhLock lock : locks) {
+                            if ("1".equals(lock.getUnlock()) && (template.getSubscribeSum() >= lock.getSubscribeCount())){
+                                lock.setUnlock("0");
+                                lockList.add(lock);
+                            }
+                        }
+                        if (lockList.size()>0){
+                            phLockService.save(lockList);
+                        }
                         //写入redis
                         String key = MessageFormat.format("{0}_{1}", KEY_RANK, order.getTemplateId());
                         stringRedisTemplate.opsForZSet().incrementScore(key, String.valueOf(order.getUserId()), Long.valueOf(order.getSum()));

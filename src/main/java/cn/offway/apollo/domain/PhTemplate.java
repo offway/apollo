@@ -63,6 +63,14 @@ public class PhTemplate implements Serializable {
     /** 福利3 **/
     private String welfare3;
 
+    private String status;
+
+    /** 封面图 **/
+    private String coverImageUrl;
+
+    /** 电子刊名称颜色 **/
+    private String nameColor;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -209,6 +217,33 @@ public class PhTemplate implements Serializable {
 
     public void setWelfare3(String welfare3) {
         this.welfare3 = welfare3;
+    }
+
+    @Transient
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Column(name = "cover_image_url", length = 200)
+    public String getCoverImageUrl() {
+        return coverImageUrl;
+    }
+
+    public void setCoverImageUrl(String coverImageUrl) {
+        this.coverImageUrl = coverImageUrl;
+    }
+
+    @Column(name = "name_color", length = 200)
+    public String getNameColor() {
+        return nameColor;
+    }
+
+    public void setNameColor(String nameColor) {
+        this.nameColor = nameColor;
     }
 
 }

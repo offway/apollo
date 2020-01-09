@@ -352,7 +352,6 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		for (PhWardrobe phWardrobe : wardrobes) {
 			
 			PhOrderInfo phOrderInfo = null;
-			phOrderInfo = map.get(phWardrobe.getBrandId());
 			if("1".equals(phWardrobe.getIsOffway())){
 				//自营
 				if(null == offwayOrder){

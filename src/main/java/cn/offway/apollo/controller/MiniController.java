@@ -172,7 +172,7 @@ public class MiniController {
             order.setCreateTime(new Date());
             order = orderService.save(order);
             //微信统一下单
-            String body = "电子刊购买,电子刊名称:"+template.getTemplateName();
+            String body = "电子刊购买,电子刊名称:" + template.getTemplateName();
             double amount = order.getPrice();
             if ("0".equals(type)) {
                 return wxpayService.trade_JSAPI(no, IpUtil.getIpAddr(request), body, amount, openid);
@@ -295,8 +295,16 @@ public class MiniController {
             List<PhReadcode> readcode = readcodeService.findByUseridCode(user.getId());
             for (PhReadcode phReadcode : readcode) {
                 PhTemplate template = templateService.findOne(phReadcode.getBooksId());
+                Map<String, Object> map1 = new HashMap<>();
+                PhReadcode phReadcode1 = readcodeService.findByUseIdAndBooksIdAndState(user.getId(), template.getId(), "1");
+                if (phReadcode1 != null) {
+                    template.setStatus("1");
+                } else {
+                    template.setStatus("0");
+                }
                 list.add(template);
             }
+
             map.put("magazine", list);
             return jsonResultHelper.buildSuccessJsonResult(map);
         } catch (Exception e) {
@@ -357,6 +365,10 @@ public class MiniController {
     public JsonResult booksInsetCode(@ApiParam("电子刊id") @RequestParam Long id, @ApiParam("购买者unionid") @RequestParam String unionid) {
         try {
             PhUser user = userService.findByUnionid(unionid);
+            List<PhReadcode> readcodes = readcodeService.findByBooksIdAndStateAndUseId(id, "1", user.getId());
+            if (readcodes.size() > 0) {
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.ACTIVITY_PARTICIPATED);
+            }
             List<PhReadcode> readcodeList = readcodeService.findByBooksIdAndStateAndUseId(id, "0", user.getId());
             if (readcodeList.size() > 0) {
                 PhReadcode readcode = readcodeList.get(0);
@@ -384,9 +396,9 @@ public class MiniController {
             Map<String, Object> map = new HashMap<>();
             Map<String, Object> map0 = new HashMap<>();
             PhTemplate phTemplates = templateService.findOne(id);
-            map0.put("1",phTemplates.getWelfare1());
-            map0.put("2",phTemplates.getWelfare2());
-            map0.put("3",phTemplates.getWelfare3());
+            map0.put("1", phTemplates.getWelfare1());
+            map0.put("2", phTemplates.getWelfare2());
+            map0.put("3", phTemplates.getWelfare3());
             if (StringUtils.isNotBlank(unionid)) {
                 PhUser user = userService.findByUnionid(unionid);
                 PhReadcode readcode = readcodeService.findByUseIdAndBooksIdAndState(user.getId(), id, "1");
@@ -406,7 +418,7 @@ public class MiniController {
             map.put("subscribesum", phTemplates.getSubscribeSum());
             map.put("price", phTemplates.getPrice());
             map.put("templateName", phTemplates.getTemplateName());
-            map.put("welfare",map0);
+            map.put("welfare", map0);
             remap.put("title", map);
             for (PhReadcode phReadcode : readcodeList) {
                 Map<String, Object> map1 = new HashMap<>();

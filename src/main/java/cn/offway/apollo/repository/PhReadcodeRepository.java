@@ -20,7 +20,7 @@ public interface PhReadcodeRepository extends JpaRepository<PhReadcode,Long>,Jpa
     @Query(nativeQuery=true,value="select id,books_id,state,code,buyers_id,use_id,use_time,create_time,count(*) as remark from ph_readcode where books_id = ?1 GROUP BY buyers_id ORDER BY remark DESC")
     List<PhReadcode> findAllBybuyersid(Long roleId);
 
-    @Query(nativeQuery=true,value="select * from ph_readcode where buyers_id = ?1 GROUP BY books_id")
+    @Query(nativeQuery=true,value="select * from ph_readcode where buyers_id = ?1 OR use_id = ?1 GROUP BY books_id")
     List<PhReadcode> findByUseridCode(Long roleId);
 
     List<PhReadcode> findByBuyersIdAndBooksId(Long userid,Long id);
