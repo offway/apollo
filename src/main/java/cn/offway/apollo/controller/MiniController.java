@@ -414,10 +414,12 @@ public class MiniController {
             String image = phTemplates.getImageUrl();
             String[] images = image.split(",");
             List<String> stringList = Arrays.asList(images);
+            map.put("coverImageUrl",phTemplates.getCoverImageUrl());
             map.put("imageurls", stringList);
             map.put("subscribesum", phTemplates.getSubscribeSum());
             map.put("price", phTemplates.getPrice());
             map.put("templateName", phTemplates.getTemplateName());
+            map.put("nameColor", phTemplates.getNameColor());
             map.put("welfare", map0);
             remap.put("title", map);
             for (PhReadcode phReadcode : readcodeList) {
