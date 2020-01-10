@@ -343,6 +343,10 @@ public class MiniController {
     public JsonResult booksexchange(@ApiParam("电子刊id") @RequestParam Long id, @ApiParam("使用者unionid") @RequestParam String unionid, @ApiParam("code") @RequestParam String code) {
         try {
             PhUser user = userService.findByUnionid(unionid);
+            List<PhReadcode> readcodes = readcodeService.findByBooksIdAndStateAndUseId(id, "1", user.getId());
+            if (readcodes.size() > 0) {
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.ACTIVITY_PARTICIPATED);
+            }
             PhReadcode readcode = readcodeService.findByBooksIdAndStateAndUseIdAndCode(id, "0", user.getId(), code);
             if (readcode != null) {
                 readcode.setUseId(user.getId());
