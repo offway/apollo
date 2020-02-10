@@ -2,6 +2,8 @@ package cn.offway.apollo.service.impl;
 
 import java.util.*;
 
+import cn.offway.apollo.domain.*;
+import cn.offway.apollo.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -14,26 +16,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.offway.apollo.domain.PhAddress;
-import cn.offway.apollo.domain.PhBrand;
-import cn.offway.apollo.domain.PhGoods;
-import cn.offway.apollo.domain.PhGoodsStock;
-import cn.offway.apollo.domain.PhOrderExpressInfo;
-import cn.offway.apollo.domain.PhOrderGoods;
-import cn.offway.apollo.domain.PhOrderInfo;
-import cn.offway.apollo.domain.PhUserInfo;
-import cn.offway.apollo.domain.PhWardrobe;
 import cn.offway.apollo.repository.PhWardrobeRepository;
-import cn.offway.apollo.service.PhAddressService;
-import cn.offway.apollo.service.PhBrandService;
-import cn.offway.apollo.service.PhGoodsService;
-import cn.offway.apollo.service.PhGoodsStockService;
-import cn.offway.apollo.service.PhOrderExpressInfoService;
-import cn.offway.apollo.service.PhOrderGoodsService;
-import cn.offway.apollo.service.PhOrderInfoService;
-import cn.offway.apollo.service.PhUserInfoService;
-import cn.offway.apollo.service.PhWardrobeService;
-import cn.offway.apollo.service.SmsService;
 import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
@@ -87,6 +70,9 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	
 	@Autowired
 	private SmsService smsService;
+
+	@Autowired
+	private PhWardrobeAuditService phWardrobeAuditService;
 	
 	
 	@Override
@@ -355,7 +341,13 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		List<PhWardrobe> wardrobes = phWardrobeRepository.findByIdIn(wrIds);
 		
 		PhOrderInfo offwayOrder = null;
+		List<PhWardrobeAudit> wardrobeAudits = new ArrayList<>();
 		for (PhWardrobe phWardrobe : wardrobes) {
+			if("0".equals(phWardrobe.getIsOffway())){
+				PhWardrobeAudit wardrobeAudit = phWardrobeAuditService.findByWardrobeId(phWardrobe.getId());
+				wardrobeAudit.setIsDel("2");
+				wardrobeAudits.add(wardrobeAudit);
+			}
 			
 			PhOrderInfo phOrderInfo = null;
 			if("1".equals(phWardrobe.getIsOffway())){
@@ -485,9 +477,11 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 		//清除衣柜
 		phWardrobeRepository.delete(wrIds);
 
+		phWardrobeAuditService.save(wardrobeAudits);
+
 		try {
 			//短信通知61
-			smsService.sendMsgBatch("17601355261", "【OFFWAY】提醒您：亲，您有一笔Showroom新订单来啦！请尽快发货！");
+			//smsService.sendMsgBatch("17601355261", "【OFFWAY】提醒您：亲，您有一笔Showroom新订单来啦！请尽快发货！");
 			smsService.sendMsgBatch("13524430033", "【OFFWAY】提醒您：亲，您有一笔Showroom新订单来啦！请尽快发货！");
 		} catch (Exception e) {
 			e.printStackTrace();
