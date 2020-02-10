@@ -1,12 +1,11 @@
 package cn.offway.apollo.controller;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-import cn.offway.apollo.domain.PhWardrobe;
+import cn.offway.apollo.domain.*;
+import cn.offway.apollo.service.*;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.offway.apollo.service.PhWardrobeService;
 import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
@@ -40,7 +38,20 @@ public class WardrobeController {
 	
 	@Autowired
 	private PhWardrobeService phWardrobeService;
-	
+
+	@Autowired
+	private PhWardrobeAuditService phWardrobeAuditService;
+
+	@Autowired
+	private PhGoodsService goodsService;
+
+	@Autowired
+	private PhBannerService brandService;
+
+	@Autowired
+	private SmsService smsService;
+
+
 	@ApiOperation(value="加入衣柜",notes="返回码：200=成功； 1009=衣柜调价衣物以至8件上限；1010=您的信用分太低，不能再借衣服；1011=您有一批订单反馈图未上传，上传后即可借衣；1012=有一笔订单未归还")
 	@PostMapping("/add")
 	public JsonResult add(@ApiParam("unionid") @RequestParam String unionid,
@@ -117,5 +128,63 @@ public class WardrobeController {
 		}
 		return jsonResultHelper.buildFailJsonResult(CommonResultCode.SUCCESS);
 	}
-	
+
+	@ApiOperation("申请使用")
+	@GetMapping("/audit")
+	public JsonResult audit(@ApiParam("unionid") @RequestParam String unionid,
+							@ApiParam("商品ID") @RequestParam Long goodsId,
+							@ApiParam("颜色") @RequestParam String color,
+							@ApiParam("尺码") @RequestParam String size,
+							@ApiParam("使用日期,格式yyyy-MM-dd") @RequestParam String useDate,
+							@ApiParam("使用艺人") @RequestParam String useName,
+							@ApiParam("使用用途") @RequestParam String content,
+							@ApiParam("归还时间") @RequestParam String returnDate,
+							@ApiParam("返图时间") @RequestParam String photoDate,
+							@ApiParam("表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id") @RequestParam(required = false, defaultValue = "") String formId) {
+		try {
+			phWardrobeAuditService.add(unionid, goodsId, color, size, useDate, useName, content, returnDate, photoDate, formId);
+			PhGoods goods = goodsService.findOne(goodsId);
+			//PhBanner brand = brandService.findOne(goods.getBrandId());
+			//短信通知商家
+			smsService.sendMsgBatch("13524430033" , "【OFFWAY】您有一件OFFWAY SHOWROOM的借衣商品待审核，请及时进入后台查看。");
+			logger.info("短信通知商户发送手机号=13524430033");
+			return jsonResultHelper.buildSuccessJsonResult(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("短信通知商户异常unionid=" + unionid, e);
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.SYSTEM_ERROR);
+		}
+	}
+
+	@ApiOperation("查询状态")
+	@PostMapping("/auditState")
+	public JsonResult auditState(@ApiParam("unionid") @RequestParam String unionid,
+								 @ApiParam("状态[0-待审核,1-审核通过,2-审核不通过]") @RequestParam String state){
+		List<Object> list = new ArrayList<>();
+		List<PhWardrobe> wardrobe = phWardrobeService.findState(unionid,state);
+		for (PhWardrobe phWardrobe : wardrobe) {
+			Map<String,Object> map = new HashMap<>();
+			PhWardrobeAudit wardrobeAudit = phWardrobeAuditService.findByWardrobeId(phWardrobe.getId());
+			map.put("returnDate", DateFormatUtils.format(wardrobeAudit.getReturnDate(), "yyyy-MM-dd"));
+			map.put("useDate",DateFormatUtils.format(wardrobeAudit.getUseDate(), "yyyy-MM-dd"));
+			map.put("useName",wardrobeAudit.getUseName());
+			map.put("photoDate", DateFormatUtils.format(wardrobeAudit.getPhotoDate(), "yyyy-MM-dd"));
+			map.put("content",wardrobeAudit.getContent());
+			map.put("wardrobeData",phWardrobe);
+			list.add(map);
+		}
+		return jsonResultHelper.buildSuccessJsonResult(list);
+	}
+
+	@ApiOperation("删除审核记录")
+	@GetMapping("/delAudit")
+	public JsonResult delAudit(@ApiParam("unionid") @RequestParam String unionid,
+							   @ApiParam("衣柜ID") @RequestParam Long wardrobeId,
+							   @ApiParam("状态[0-审核中,1-审核成功,2-审核失败]") @RequestParam String state){
+		PhWardrobeAudit wardrobeAudit = phWardrobeAuditService.findByWardrobeId(wardrobeId);
+		wardrobeAudit.setIsDel("1");
+		phWardrobeAuditService.save(wardrobeAudit);
+		phWardrobeService.delete(wardrobeId);
+		return jsonResultHelper.buildSuccessJsonResult(null);
+	}
 }
