@@ -169,14 +169,15 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	
 	@Override
 	public Map<String, Object> list(String unionid){
-		
+
 		//所有
 		List<PhWardrobe> all = phWardrobeRepository.findByUnionid(unionid);
 		//有效
 		List<PhWardrobe> eff = phWardrobeRepository.findEffectByUnionid(unionid);
 		Map<String, Object> resultMap = new HashMap<>();
-		
+
 		Map<String, List<PhWardrobe>> effMap = new HashMap<>();
+		Map<String,Object> map0 = new HashMap<>();
 		List<PhWardrobe> invalids = new ArrayList<>();
 
 		Date now = new Date();
@@ -194,32 +195,52 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			}
 			logger.info(wr.getUseDate().toString());
 			logger.info(calendar.getTime().toString());
-			if(exists){
-
-				if(wr.getUseDate().before(now) || wr.getUseDate().before(calendar.getTime()) ){
-					//使用时间无效
-					wr.setRemark("1");
+			if (exists) {
+				if ("2".equals(wr.getState())) {
+					//审核失败
+					wr.setRemark("2");
 					invalids.add(wr);
-					logger.info("使用时间无效");
-				}else{
-					String key = "1".equals(wr.getIsOffway())?"OFFWAY Showroom":wr.getBrandName();
-					key = key+","+DateFormatUtils.format(wr.getUseDate(), "yyyy-MM-dd");
-					List<PhWardrobe> wardrobes = effMap.get(key);
-					if(null == wardrobes ||wardrobes.isEmpty()){
-						wardrobes = new ArrayList<>();
+				} else {
+					if (wr.getUseDate().before(now) || wr.getUseDate().before(calendar.getTime())) {
+						//使用时间无效
+						wr.setRemark("1");
+						invalids.add(wr);
+						logger.info("使用时间无效");
+					} else {
+						String key = "1".equals(wr.getIsOffway()) ? "OFFWAY Showroom" : wr.getBrandName();
+						key = key + "," + DateFormatUtils.format(wr.getUseDate(), "yyyy-MM-dd");
+						List<PhWardrobe> wardrobes = effMap.get(key);
+						if (null == wardrobes || wardrobes.isEmpty()) {
+							wardrobes = new ArrayList<>();
+						}
+						if ("0".equals(wr.getIsOffway())) {
+							PhWardrobeAudit wardrobeAudit = phWardrobeAuditService.findByWardrobeId(wr.getId());
+							map0.put("useDate", DateFormatUtils.format(wardrobeAudit.getUseDate(), "yyyy-MM-dd"));
+							map0.put("returnDate", DateFormatUtils.format(wardrobeAudit.getReturnDate(), "yyyy-MM-dd"));
+							map0.put("photoDate", DateFormatUtils.format(wardrobeAudit.getPhotoDate(), "yyyy-MM-dd"));
+							map0.put("useName", wardrobeAudit.getUseName());
+							map0.put("content", wardrobeAudit.getContent());
+						}
+						wardrobes.add(wr);
+						effMap.put(key, wardrobes);
+						logger.info("正常");
 					}
-					wardrobes.add(wr);
-					effMap.put(key, wardrobes);
-					logger.info("正常");
 				}
-			}else {
-				//缺货
-				wr.setRemark("0");
-				invalids.add(wr);
-				logger.info("缺货");
+
+			} else {
+				if ("2".equals(wr.getState())) {
+					//审核失败
+					wr.setRemark("2");
+					invalids.add(wr);
+				}else {
+					//缺货
+					wr.setRemark("0");
+					invalids.add(wr);
+					logger.info("缺货");
+				}
 			}
 		}
-		
+
 		List<Object> effs = new ArrayList<>();
 		for (String key : effMap.keySet()) {
 			Map<String, Object> map = new HashMap<>();
@@ -227,11 +248,12 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			map.put("brandName", keys[0]);
 			map.put("useDate", keys[1]);
 			map.put("data", effMap.get(key));
+			map.put("details", map0);
 			effs.add(map);
 		}
 		resultMap.put("effect", effs);
 		resultMap.put("invalid", invalids);
-		
+
 		return resultMap;
 	}
 	

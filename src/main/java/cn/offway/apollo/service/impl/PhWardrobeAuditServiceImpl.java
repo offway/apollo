@@ -115,4 +115,9 @@ public class PhWardrobeAuditServiceImpl implements PhWardrobeAuditService {
 	public PhWardrobeAudit findByWardrobeId(Long id) {
 		return phWardrobeAuditRepository.findByWardrobeId(id);
 	}
+
+	@Override
+	public int auditCount(String unionid) {
+		return phWardrobeAuditRepository.auditCount(unionid);
+	}
 }

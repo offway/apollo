@@ -27,4 +27,6 @@ public interface PhWardrobeAuditService{
     PhWardrobeAudit add(String unionid, Long goodsId, String color, String size, String useDate, String useName, String content, String returnDate, String photoDate, String formId) throws ParseException;
 
     PhWardrobeAudit findByWardrobeId(Long id);
+
+    int auditCount(String unionid);
 }

@@ -109,11 +109,11 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 	@Override
 	public Page<PhOrderInfo> findByPage(final String unionid,final String type,Pageable page){
 		return phOrderInfoRepository.findAll(new Specification<PhOrderInfo>() {
-			
+
 			@Override
 			public Predicate toPredicate(Root<PhOrderInfo> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> params = new ArrayList<Predicate>();
-				
+
 				Date now = new Date();
 				try {
 					//0-发货中,1-使用中,2-归还中,3-已完成
@@ -127,38 +127,41 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 
 					}else if("1".equals(type)){
 						//使用日期当天
-						//params.add(criteriaBuilder.equal(root.get("status"), "1"));
 						In<String> in = criteriaBuilder.in(root.get("status"));
 						in.value("1");
 						in.value("7");
 						in.value("8");
 						params.add(in);
+						//params.add(criteriaBuilder.equal(root.get("status"), "1"))
 						params.add(criteriaBuilder.lessThanOrEqualTo(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
 					}else if("2".equals(type)){
-						In<String> in = criteriaBuilder.in(root.get("status"));
-						in.value("8");
-						in.value("2");
-						params.add(in);
-						//params.add(criteriaBuilder.equal(root.get("status"), "2"));
+						params.add(criteriaBuilder.equal(root.get("status"), "2"));
 					}else if("3".equals(type)){
 						params.add(criteriaBuilder.equal(root.get("status"), "3"));
 					}else if("4".equals(type)){
 						params.add(criteriaBuilder.lessThanOrEqualTo(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
 						params.add(criteriaBuilder.notEqual(root.get("isUpload"), "1"));
+					}else if("5".equals(type)){
+						params.add(criteriaBuilder.equal(root.get("status"), "0"));
+					}else if ("6".equals(type)){
+						In<String> in = criteriaBuilder.in(root.get("status"));
+						in.value("7");
+						in.value("1");
+						params.add(in);
 					}
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				if(StringUtils.isNotBlank(unionid)){
 					params.add(criteriaBuilder.equal(root.get("unionid"), unionid));
 				}
-				
-				
-                Predicate[] predicates = new Predicate[params.size()];
-                criteriaQuery.where(params.toArray(predicates));
-                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createTime")));
+
+
+				Predicate[] predicates = new Predicate[params.size()];
+				criteriaQuery.where(params.toArray(predicates));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createTime")));
 				return null;
 			}
 		}, page);
@@ -167,14 +170,14 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 	@Override
 	public List<PhOrderInfo> findAll(final String unionid,final String type){
 		return phOrderInfoRepository.findAll(new Specification<PhOrderInfo>() {
-			
+
 			@Override
 			public Predicate toPredicate(Root<PhOrderInfo> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> params = new ArrayList<Predicate>();
-				
+
 				Date now = new Date();
 				try {
-					//0-发货中,1-使用中,2-归还中,3-已完成
+					//0-发货中,1-使用中,2-归还中,3-已完成,5-待发货，6-已寄出（不判断使用时间）
 					if("0".equals(type)){
 						//使用日期之前
 						In<String> in = criteriaBuilder.in(root.get("status"));
@@ -194,19 +197,26 @@ public class PhOrderInfoServiceImpl implements PhOrderInfoService {
 						params.add(criteriaBuilder.notEqual(root.get("isUpload"), "1"));
 						params.add(criteriaBuilder.lessThanOrEqualTo(root.get("useDate"), DateUtils.parseDate(DateFormatUtils.format(now, "yyyy-MM-dd"), "yyyy-MM-dd")));
 
+					}else if("5".equals(type)){
+						params.add(criteriaBuilder.equal(root.get("status"), "0"));
+					}else if ("6".equals(type)){
+						In<String> in = criteriaBuilder.in(root.get("status"));
+						in.value("7");
+						in.value("1");
+						params.add(in);
 					}
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				if(StringUtils.isNotBlank(unionid)){
 					params.add(criteriaBuilder.equal(root.get("unionid"), unionid));
 				}
-				
-				
-                Predicate[] predicates = new Predicate[params.size()];
-                criteriaQuery.where(params.toArray(predicates));
+
+
+				Predicate[] predicates = new Predicate[params.size()];
+				criteriaQuery.where(params.toArray(predicates));
 				return null;
 			}
 		});

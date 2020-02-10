@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.offway.apollo.service.*;
 import cn.offway.apollo.utils.HttpClientUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -33,15 +34,6 @@ import cn.offway.apollo.domain.PhShowImage;
 import cn.offway.apollo.domain.PhUserInfo;
 import cn.offway.apollo.dto.AuthDto;
 import cn.offway.apollo.dto.OrderInfoDto;
-import cn.offway.apollo.service.PhAuthService;
-import cn.offway.apollo.service.PhCodeService;
-import cn.offway.apollo.service.PhCreditDetailService;
-import cn.offway.apollo.service.PhOrderExpressDetailService;
-import cn.offway.apollo.service.PhOrderExpressInfoService;
-import cn.offway.apollo.service.PhOrderGoodsService;
-import cn.offway.apollo.service.PhOrderInfoService;
-import cn.offway.apollo.service.PhShowImageService;
-import cn.offway.apollo.service.PhUserInfoService;
 import cn.offway.apollo.utils.CommonResultCode;
 import cn.offway.apollo.utils.JsonResult;
 import cn.offway.apollo.utils.JsonResultHelper;
@@ -84,6 +76,9 @@ public class UserController {
 	@Autowired
 	private PhCreditDetailService phCreditDetailService;
 
+	@Autowired
+	private PhWardrobeAuditService phWardrobeAuditService;
+
 
 
 	@ApiOperation("校验邀请码")
@@ -117,7 +112,7 @@ public class UserController {
 	@GetMapping("/order")
 	public JsonResult order(
 			@ApiParam("用户ID") @RequestParam String unionid,
-			@ApiParam("类型[0-发货中,1-使用中,2-归还中,3-已完成,4-待晒图]") @RequestParam String type,
+			@ApiParam("类型[类型[0-发货中,1-使用中,2-归还中,3-已完成,4-待晒图,5-待发货（不判断使用时间）,6-已寄出（不判断使用时间）]") @RequestParam String type,
 			@ApiParam("页码,从0开始") @RequestParam int page,
 		    @ApiParam("页大小") @RequestParam int size){
 
@@ -138,17 +133,9 @@ public class UserController {
 		List<PhOrderInfo> phOrderInfos = page2.getContent();
 		List<OrderInfoDto> dtos = new ArrayList<>();
 		for (PhOrderInfo phOrderInfo : phOrderInfos) {
-			List<String> sum = new ArrayList<>();
-			List<PhOrderGoods> goods = new ArrayList<>();
-			if (!"2".equals(type)){
-				sum =  phOrderGoodsService.orderSum(phOrderInfo.getOrderNo());
-				goods= phOrderGoodsService.findByOrderNo(phOrderInfo.getOrderNo());
-			}else {
-				sum =  phOrderGoodsService.orderSumR(phOrderInfo.getOrderNo());
-				goods = phOrderGoodsService.findByOrderNoR(phOrderInfo.getOrderNo());
-			}
+			List<String> sum = phOrderGoodsService.orderSum(phOrderInfo.getOrderNo());
 
-
+			List<PhOrderGoods> goods = phOrderGoodsService.findByOrderNo(phOrderInfo.getOrderNo());
 
 			for (String s : sum) {//String s : sum
 				OrderInfoDto dto = new OrderInfoDto();
@@ -356,19 +343,21 @@ public class UserController {
 	@ApiOperation(value="我的")
 	@GetMapping("/index")
 	public JsonResult index(@ApiParam("用户ID") @RequestParam String unionid){
-		
 		Map<String, Object> resultMap = new HashMap<>();
 		//0-发货中,1-使用中,2-归还中,3-已完成,4-待晒图
 		PhUserInfo phUserInfo = phUserInfoService.findByUnionid(unionid);
 		resultMap.put("nickname", phUserInfo.getNickname());
 		resultMap.put("headimgurl", phUserInfo.getHeadimgurl());
 		resultMap.put("creditScore", phUserInfo.getCreditScore());
-		resultMap.put("sendout", phOrderInfoService.findAll(unionid, "0").size());
+		resultMap.put("sendout", phOrderInfoService.findAll(unionid, "5").size());
 		resultMap.put("use", phOrderInfoService.findAll(unionid, "1").size());
 		resultMap.put("return", phOrderInfoService.findAll(unionid, "2").size());
 		resultMap.put("show", phOrderInfoService.findAll(unionid, "4").size());
-		
-		return jsonResultHelper.buildSuccessJsonResult(resultMap); 
+		resultMap.put("send", phOrderInfoService.findAll(unionid, "6").size());
+		resultMap.put("audit", String.valueOf(phWardrobeAuditService.auditCount(unionid)));
+		resultMap.put("position", phUserInfo.getPosition());
+
+		return jsonResultHelper.buildSuccessJsonResult(resultMap);
 	}
 	
 	@ApiOperation(value="信用记录")
