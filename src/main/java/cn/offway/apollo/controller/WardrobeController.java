@@ -84,9 +84,16 @@ public class WardrobeController {
 	
 	@ApiOperation("删除")
 	@PostMapping("/del")
-	public JsonResult del(@ApiParam("衣柜ID") @RequestParam Long wardrobeId) throws Exception{
-		phWardrobeService.delete(wardrobeId);
-		return jsonResultHelper.buildSuccessJsonResult(null);
+	public JsonResult del(@ApiParam("衣柜ID") @RequestParam Long[] wardrobeIds) throws Exception{
+		List<Long> wrIds = Arrays.asList(wardrobeIds);
+		for (Long wrId : wrIds) {
+			PhWardrobeAudit wardrobeAudit = phWardrobeAuditService.findByWardrobeId(wrId);
+			if(null != wardrobeAudit){
+				wardrobeAudit.setIsDel("1");
+				phWardrobeAuditService.save(wardrobeAudit);
+			}
+			phWardrobeService.delete(wrId);
+		}		return jsonResultHelper.buildSuccessJsonResult(null);
 	}
 	
 	@ApiOperation("清除失效物件")
