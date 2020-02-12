@@ -23,10 +23,10 @@ public interface PhWardrobeRepository extends JpaRepository<PhWardrobe,Long>,Jpa
 	
 	@Query(nativeQuery=true,value="select * from ph_wardrobe w where w.unionid=?1 and w.use_date>DATE_FORMAT(NOW(),'%Y-%m-%d') and EXISTS(select 1 from ph_goods_stock gs where gs.goods_id = w.goods_id and gs.size = w.size and gs.color=w.color and gs.stock>0 ) ORDER BY w.create_time desc")
 	List<PhWardrobe> findEffectByUnionid(String unionid);
-	
+
 	@Modifying
 	@Transactional
-	@Query(nativeQuery=true,value="delete from ph_wardrobe where unionid=?1 and use_date<=DATE_FORMAT(NOW(),'%Y-%m-%d')")
+	@Query(nativeQuery=true,value="delete from ph_wardrobe where unionid=?1 and use_date<=DATE_FORMAT(DATE_ADD(NOW(),INTERVAL 2 day),'%Y-%m-%d')")
 	int delInvalid(String unionid);
 	
 	@Modifying
@@ -40,4 +40,9 @@ public interface PhWardrobeRepository extends JpaRepository<PhWardrobe,Long>,Jpa
 	@Transactional
 	@Query(nativeQuery=true,value="delete from ph_wardrobe where id in(?1)")
 	int delete(List<Long> ids);
+
+	@Modifying
+	@Transactional
+	@Query(nativeQuery=true,value="delete from ph_wardrobe  where ph_wardrobe.unionid=?1 and state = 2")
+	int delLessState(String unionid);
 }

@@ -94,6 +94,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 	public void delInvalid(String unionid){
 		phWardrobeRepository.delInvalid(unionid);
 		phWardrobeRepository.delLess(unionid);
+		phWardrobeRepository.delLessState(unionid);
 	}
 	
 	@Override
