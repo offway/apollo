@@ -68,6 +68,8 @@ public class PhOrderInfo implements Serializable {
     /** 姓名 **/
     private String realName;
 
+    /** 地址id **/
+    private Long addressId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -237,7 +239,15 @@ public class PhOrderInfo implements Serializable {
     public void setRealName(String realName) {
         this.realName = realName;
     }
-    
+
+    @Column(name = "address_id", length = 11)
+    public Long getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Long addressId) {
+        this.addressId = addressId;
+    }
     
 
 }

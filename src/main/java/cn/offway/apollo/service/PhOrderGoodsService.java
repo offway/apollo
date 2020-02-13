@@ -24,7 +24,11 @@ public interface PhOrderGoodsService{
 
 	List<PhOrderGoods> findByOrderNo(String orderNo, String batch);
 
+	List<PhOrderGoods> findByOrder(String orderNo);
+
 	List<String> orderSum(String orderNo);
+
+	List<String> orderSumA(String orderNo);
 
 	List<String> orderSumR(String orderNo);
 

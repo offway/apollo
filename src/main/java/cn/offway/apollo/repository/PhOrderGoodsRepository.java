@@ -28,6 +28,9 @@ public interface PhOrderGoodsRepository extends JpaRepository<PhOrderGoods,Long>
 	@Query(nativeQuery=true,value="select DISTINCT(batch) from ph_order_goods where order_no = ?1 and state != '2' ")
 	List<String> orderSum(String orderNo);
 
+	@Query(nativeQuery=true,value="select DISTINCT(batch) from ph_order_goods where order_no = ?1 ")
+	List<String> orderSumA(String orderNo);
+
 	@Query(nativeQuery=true,value="select DISTINCT(mail_no) from ph_order_goods where order_no = ?1 and batch = ?2 ")
 	String GetMailNo(String orderNo,String batch);
 
@@ -38,4 +41,6 @@ public interface PhOrderGoodsRepository extends JpaRepository<PhOrderGoods,Long>
 	List<PhOrderGoods> findByOrderNoAndBatch(String orderNo,String batch);
 
 	List<PhOrderGoods> findByOrderNoAndState(String orderNo,String state);
+
+	List<PhOrderGoods> findByOrderNo(String orderNo);
 }

@@ -133,9 +133,9 @@ public class UserController {
 		List<PhOrderInfo> phOrderInfos = page2.getContent();
 		List<OrderInfoDto> dtos = new ArrayList<>();
 		for (PhOrderInfo phOrderInfo : phOrderInfos) {
-			List<String> sum = phOrderGoodsService.orderSum(phOrderInfo.getOrderNo());
+			List<String> sum = phOrderGoodsService.orderSumA(phOrderInfo.getOrderNo());
 
-			List<PhOrderGoods> goods = phOrderGoodsService.findByOrderNo(phOrderInfo.getOrderNo());
+			List<PhOrderGoods> goods = phOrderGoodsService.findByOrder(phOrderInfo.getOrderNo());
 
 			for (String s : sum) {//String s : sum
 				OrderInfoDto dto = new OrderInfoDto();
