@@ -46,7 +46,7 @@ public class WardrobeController {
 	private PhGoodsService goodsService;
 
 	@Autowired
-	private PhBannerService brandService;
+	private PhBrandService brandService;
 
 	@Autowired
 	private SmsService smsService;
@@ -151,9 +151,9 @@ public class WardrobeController {
 		try {
 			phWardrobeAuditService.add(unionid, goodsId, color, size, useDate, useName, content, returnDate, photoDate, formId);
 			PhGoods goods = goodsService.findOne(goodsId);
-			//PhBanner brand = brandService.findOne(goods.getBrandId());
+			PhBrand brand = brandService.findOne(goods.getBrandId());
 			//短信通知商家
-			smsService.sendMsgBatch("13524430033" , "【OFFWAY】您有一件OFFWAY SHOWROOM的借衣商品待审核，请及时进入后台查看。");
+			smsService.sendMsgBatch("13524430033," + brand.getPhone() , "【OFFWAY】您有一件OFFWAY SHOWROOM的借衣商品待审核，请及时进入后台查看。");
 			logger.info("短信通知商户发送手机号=13524430033");
 			return jsonResultHelper.buildSuccessJsonResult(null);
 		} catch (Exception e) {
