@@ -153,8 +153,12 @@ public class WardrobeController {
 			PhGoods goods = goodsService.findOne(goodsId);
 			PhBrand brand = brandService.findOne(goods.getBrandId());
 			//短信通知商家
-			smsService.sendMsgBatch("13524430033," + brand.getPhone() , "【OFFWAY】您有一件OFFWAY SHOWROOM的借衣商品待审核，请及时进入后台查看。");
-			logger.info("短信通知商户发送手机号=13524430033");
+			if ("".equals(brand.getPhone())){
+				smsService.sendMsgBatch("13524430033" , "【OFFWAY】您有一件OFFWAY SHOWROOM的借衣商品待审核，请及时进入后台查看。");
+			}else {
+				smsService.sendMsgBatch("13524430033," + brand.getPhone() , "【OFFWAY】您有一件OFFWAY SHOWROOM的借衣商品待审核，请及时进入后台查看。");
+			}
+			logger.info("短信通知商户发送手机号=13524430033,"+brand.getPhone());
 			return jsonResultHelper.buildSuccessJsonResult(null);
 		} catch (Exception e) {
 			e.printStackTrace();
