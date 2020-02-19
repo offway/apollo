@@ -2,6 +2,7 @@ package cn.offway.apollo.controller;
 
 import java.util.Date;
 
+import cn.offway.apollo.utils.CommonResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@ApiOperation("保存地址")
 	@PostMapping("/save")
 	public JsonResult save(@RequestBody @ApiParam("地址信息") PhAddress phAddress){
+		if ("".equals(phAddress.getCity())||"".equals(phAddress.getCounty())||"".equals(phAddress.getProvince())||phAddress.getCity()==null||phAddress.getCounty()==null||phAddress.getProvince()==null){
+			return jsonResultHelper.buildFailJsonResult(CommonResultCode.PARAM_MISS);
+		}
 		phAddress.setCreateTime(new Date());
 		return jsonResultHelper.buildSuccessJsonResult(phAddressService.save(phAddress));
 	}
