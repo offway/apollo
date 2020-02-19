@@ -365,69 +365,16 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 
 		PhOrderInfo offwayOrder = null;
 		List<PhWardrobeAudit> wardrobeAudits = new ArrayList<>();
+		String orderNo = phOrderInfoService.generateOrderNo("PH");
 		for (PhWardrobe phWardrobe : wardrobes) {
 			if("0".equals(phWardrobe.getIsOffway())){
 				PhWardrobeAudit wardrobeAudit = phWardrobeAuditService.findByWardrobeId(phWardrobe.getId());
 				wardrobeAudit.setIsDel("2");
 				wardrobeAudits.add(wardrobeAudit);
 			}
-
 			PhOrderInfo phOrderInfo = null;
 			phOrderInfo = map.get(phWardrobe.getBrandId());
-//			if("1".equals(phWardrobe.getIsOffway())){
-//				//自营
-//				if(null == offwayOrder){
-//					offwayOrder = new PhOrderInfo();
-//					offwayOrder.setBrandId(phWardrobe.getBrandId());
-//					offwayOrder.setBrandLogo(phWardrobe.getBrandLogo());
-//					offwayOrder.setBrandName(phWardrobe.getBrandName());
-//					offwayOrder.setCreateTime(now);
-//					offwayOrder.setIsOffway(phWardrobe.getIsOffway());
-//					offwayOrder.setOrderNo(phOrderInfoService.generateOrderNo("PH"));
-//					offwayOrder.setStatus("0");
-//					offwayOrder.setUnionid(phWardrobe.getUnionid());
-//					offwayOrder.setRealName(phUserInfo.getRealName());
-//					offwayOrder.setPosition(phUserInfo.getPosition());
-//					offwayOrder.setUseDate(phWardrobe.getUseDate());
-//					offwayOrder.setUsers(users);
-//					offwayOrder.setIsUpload("0");
-//					offwayOrder.setAddressId(addrId);
-//					phOrderInfos.add(offwayOrder);
-//
-//					//保存订单物流
-//					PhAddress toAddress = phAddressService.findOne(addrId);
-//					PhAddress offwayAddress = phAddressService.findOne(1L);
-//
-//					PhOrderExpressInfo phOrderExpressInfo = new PhOrderExpressInfo();
-//					phOrderExpressInfo.setCreateTime(now);
-////					phOrderExpressInfo.setExpressOrderNo(phOrderInfoService.generateOrderNo("SF"));
-//					phOrderExpressInfo.setFromPhone(offwayAddress.getPhone());
-//					phOrderExpressInfo.setFromCity(offwayAddress.getCity());
-//					phOrderExpressInfo.setFromContent(offwayAddress.getContent());
-//					phOrderExpressInfo.setFromCounty(offwayAddress.getCounty());
-//					phOrderExpressInfo.setFromProvince(offwayAddress.getProvince());
-//					phOrderExpressInfo.setFromRealName(offwayAddress.getRealName());
-//					//phOrderExpressInfo.setMailNo(mailNo);
-//					//phOrderExpressInfo.setOrderId(orderId);
-//					phOrderExpressInfo.setOrderNo(offwayOrder.getOrderNo());
-//					phOrderExpressInfo.setStatus("0");
-//					phOrderExpressInfo.setToPhone(toAddress.getPhone());
-//					phOrderExpressInfo.setToCity(toAddress.getCity());
-//					phOrderExpressInfo.setToContent(toAddress.getContent());
-//					phOrderExpressInfo.setToCounty(toAddress.getCounty());
-//					phOrderExpressInfo.setToProvince(toAddress.getProvince());
-//					phOrderExpressInfo.setToRealName(toAddress.getRealName());
-//					phOrderExpressInfo.setType("0");
-//					phOrderExpressInfos.add(phOrderExpressInfo);
-//
-//				}
-//				phOrderInfo = offwayOrder;
-//			}else{
-//
-//				phOrderInfo = map.get(phWardrobe.getBrandId());
-//			}
-
-			if(null == phOrderInfo){
+			if(phOrderInfos.size()<=0){
 				//保存订单信息
 				phOrderInfo = new PhOrderInfo();
 				phOrderInfo.setBrandId(phWardrobe.getBrandId());
@@ -435,7 +382,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 				phOrderInfo.setBrandName(phWardrobe.getBrandName());
 				phOrderInfo.setCreateTime(now);
 				phOrderInfo.setIsOffway(phWardrobe.getIsOffway());
-				phOrderInfo.setOrderNo(phOrderInfoService.generateOrderNo("PH"));
+				phOrderInfo.setOrderNo(orderNo);
 				phOrderInfo.setStatus("0");
 				phOrderInfo.setUnionid(phWardrobe.getUnionid());
 				phOrderInfo.setRealName(phUserInfo.getRealName());
@@ -472,7 +419,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 				phOrderExpressInfo.setToRealName(toAddress.getRealName());
 				phOrderExpressInfo.setType("0");
 				phOrderExpressInfos.add(phOrderExpressInfo);
-
+				logger.info(phOrderInfo.getOrderNo());
 			}
 			//保存订单商品
 			PhOrderGoods phOrderGoods = new PhOrderGoods();
@@ -487,7 +434,7 @@ public class PhWardrobeServiceImpl implements PhWardrobeService {
 			phOrderGoods.setState("0");
 			phOrderGoods.setImage(phGoodsStock.getImage());
 			//phOrderGoods.setOrderId(orderId);
-			phOrderGoods.setOrderNo(phOrderInfo.getOrderNo());
+			phOrderGoods.setOrderNo(orderNo);
 			phOrderGoods.setSize(phWardrobe.getSize());
 			phOrderGoods.setBrandId(phWardrobe.getBrandId());
 			phOrderGoods.setBrandLogo(phWardrobe.getBrandLogo());
