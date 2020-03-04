@@ -3,3 +3,7 @@
 *.iml
 *.properties
 .gitignore
+.classpath
+.factorypath
+.project
+.settings
