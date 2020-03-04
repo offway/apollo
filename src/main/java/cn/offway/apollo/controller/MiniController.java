@@ -466,13 +466,15 @@ public class MiniController {
             List<Object> list = new ArrayList<>();
             String key = MessageFormat.format("{0}_{1}", CallbackController.KEY_RANK, id);
             for (ZSetOperations.TypedTuple obj : stringRedisTemplate.opsForZSet().reverseRangeWithScores(key, 0, 100)) {
-                Map<String, Object> map1 = new HashMap<>();
                 PhUser phUser = userService.findOne(Long.valueOf(String.valueOf(obj.getValue())));
-                map1.put("nickname", phUser.getNickname());
-                map1.put("headimgurl", phUser.getHeadimgurl());
-                map1.put("userid", phUser.getId());
-                map1.put("sum", obj.getScore());
-                list.add(map1);
+                if (phUser != null) {
+                    Map<String, Object> map1 = new HashMap<>();
+                    map1.put("nickname", phUser.getNickname());
+                    map1.put("headimgurl", phUser.getHeadimgurl());
+                    map1.put("userid", phUser.getId());
+                    map1.put("sum", obj.getScore());
+                    list.add(map1);
+                }
             }
             remap.put("ranking", list);
             return jsonResultHelper.buildSuccessJsonResult(remap);
