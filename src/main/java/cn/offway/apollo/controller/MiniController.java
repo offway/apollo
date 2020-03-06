@@ -264,7 +264,7 @@ public class MiniController {
         try {
             PhUser user = userService.findByUnionid(unionid);
             Page<PhReadcode> readcodeList = readcodeService.findByBuyersIdAndBooksId(state, user.getId(), id, new PageRequest(page, size));
-            if (null != readcodeList) {
+            if (readcodeList.getContent().size() > 0 ) {
                 List<Object> list = new ArrayList<>();
                 for (PhReadcode readcode : readcodeList) {
                     Map<String, Object> newmap = new HashMap<>();
