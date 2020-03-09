@@ -428,12 +428,17 @@ public class MiniController {
             remap.put("title", map);
             for (PhReadcode phReadcode : readcodeList) {
                 Map<String, Object> map1 = new HashMap<>();
+//                if("0".equals(phReadcode.getBuyersId()) || "后台生成".equals(phReadcode.getRemark())){
+//                    continue;
+//                }
                 PhUser phUser = userService.findOne(phReadcode.getBuyersId());
-                map1.put("nickname", phUser.getNickname());
-                map1.put("headimgurl", phUser.getHeadimgurl());
-                map1.put("userid", phReadcode.getBuyersId());
-                map1.put("sum", phReadcode.getRemark());
-                list.add(map1);
+                if (phUser != null){
+                    map1.put("nickname", phUser.getNickname());
+                    map1.put("headimgurl", phUser.getHeadimgurl());
+                    map1.put("userid", phReadcode.getBuyersId());
+                    map1.put("sum", phReadcode.getRemark());
+                    list.add(map1);
+                }
             }
             remap.put("ranking", list);
             return jsonResultHelper.buildSuccessJsonResult(remap);
