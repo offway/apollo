@@ -288,6 +288,9 @@ public class MiniController {
     @GetMapping("/booksUserInfo")
     public JsonResult booksUserInfo(@ApiParam("unionid") @RequestParam String unionid) {
         try {
+            if ("undefined".equals(unionid)){
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.PARAM_ERROR);
+            }
             List<Object> list = new ArrayList<>();
             Map<String, Object> map = new HashMap<>();
             PhUser user = userService.findByUnionid(unionid);
@@ -395,6 +398,9 @@ public class MiniController {
     @GetMapping("/bookranking")
     public JsonResult booksranking(@ApiParam("电子刊id") @RequestParam Long id, @ApiParam("unionid") @RequestParam String unionid) {
         try {
+            if ("undefined".equals(unionid)){
+                unionid = null;
+            }
             List<Object> list = new ArrayList<>();
             Map<String, Object> remap = new HashMap<>();
             Map<String, Object> map = new HashMap<>();
@@ -453,6 +459,9 @@ public class MiniController {
     @GetMapping("/booksRankingAll")
     public JsonResult booksRankingAll(@ApiParam("电子刊id") @RequestParam Long id, @ApiParam("unionid") @RequestParam String unionId) {
         try {
+            if ("undefined".equals(unionId)){
+                unionId = null;
+            }
             Map<String, Object> remap = new HashMap<>();
             Map<String, Object> map = new HashMap<>();
             PhTemplate phTemplates = templateService.findOne(id);
@@ -514,6 +523,10 @@ public class MiniController {
             @ApiParam("iv,获取手机号得到") @RequestParam String iv) {
 
         try {
+            if("undefined".equals(unionid)){
+                logger.error("小程序注册异常", "用户unionid：undefined");
+                return jsonResultHelper.buildSuccessJsonResult("请先关注OFFWAY公众号");
+            }
             String result = AesCbcUtil.decrypt(encryptedData, sessionKey, iv, "UTF-8");
             logger.info("解密小程序获取手机号信息:" + result);
             JSONObject jsonObject = JSON.parseObject(result);
@@ -522,6 +535,7 @@ public class MiniController {
             StringBuilder sb = new StringBuilder();
             sb.append("+").append(countryCode).append(purePhoneNumber);
             String phone = sb.toString();
+            logger.info("微信用户ID："+unionid+",拼接手机号："+phone);
             //验证是用户
             PhUser phUserInfo = null;
             if (StringUtils.isNotBlank(unionid)) {
@@ -540,6 +554,11 @@ public class MiniController {
 
             phUserInfo = userService.findByPhone(phone);
             if (null != phUserInfo) {
+                if ("undefined".equals(phUserInfo.getUnionid().substring(0,9)) && !"undefined".equals(unionid)){
+                    phUserInfo.setUnionid(unionid);
+                    phUserInfo = userService.save(phUserInfo);
+                    return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
+                }
                 return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
             }
             //unionid=UNIONID&nickName=NICKNAME&headimgurl=HEADIMGURL&sessionKey=SESSIONKEY&encryptedData=ENCRYPTEDDATA&iv=IV
@@ -559,7 +578,12 @@ public class MiniController {
                 stringRedisTemplate.opsForValue().setIfAbsent(USER_MAX_ID_KEY, String.valueOf(maxId));
             }
             long nextUserId = stringRedisTemplate.opsForValue().increment(USER_MAX_ID_KEY, 1);
-            return jsonResultHelper.buildSuccessJsonResult(userService.registered(phone, unionid, nickName, headimgurl, nextUserId));
+            if (!"undefined".equals(unionid)){
+                return jsonResultHelper.buildSuccessJsonResult(userService.registered(phone, unionid, nickName, headimgurl, nextUserId));
+            }else {
+                logger.error("小程序注册异常", "用户unionid：undefined");
+                return jsonResultHelper.buildSuccessJsonResult("请先关注OFFWAY公众号");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("小程序注册异常", e);
