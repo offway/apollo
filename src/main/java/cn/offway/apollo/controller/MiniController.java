@@ -524,7 +524,7 @@ public class MiniController {
 
         try {
             if("undefined".equals(unionid)){
-                logger.error("小程序注册异常", "用户unionid：undefined");
+                logger.error("电子刊小程序注册异常", "用户unionid：undefined");
                 return jsonResultHelper.buildSuccessJsonResult("请先关注OFFWAY公众号");
             }
             String result = AesCbcUtil.decrypt(encryptedData, sessionKey, iv, "UTF-8");
@@ -599,6 +599,10 @@ public class MiniController {
             @ApiParam("微信用户头像") @RequestParam String headimgurl) {
 
         try {
+            if("undefined".equals(unionid)){
+                logger.error("电子刊H5注册异常", "用户unionid：undefined");
+                return jsonResultHelper.buildSuccessJsonResult("请先关注OFFWAY公众号");
+            }
             //验证是用户
             PhUser phUserInfo = null;
             if (StringUtils.isNotBlank(unionid)) {
