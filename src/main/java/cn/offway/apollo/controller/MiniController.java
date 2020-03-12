@@ -541,6 +541,10 @@ public class MiniController {
             if (StringUtils.isNotBlank(unionid)) {
                 phUserInfo = userService.findByUnionid(unionid);
                 if (null != phUserInfo) {
+                    if ("".equals(phUserInfo.getPhone()) || null == phUserInfo.getPhone()){
+                        phUserInfo.setPhone(phone);
+                        userService.save(phUserInfo);
+                    }
                     if (null != phUserInfo.getPhone()) {
                         return jsonResultHelper.buildSuccessJsonResult(phUserInfo);
                     } else {
