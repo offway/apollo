@@ -63,6 +63,9 @@ public enum CommonResultCode implements ResultCode {
 
     /** 杂志不存在 **/
     MAGAZINES_DONOT_EXIST("1017","MAGAZINES_DONOT_EXIST"),
+
+    /** 请先关注OFFWAY公众号 **/
+    ATTENTION_OFFWAY("1018","ATTENTION_OFFWAY"),
     ;
 	
 	

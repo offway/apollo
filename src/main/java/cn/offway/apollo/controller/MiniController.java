@@ -525,7 +525,7 @@ public class MiniController {
         try {
             if("undefined".equals(unionid)){
                 logger.error("电子刊小程序注册异常", "用户unionid：undefined");
-                return jsonResultHelper.buildSuccessJsonResult("请先关注OFFWAY公众号");
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.ATTENTION_OFFWAY);
             }
             String result = AesCbcUtil.decrypt(encryptedData, sessionKey, iv, "UTF-8");
             logger.info("解密小程序获取手机号信息:" + result);
@@ -586,7 +586,7 @@ public class MiniController {
                 return jsonResultHelper.buildSuccessJsonResult(userService.registered(phone, unionid, nickName, headimgurl, nextUserId));
             }else {
                 logger.error("小程序注册异常", "用户unionid：undefined");
-                return jsonResultHelper.buildSuccessJsonResult("请先关注OFFWAY公众号");
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.ATTENTION_OFFWAY);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -605,7 +605,7 @@ public class MiniController {
         try {
             if("undefined".equals(unionid)){
                 logger.error("电子刊H5注册异常", "用户unionid：undefined");
-                return jsonResultHelper.buildSuccessJsonResult("请先关注OFFWAY公众号");
+                return jsonResultHelper.buildFailJsonResult(CommonResultCode.ATTENTION_OFFWAY);
             }
             //验证是用户
             PhUser phUserInfo = null;
